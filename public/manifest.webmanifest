@@ -1,0 +1,19 @@
+{
+  "id": "./",
+  "name": "ACFS BGS Tool",
+  "short_name": "ACFS BGS",
+  "description": "Il tool BGS di Alto Comando Flotta Stellare per Elite Dangerous: influenza della fazione Flotta Stellare, stati, priorità di intervento e architetti dei sistemi.",
+  "lang": "it",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "theme_color": "#f07b05",
+  "background_color": "#1c1c1c",
+  "categories": ["games", "utilities"],
+  "icons": [
+    { "src": "icons/app/android-icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/app/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/app/icon-512x512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

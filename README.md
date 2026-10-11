@@ -18,6 +18,8 @@ Risponde a una domanda: **dove dobbiamo lavorare oggi?** Mostra in una tabella t
 
 Il tool è pubblicato su **https://flottastellare.it/acfs-bgs-tool/** e controlla i dati ogni 30 minuti.
 
+È anche una **PWA**: si può installare come app (dal menu del browser, "Installa" o "Aggiungi a schermata Home") e si apre anche senza connessione, con gli ultimi dati scaricati e la loro età in vista. Vedi [App installabile e offline](#app-installabile-e-offline).
+
 La parte di consultazione (tabella, filtri, Legenda, Guida, dettagli dei sistemi) è in **italiano, tedesco e inglese**: alla prima visita segue la lingua del browser (inglese se non è nessuna delle tre), poi vale la bandierina scelta in alto, salvata nel browser. Gli Ordini Ufficiali e il modulo "Assegna" sono strumenti interni dello squadrone e restano in italiano.
 
 Il progetto è in sviluppo. Le fasi, le decisioni prese e le domande aperte sono in [ROADMAP.md](ROADMAP.md). Le modifiche fatte finora sono in [CHANGELOG.md](CHANGELOG.md).
@@ -75,6 +77,17 @@ Fazione, capitale e indirizzi di dati, Sheet e Form sono in [src/core/config.jso
 | `unregisteredScope` | Come la priorità tratta i sistemi non registrati: `"in-scope"` (nostri: difesa e conquista) oppure `"assumed"` (solo difesa, come i Canonn) |
 | `compareFaction` | Seconda fazione da confrontare, per una versione futura (`null`) |
 | `architectsSheetUrl`, `watchlistSheetUrl`, `architectFormAction` | Google Sheet e Form dello squadrone (`null` finché non esistono) |
+
+## App installabile e offline
+
+Il tool usa il service worker di Angular (`@angular/service-worker`), configurato in [ngsw-config.json](ngsw-config.json); il manifest è [public/manifest.webmanifest](public/manifest.webmanifest), con le icone "Vanguards" del sito dello squadrone in `public/icons/app/`.
+
+- **Codice e icone** stanno nella cache del browser: l'app si apre anche offline, comprese le pagine come `/ordini`.
+- **Dati Spansh** (`data/bgs.json`) e **fogli Google** (Registro Architetti e Watchlist): sempre presi dalla rete; la copia in cache si usa solo se la rete manca o non risponde entro qualche secondo. Offline la tabella mostra quindi l'ultimo dato scaricato, con l'ora "Dati Spansh aggiornati" sotto il titolo.
+- La ricerca della distanza (Spansh, via Canonn) e "Assegna" funzionano solo online.
+- **Aggiornamenti**: una versione nuova del codice si scarica in background e si vede dal caricamento successivo della pagina. I dati invece sono sempre i più recenti, perché vengono dalla rete.
+- Il service worker è attivo solo nel build di produzione: `npm start` non lo usa, così in sviluppo non c'è cache di mezzo. Per provarlo in locale serve servire `dist/acfs-bgs-tool/browser/` sotto `/acfs-bgs-tool/` dopo `npm run build:pages`.
+- Il sito dello squadrone (flottastellare.it) ha un suo service worker con ambito `/`; quello del tool ha ambito `/acfs-bgs-tool/`, più specifico, quindi per le pagine del tool vale il suo e i due non si pestano i piedi. Il tool si installa come app separata ("ACFS BGS Tool"), distinta da quella del sito.
 
 ## Struttura
 
