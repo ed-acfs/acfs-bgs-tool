@@ -11,6 +11,7 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 - Online i dati vengono **sempre dalla rete**: la copia in cache si usa solo se la rete manca o non risponde entro qualche secondo, così il tool non mostra mai dati più vecchi del necessario. Ricerca della distanza e "Assegna" restano solo online.
 - Il service worker (`@angular/service-worker`, configurazione in `ngsw-config.json`) ha ambito `/acfs-bgs-tool/`, più specifico di quello del sito (`/`): per le pagine del tool vale il suo. Prima, senza rete, il service worker del sito mostrava al posto del tool la home di flottastellare.it. Attivo solo nel build di produzione, non con `npm start`.
 - Una versione nuova del codice si scarica in background e compare dal caricamento successivo della pagina.
+- La Guida ha una sezione nuova, **App e offline**: come installare il tool e cosa funziona senza connessione. In italiano, tedesco e inglese.
 
 ### Test
 

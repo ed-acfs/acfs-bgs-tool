@@ -269,6 +269,9 @@ export const it = {
     "Riepilogo, stazioni con i loro servizi, eventuale motivo della Watchlist e la tabella delle fazioni. Accanto all'influenza: ⚠️ per le fazioni a {points} punti o meno da {faction} (possibile conflitto), l'icona del Retreat (piena se già in Retreat, tratteggiata se al {threshold} o meno) e una N per le fazioni native, che non possono andare in Retreat.",
   'help.details2':
     "La colonna Stati mostra anche gli stati in pending, in grigio. L'Expansion è uno stato globale della fazione: vale per tutti i suoi sistemi e il tool la legge dal suo sistema aggiornato più di recente (il tooltip dice quale), così un sistema con dati vecchi non la contraddice.",
+  'help.app': 'App e offline',
+  'help.app1':
+    "Il tool si può installare come app: su telefono con \"Aggiungi a schermata Home\" dal menu del browser, su PC con l'icona \"Installa\" nella barra degli indirizzi. Si apre anche senza connessione, con gli ultimi dati scaricati: l'età del dato sotto il titolo dice quanto sono vecchi. La ricerca per distanza funziona solo online.",
   // Shown only in the other languages: in Italian the guide explains these tools in full.
   'help.internal': 'Strumenti dello squadrone',
   'help.internalNote':

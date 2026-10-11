@@ -264,6 +264,9 @@ export const en: Dictionary = {
     'Summary, stations with their services, any Watchlist reason and the factions table. Next to the influence: ⚠️ for factions within {points} points of {faction} (a conflict is possible), the Retreat icon (solid if already in Retreat, dashed at {threshold} or less) and an N for native factions, which cannot go into Retreat.',
   'help.details2':
     "The States column also shows pending states, in grey. Expansion is a faction-wide state: it applies to all of the faction's systems, and the tool reads it from its most recently updated system (the tooltip says which), so a system with old data does not contradict it.",
+  'help.app': 'App and offline',
+  'help.app1':
+    "The tool can be installed as an app: on a phone with \"Add to Home screen\" from the browser menu, on a PC with the \"Install\" icon in the address bar. It also opens without a connection, with the last downloaded data: the timestamp under the title says how old it is. Search by distance only works online.",
   'help.internal': 'Squadron tools',
   'help.internalNote': 'The squadron also has internal tools, such as architect assignment: they are only available in Italian.',
 };
