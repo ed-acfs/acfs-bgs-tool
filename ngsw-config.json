@@ -1,0 +1,43 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": ["/favicon.ico", "/index.html", "/manifest.webmanifest", "/*.css", "/*.js"]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": ["/assets/**", "/icons/**", "/media/**", "/*.(png|svg|ico|woff|woff2)"]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "bgs-data",
+      "urls": ["/data/bgs.json"],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "timeout": "10s",
+        "maxAge": "30d",
+        "maxSize": 1
+      }
+    },
+    {
+      "name": "google-sheets",
+      "urls": ["https://docs.google.com/spreadsheets/d/e/**"],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "timeout": "6s",
+        "maxAge": "30d",
+        "maxSize": 4
+      }
+    }
+  ]
+}

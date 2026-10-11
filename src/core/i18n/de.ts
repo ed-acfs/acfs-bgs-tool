@@ -267,6 +267,9 @@ export const de: Dictionary = {
     'Übersicht, Stationen mit ihren Diensten, ein etwaiger Watchlist-Grund und die Tabelle der Fraktionen. Neben dem Einfluss: ⚠️ für Fraktionen, die {points} Punkte oder weniger von {faction} entfernt sind (ein Konflikt ist möglich), das Retreat-Symbol (ausgefüllt, wenn schon im Retreat, gestrichelt bei {threshold} oder weniger) und ein N für einheimische Fraktionen, die nicht in Retreat gehen können.',
   'help.details2':
     'Die Spalte Zustände zeigt auch bevorstehende Zustände (pending), in Grau. Die Expansion ist ein fraktionsweiter Zustand: Sie gilt für alle Systeme der Fraktion, und das Tool liest sie aus ihrem zuletzt aktualisierten System (der Tooltip sagt, welches), damit ein System mit alten Daten ihr nicht widerspricht.',
+  'help.app': 'App und offline',
+  'help.app1':
+    "Das Tool lässt sich als App installieren: auf dem Handy über \"Zum Startbildschirm hinzufügen\" im Browsermenü, am PC über das Symbol \"Installieren\" in der Adressleiste. Es öffnet sich auch ohne Verbindung, mit den zuletzt geladenen Daten: Die Angabe unter dem Titel zeigt, wie alt sie sind. Die Suche nach Entfernung funktioniert nur online.",
   'help.internal': 'Werkzeuge des Geschwaders',
   'help.internalNote': 'Das Geschwader hat auch interne Werkzeuge, etwa die Zuordnung der Architekten: Sie sind nur auf Italienisch verfügbar.',
 };

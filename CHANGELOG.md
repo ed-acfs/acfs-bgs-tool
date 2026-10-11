@@ -2,6 +2,21 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
+## [1.3.0] - 2026-10-11 — App installabile e consultabile offline
+
+### PWA
+
+- Il tool è una **PWA**: dal browser si può installare come app (su telefono "Aggiungi a schermata Home", su PC l'icona "Installa" nella barra degli indirizzi), con nome "ACFS BGS Tool", icone "Vanguards" del sito dello squadrone e colori del tool. Si installa come app separata da quella del sito flottastellare.it.
+- **Funziona anche offline**: codice, icone e font restano in cache, quindi la pagina si apre senza connessione (anche `/ordini`) e mostra gli ultimi dati Spansh scaricati, con la loro età sotto il titolo come sempre. Anche Registro Architetti e Watchlist restano disponibili: offline la Watchlist resta in cima e gli architetti restano nella tabella.
+- Online i dati vengono **sempre dalla rete**: la copia in cache si usa solo se la rete manca o non risponde entro qualche secondo, così il tool non mostra mai dati più vecchi del necessario. Ricerca della distanza e "Assegna" restano solo online.
+- Il service worker (`@angular/service-worker`, configurazione in `ngsw-config.json`) ha ambito `/acfs-bgs-tool/`, più specifico di quello del sito (`/`): per le pagine del tool vale il suo. Prima, senza rete, il service worker del sito mostrava al posto del tool la home di flottastellare.it. Attivo solo nel build di produzione, non con `npm start`.
+- Una versione nuova del codice si scarica in background e compare dal caricamento successivo della pagina.
+- La Guida ha una sezione nuova, **App e offline**: come installare il tool e cosa funziona senza connessione. In italiano, tedesco e inglese.
+
+### Test
+
+- Verificato con Edge headless sul build di produzione: service worker registrato con ambito `/acfs-bgs-tool/`, e a rete staccata la tabella si apre con dati, Watchlist e architetti. Passano 264 test dell'app.
+
 ## [1.2.2] - 2026-10-10 — Rifiniture: Guida e Watchlist
 
 ### Guida
