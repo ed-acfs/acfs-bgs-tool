@@ -17,6 +17,10 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
 - Verificato con Edge headless sul build di produzione: service worker registrato con ambito `/acfs-bgs-tool/`, e a rete staccata la tabella si apre con dati, Watchlist e architetti. Passano 264 test dell'app.
 
+### Repository
+
+- `.gitignore`: escluso `SEO-REPORT.md`, il report locale del SEO Monitor settimanale, rigenerato a ogni run.
+
 ## [1.2.2] - 2026-10-10 — Rifiniture: Guida e Watchlist
 
 ### Guida
