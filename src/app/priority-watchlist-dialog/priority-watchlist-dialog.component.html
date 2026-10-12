@@ -57,8 +57,12 @@
                   } @empty {
                     —
                   }
-                  @if (station.distanceToArrival != null) {
-                    <span class="info-service-distance">{{ i18n.integer(station.distanceToArrival) }} ls</span>
+                  @if (station.distanceToArrival != null || station.pad) {
+                    <span class="info-service-distance">
+                      @if (station.distanceToArrival != null) {{{ i18n.integer(station.distanceToArrival) }} ls}
+                      @if (station.distanceToArrival != null && station.pad) { · }
+                      @if (station.pad) {pad {{ station.pad }}}
+                    </span>
                   }
                 </td>
               </tr>

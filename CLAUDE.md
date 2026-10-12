@@ -20,8 +20,10 @@ Questo file esiste dal 5 ottobre 2026: la memoria locale di Claude accumulata pr
 
 ## Commit, branch e pubblicazione
 
+- **Il branch serve per le modifiche sostanziali** (codice, interfaccia, dati). Gli aggiornamenti della sola documentazione di lavoro (es. una nota in `ROADMAP.md`) si committano direttamente su `main`, senza branch (indicazione dell'utente del 12 ottobre 2026). Il push resta comunque da confermare.
+
 - **Niente riga `Co-Authored-By: Claude …` nei commit**, anche se il template di sistema la chiede: è una preferenza dell'utente in tutti i suoi repo. (Alcuni commit della 0.8.0 la contengono: non riscrivere la storia già pubblicata, basta non aggiungerla più.)
-- Un branch per ogni modifica, poi merge su `main` (PR con CI `ci.yml` verde quando passa da GitHub). Quando l'utente approva il push di una modifica, sono inclusi merge e verifica che il sito pubblicato mostri la modifica: parole sue, "ovviamente fai anche merge, pubblicazione eccetera".
+- Un branch per ogni modifica sostanziale, poi merge su `main` (PR con CI `ci.yml` verde quando passa da GitHub). Quando l'utente approva il push di una modifica, sono inclusi merge e verifica che il sito pubblicato mostri la modifica: parole sue, "ovviamente fai anche merge, pubblicazione eccetera".
 - `gh` tende a scegliere come repo predefinito quello dei Canonn (remote `upstream`): una PR aperta lì per sbaglio sarebbe pubblica. Su ogni PC eseguire una volta `gh repo set-default ed-acfs/acfs-bgs-tool` e passare comunque `--repo ed-acfs/acfs-bgs-tool` a `gh pr create`.
 - Dopo il merge (e dopo il controllo qui sotto) cancellare il branch, su GitHub e in locale: l'utente l'ha autorizzato il 5 ottobre 2026.
 - Dopo un merge controllare `git log main..origin/<branch>`: una volta un commit è rimasto fuori perché la PR era stata unita prima dell'ultimo push.

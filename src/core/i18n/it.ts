@@ -41,7 +41,11 @@ export const it = {
   'filter.needsRecon': 'Da aggiornare',
   'filter.needsReconTitle': 'Solo i sistemi con dati vecchi di almeno 2 giorni',
   'filter.services': 'Servizi',
-  'filter.servicesTitle': 'Solo i sistemi con un Material Trader o un Technology Broker',
+  'filter.servicesTitle': "Solo i sistemi con i servizi scelti nella riga sotto (all'inizio Material Trader e Technology Broker)",
+  'filter.serviceKindsAria': 'Servizi da cercare',
+  'filter.traderKindsAria': 'Tipi di Material Trader da cercare',
+  'filter.interstellarFactorsHint': "Sistemi con Flotta Stellare, dal più vicino a {system}; nel tooltip dell'icona la stazione, prima la più comoda. In tutta la galassia:",
+  'filter.interstellarFactorsInara': 'cerca su Inara',
   'filter.architect': 'Architetto',
   'filter.architectAria': 'Filtra per architetto',
   'filter.all': 'Tutti',
@@ -103,6 +107,7 @@ export const it = {
   'legend.servicesNote': 'Stazione e distanza dalla stella nel tooltip e nei dettagli del sistema.',
   'legend.traderUnknown': 'Material Trader di tipo non noto',
   'legend.broker': 'Technology Broker (Human o Guardian nel tooltip)',
+  'legend.interstellarFactors': 'Interstellar Factors, per multe e taglie (prima la stazione col pad più grande, poi la più vicina alla stella)',
   'legend.architect': 'Architetto',
   'legend.editArchitect': "modifica l'assegnazione dell'architetto (modulo in italiano)",
   'legend.grey': 'Grigio',
@@ -255,7 +260,7 @@ export const it = {
   'help.table1':
     'Un sistema per riga: nome (con le icone dei servizi delle stazioni), distanza, Aggiornato (età del dato), Fazioni (grafico delle influenze), Stato (guerre, elezioni e Retreat di {faction}), Priorità, fazione di controllo, influenza di {faction} (ACFS), Margine (vantaggio o distacco da chi controlla), Architetto e Fazione preferita.',
   'help.table2':
-    "All'apertura la tabella è ordinata per priorità, dalla P1; un clic su un'intestazione cambia ordinamento. I sistemi in Watchlist restano sempre in cima, con qualunque ordinamento. Il box \"Distanza da\" ordina per distanza da un sistema a scelta. I filtri rapidi mostrano solo i sistemi con guerre o elezioni, quelli da aggiornare o quelli con Material Trader e Technology Broker; i filtri Architetto e Fazione restringono ai sistemi senza architetto, con un architetto ACFS o con un architetto a scelta, ai sistemi che controlliamo o a quelli in cui è presente una fazione a scelta.",
+    "All'apertura la tabella è ordinata per priorità, dalla P1; un clic su un'intestazione cambia ordinamento. I sistemi in Watchlist restano sempre in cima, con qualunque ordinamento. Il box \"Distanza da\" ordina per distanza da un sistema a scelta. I filtri rapidi mostrano solo i sistemi con guerre o elezioni, quelli da aggiornare o quelli con Material Trader e Technology Broker; i filtri Architetto e Fazione restringono ai sistemi senza architetto, con un architetto ACFS o con un architetto a scelta, ai sistemi che controlliamo o a quelli in cui è presente una fazione a scelta. Il filtro Servizi apre sotto una riga in cui scegliere i servizi da cercare, all'inizio Material Trader e Technology Broker; con Material Trader acceso compare accanto la scelta del tipo (Raw, Manufactured, Encoded; quelli di tipo non noto restano sempre). Accendendo Interstellar Factors i sistemi che ne hanno uno si ordinano per distanza dal sistema del box, senza tenere in cima la Watchlist: il primo è il più vicino, e il tooltip della sua icona dice in quale stazione andare (prima quella col pad più grande, poi la più vicina alla stella). Il tool conosce solo i sistemi con Flotta Stellare: per cercare in tutta la galassia c'è il link a Inara.",
   'help.table3':
     "Il tooltip della Priorità spiega il perché. Un clic sulle icone dello Stato mostra punteggio e posta in palio di guerre ed elezioni. L'icona ⓘ apre i dettagli del sistema. Il pulsante Legenda spiega colori e icone della tabella.",
   'help.watchlistTitle': 'Watchlist',

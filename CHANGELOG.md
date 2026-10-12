@@ -2,6 +2,28 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
+## [1.3.1] - 2026-10-13 — Interstellar Factors
+
+### Tabella
+
+- Il filtro **Servizi**, quando è attivo, apre sotto una riga in cui scegliere i servizi da cercare: **Material Trader, Technology Broker e Interstellar Factors**, ciascuno acceso o spento per conto suo (almeno uno resta acceso). All'inizio sono accesi i primi due, come faceva il filtro finora: l'Interstellar Factors c'è in 312 sistemi su 390 e da solo renderebbe il filtro inutile.
+- Con Material Trader acceso, accanto compare la scelta del **tipo di Material Trader** (Raw, Manufactured, Encoded, con le icone della Legenda), con la stessa logica: all'inizio tutti accesi, almeno uno resta. I trader di tipo non noto restano sempre, perché potrebbero essere del tipo cercato.
+- Accendendo **Interstellar Factors** la tabella si ordina per distanza dal sistema del box "Distanza da", come la ricerca delle stazioni più vicine su Inara, e la Watchlist non resta in cima, perché conta solo la distanza.
+- Accanto al nome del sistema compare l'**icona della bilancia** dove c'è un Interstellar Factors; il tooltip elenca le stazioni, prima quella col pad più grande e poi la più vicina alla stella. Lo stesso ordine vale per Material Trader e Technology Broker, e il tooltip ora dice anche il pad (es. "Shaikh Depot, 5 ls, pad M").
+- Il tool conosce solo i sistemi con Flotta Stellare: accanto ai servizi, un link **cerca su Inara** apre la stessa ricerca su tutta la galassia, partendo dal sistema del box.
+- Nei dettagli del sistema la colonna Servizi mostra anche Interstellar Factors e il pad più grande della stazione.
+- Legenda e Guida spiegano icona e filtro, in italiano, tedesco e inglese.
+
+### Dati
+
+- Lo script segna le stazioni con Interstellar Factors e, per ogni stazione con un servizio, il pad più grande (L, M, S).
+- Il dato di Spansh è stato confrontato con Inara il 13 ottobre 2026 (vedi roadmap): coincide, insediamenti compresi, salvo stazioni con dati di oltre un anno fa. Per questo lo script chiede alla ricerca per stazioni di Spansh quando ogni stazione è stata aggiornata e scarta gli Interstellar Factors fermi da più di un anno. Se quella ricerca non risponde, li tiene tutti. Il 13 ottobre restavano 714 stazioni in 292 sistemi, su 1.222 in 312: le scartate sono soprattutto insediamenti, alcuni fermi dal 2021, e cantieri di costruzione. Con sei mesi ne sarebbero rimaste 506 in 239 sistemi, perché negli insediamenti attraccano in pochi e il dato invecchia anche quando è ancora giusto.
+- Corretto prima della pubblicazione: la ricerca per stazioni di Spansh scrive i servizi come oggetti (`{ name: … }`) e non come testo, a differenza della ricerca per sistemi.
+
+### Test
+
+- Nuovi test per lo script (pad, Interstellar Factors, scarto dei dati vecchi) e per l'app (ordine delle stazioni, scelta dei servizi e del tipo di Material Trader, ordine per distanza e link a Inara). Passano 267 test dell'app e 22 dello script.
+
 ## [1.3.0] - 2026-10-11 — App installabile e consultabile offline
 
 ### PWA

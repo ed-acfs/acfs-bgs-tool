@@ -122,8 +122,14 @@ export class PriorityWatchlistDialogComponent {
     });
   }
 
-  /** "Material Trader: Encoded", or "unknown type" in the current language when Spansh lists the service without its kind. */
+  /**
+   * "Material Trader: Encoded", or "unknown type" in the current language when Spansh lists the
+   * service without its kind; just "Interstellar Factors", which has no kind.
+   */
   protected serviceLabel(service: StationService): string {
+    if (service.kind === 'interstellar-factors') {
+      return 'Interstellar Factors';
+    }
     const name = service.kind === 'material-trader' ? 'Material Trader' : 'Technology Broker';
     return `${name}: ${service.type ?? this.t('service.unknownType')}`;
   }

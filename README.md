@@ -14,7 +14,8 @@ Risponde a una domanda: **dove dobbiamo lavorare oggi?** Mostra in una tabella t
 - architetto e fazione preferita dei sistemi colonizzati, registrabili dal pulsante "Assegna" (con la password degli ufficiali, una volta installato lo script del foglio);
 - distanza da un sistema a scelta: di default Wong Sher, la capitale;
 - all'apertura i sistemi sono ordinati per **priorità**, dalla P1; i sistemi della **Watchlist** stanno sempre in cima, con qualunque ordinamento;
-- stazioni con **Material Trader** o **Technology Broker**, con il loro tipo, e un filtro per trovarle.
+- stazioni con **Material Trader** o **Technology Broker**, con il loro tipo, e un filtro per trovarle;
+- stazioni con **Interstellar Factors**, fra i servizi del filtro "Servizi": i sistemi compaiono dal più vicino a quello del box "Distanza da", con un link alla stessa ricerca su Inara per tutta la galassia.
 
 Il tool è pubblicato su **https://flottastellare.it/acfs-bgs-tool/** e controlla i dati ogni 30 minuti.
 
@@ -30,7 +31,7 @@ I dati vengono da [Spansh](https://spansh.co.uk). Spansh non accetta chiamate di
 
 Spansh non riporta il punteggio dei conflitti (giorni vinti). Per i soli sistemi in cui Flotta Stellare è in guerra o in elezione, lo script lo chiede a [EliteBGS](https://elitebgs.app), che però è spesso irraggiungibile: in quel caso il download prosegue senza punteggio e il riquadro dello stato rimanda a Inara.
 
-Il tipo di Material Trader (Raw, Manufactured, Encoded) e di Technology Broker (Human, Guardian) non c'è nella ricerca per sistemi: lo script lo chiede alla ricerca per stazioni di Spansh, solo per i sistemi che ne hanno uno, come fa la mappa del sito dello squadrone. Se Spansh non conosce ancora il tipo, il tool scrive "tipo non noto".
+Il tipo di Material Trader (Raw, Manufactured, Encoded) e di Technology Broker (Human, Guardian) non c'è nella ricerca per sistemi: lo script lo chiede alla ricerca per stazioni di Spansh, solo per i sistemi che ne hanno uno, come fa la mappa del sito dello squadrone. Se Spansh non conosce ancora il tipo, il tool scrive "tipo non noto". Alla stessa ricerca lo script chiede quando Spansh ha aggiornato ogni stazione con un Interstellar Factors, e scarta quelle ferme da più di un anno: confrontato con Inara, Spansh ne aveva in più solo di stazioni non più viste da oltre un anno.
 
 Spansh si aggiorna con i dati che i giocatori inviano mentre volano, quindi è sempre un po' indietro rispetto al gioco. I sistemi visitati di rado possono mostrare dati vecchi di giorni o settimane. La colonna "Aggiornato" indica l'età di ogni dato. Sotto il titolo, un contatore dice quanti sistemi sono stati aggiornati dopo l'ultimo tick, in totale e fra i P1-P2: dopo il tick sale nel giro di ore.
 

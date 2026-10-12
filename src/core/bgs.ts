@@ -121,13 +121,20 @@ export interface StationRecord {
   name: string;
   type: string | null;
   controlling_minor_faction: string | null;
-  /** Only on stations with a Material Trader or Technology Broker. */
+  /** Only on stations with a Material Trader, Technology Broker or Interstellar Factors. */
   distance_to_arrival?: number | null;
+  /** Largest landing pad (L, M, S), null if unknown; only on stations with a service. Absent in older files. */
+  pad?: LandingPad | null;
   /** The trader's kind (Raw, Manufactured, Encoded), `"unknown"` if Spansh doesn't say; absent if there's none. */
   material_trader?: string | null;
   /** The broker's kind (Human, Guardian), `"unknown"` if Spansh doesn't say; absent if there's none. */
   technology_broker?: string | null;
+  /** True if the station has an Interstellar Factors contact (Spansh's data from the last year); absent if not. */
+  interstellar_factors?: boolean | null;
 }
+
+/** A landing pad size, as the game names them. */
+export type LandingPad = 'L' | 'M' | 'S';
 
 /** The file `scripts/fetch-bgs.mjs` writes: every system the faction is present in. */
 export interface BgsDataset {
@@ -149,13 +156,13 @@ export interface FactionInfluence {
   influencePercent: number;
 }
 
-/** The station services the table points out: where to trade materials or unlock tech. */
-export type StationServiceKind = 'material-trader' | 'technology-broker';
+/** The station services the table points out: where to trade materials, unlock tech or clear fines and bounties. */
+export type StationServiceKind = 'material-trader' | 'technology-broker' | 'interstellar-factors';
 
-/** A Material Trader or Technology Broker at a station. */
+/** A Material Trader, Technology Broker or Interstellar Factors contact at a station. */
 export interface StationService {
   kind: StationServiceKind;
-  /** Raw/Manufactured/Encoded for a trader, Human/Guardian for a broker; null when Spansh doesn't know yet. */
+  /** Raw/Manufactured/Encoded for a trader, Human/Guardian for a broker; null when Spansh doesn't know yet, and always for Interstellar Factors. */
   type: string | null;
 }
 
@@ -164,16 +171,19 @@ export interface StationDetail {
   name: string;
   type: string | null;
   controllingFaction: string | null;
-  /** Its Material Trader and Technology Broker, if any. */
+  /** Its Material Trader, Technology Broker and Interstellar Factors, if any. */
   services?: StationService[];
   /** Light seconds from the arrival star; kept only for stations with a service. */
   distanceToArrival?: number | null;
+  /** Largest landing pad; kept only for stations with a service, null if unknown. */
+  pad?: LandingPad | null;
 }
 
 /** A service together with the station offering it, for the System column's icons and the quick filter. */
 export interface SystemService extends StationService {
   station: string;
   distanceToArrival: number | null;
+  pad: LandingPad | null;
 }
 
 /** Placeholder `scripts/fetch-bgs.mjs` writes for a service whose kind Spansh doesn't know. */
@@ -188,18 +198,35 @@ function stationServices(asset: StationRecord): StationService[] {
   };
   add('material-trader', asset.material_trader);
   add('technology-broker', asset.technology_broker);
+  if (asset.interstellar_factors) {
+    services.push({ kind: 'interstellar-factors', type: null });
+  }
   return services;
 }
 
-/** Every Material Trader and Technology Broker in a system, traders first. */
-export function systemServices(stations: readonly StationDetail[]): SystemService[] {
-  const services = stations.flatMap(station =>
-    (station.services ?? []).map(service => ({ ...service, station: station.name, distanceToArrival: station.distanceToArrival ?? null })),
+const PAD_RANK: Record<LandingPad, number> = { L: 0, M: 1, S: 2 };
+
+/**
+ * Every service in a system, or only those of the given kinds: traders first, then brokers,
+ * then Interstellar Factors. Within a kind the handiest station comes first: largest pad, then
+ * nearest to the arrival star (unknowns last), as a pilot looking for one would pick.
+ */
+export function systemServices(stations: readonly StationDetail[], kinds?: readonly StationServiceKind[]): SystemService[] {
+  const services: SystemService[] = stations.flatMap(station =>
+    (station.services ?? []).map(service => ({
+      ...service,
+      station: station.name,
+      distanceToArrival: station.distanceToArrival ?? null,
+      pad: station.pad ?? null,
+    })),
   );
-  return [
-    ...services.filter(service => service.kind === 'material-trader'),
-    ...services.filter(service => service.kind === 'technology-broker'),
-  ];
+  const handiest = (a: SystemService, b: SystemService) =>
+    (a.pad === null ? 3 : PAD_RANK[a.pad]) - (b.pad === null ? 3 : PAD_RANK[b.pad]) ||
+    (a.distanceToArrival ?? Infinity) - (b.distanceToArrival ?? Infinity);
+  const order: StationServiceKind[] = ['material-trader', 'technology-broker', 'interstellar-factors'];
+  return order
+    .filter(kind => !kinds || kinds.includes(kind))
+    .flatMap(kind => services.filter(service => service.kind === kind).sort(handiest));
 }
 
 /** A minor faction present in a system, with the detail the system dialog's faction table shows. */
@@ -732,6 +759,7 @@ export function toBgsRow(
       if (services.length > 0) {
         station.services = services;
         station.distanceToArrival = asset.distance_to_arrival ?? null;
+        station.pad = asset.pad ?? null;
       }
       return station;
     }),

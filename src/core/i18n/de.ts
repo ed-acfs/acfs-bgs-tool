@@ -39,7 +39,11 @@ export const de: Dictionary = {
   'filter.needsRecon': 'Veraltet',
   'filter.needsReconTitle': 'Nur Systeme mit Daten, die mindestens 2 Tage alt sind',
   'filter.services': 'Dienste',
-  'filter.servicesTitle': 'Nur Systeme mit einem Material Trader oder einem Technology Broker',
+  'filter.servicesTitle': 'Nur Systeme mit den in der Zeile darunter gewählten Diensten (anfangs Material Trader und Technology Broker)',
+  'filter.serviceKindsAria': 'Gesuchte Dienste',
+  'filter.traderKindsAria': 'Gesuchte Material-Trader-Typen',
+  'filter.interstellarFactorsHint': 'Systeme mit Flotta Stellare, das nächste zu {system} zuerst; im Tooltip des Symbols die Station, die günstigste zuerst. In der ganzen Galaxie:',
+  'filter.interstellarFactorsInara': 'auf Inara suchen',
   'filter.architect': 'Architekt',
   'filter.architectAria': 'Nach Architekt filtern',
   'filter.all': 'Alle',
@@ -101,6 +105,7 @@ export const de: Dictionary = {
   'legend.servicesNote': 'Station und Entfernung vom Stern im Tooltip und in den Details des Systems.',
   'legend.traderUnknown': 'Material Trader unbekannten Typs',
   'legend.broker': 'Technology Broker (Human oder Guardian im Tooltip)',
+  'legend.interstellarFactors': 'Interstellar Factors, für Strafen und Kopfgelder (zuerst die Station mit dem größten Landepad, dann die nächste zum Stern)',
   'legend.architect': 'Architekt',
   'legend.editArchitect': 'Zuordnung des Architekten ändern (Formular auf Italienisch)',
   'legend.grey': 'Grau',
@@ -253,7 +258,7 @@ export const de: Dictionary = {
   'help.table1':
     'Ein System pro Zeile: Name (mit den Symbolen der Stationsdienste), Distanz, Stand (Alter der Daten), Fraktionen (Einflussdiagramm), Zustand (Kriege, Wahlen und Retreat von {faction}), Priorität, kontrollierende Fraktion, Einfluss von {faction} (ACFS), Abstand (Vorsprung auf oder Rückstand zur kontrollierenden Fraktion), Architekt und bevorzugte Fraktion.',
   'help.table2':
-    'Beim Öffnen ist die Tabelle nach Priorität sortiert, ab P1; ein Klick auf eine Spaltenüberschrift sortiert anders. Systeme auf der Watchlist bleiben bei jeder Sortierung immer oben. Das Feld „Entfernung von“ sortiert nach Entfernung von einem beliebigen System. Die Schnellfilter zeigen nur Systeme mit Kriegen oder Wahlen, veraltete Systeme oder Systeme mit Material Trader und Technology Broker; die Filter Architekt und Fraktion beschränken die Liste auf Systeme ohne Architekt, mit einem ACFS-Architekten oder einem Architekten nach Wahl, auf die von uns kontrollierten Systeme oder auf Systeme, in denen eine bestimmte Fraktion vertreten ist.',
+    'Beim Öffnen ist die Tabelle nach Priorität sortiert, ab P1; ein Klick auf eine Spaltenüberschrift sortiert anders. Systeme auf der Watchlist bleiben bei jeder Sortierung immer oben. Das Feld „Entfernung von“ sortiert nach Entfernung von einem beliebigen System. Die Schnellfilter zeigen nur Systeme mit Kriegen oder Wahlen, veraltete Systeme oder Systeme mit Material Trader und Technology Broker; die Filter Architekt und Fraktion beschränken die Liste auf Systeme ohne Architekt, mit einem ACFS-Architekten oder einem Architekten nach Wahl, auf die von uns kontrollierten Systeme oder auf Systeme, in denen eine bestimmte Fraktion vertreten ist. Der Filter Dienste öffnet darunter eine Zeile, in der man die gesuchten Dienste wählt, anfangs Material Trader und Technology Broker; ist Material Trader aktiv, erscheint daneben die Wahl des Typs (Raw, Manufactured, Encoded; solche unbekannten Typs bleiben immer). Mit Interstellar Factors werden die Systeme, die einen haben, sortiert nach Entfernung vom System im Feld, ohne die Watchlist oben zu halten: das erste ist das nächste, und der Tooltip seines Symbols nennt die Station (zuerst die mit dem größten Landepad, dann die nächste zum Stern). Das Tool kennt nur Systeme mit Flotta Stellare: für die ganze Galaxie gibt es den Link zu Inara.',
   'help.table3':
     'Der Tooltip der Priorität erklärt den Grund. Ein Klick auf die Symbole im Zustand zeigt Punktestand und Einsatz von Kriegen und Wahlen. Das Symbol ⓘ öffnet die Details des Systems. Die Schaltfläche Legende erklärt Farben und Symbole der Tabelle.',
   'help.watchlistTitle': 'Watchlist',

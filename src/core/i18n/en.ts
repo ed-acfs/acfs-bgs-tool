@@ -36,7 +36,11 @@ export const en: Dictionary = {
   'filter.needsRecon': 'Needs update',
   'filter.needsReconTitle': 'Only systems whose data is at least 2 days old',
   'filter.services': 'Services',
-  'filter.servicesTitle': 'Only systems with a Material Trader or a Technology Broker',
+  'filter.servicesTitle': 'Only systems with the services picked in the row below (Material Trader and Technology Broker at first)',
+  'filter.serviceKindsAria': 'Services to look for',
+  'filter.traderKindsAria': 'Material Trader kinds to look for',
+  'filter.interstellarFactorsHint': 'Systems with Flotta Stellare, nearest to {system} first; the icon tooltip names the station, handiest first. Across the whole galaxy:',
+  'filter.interstellarFactorsInara': 'search on Inara',
   'filter.architect': 'Architect',
   'filter.architectAria': 'Filter by architect',
   'filter.all': 'All',
@@ -98,6 +102,7 @@ export const en: Dictionary = {
   'legend.servicesNote': 'Station and distance from the star in the tooltip and in the system details.',
   'legend.traderUnknown': 'Material Trader of unknown type',
   'legend.broker': 'Technology Broker (Human or Guardian in the tooltip)',
+  'legend.interstellarFactors': 'Interstellar Factors, for fines and bounties (largest landing pad first, then nearest to the star)',
   'legend.architect': 'Architect',
   'legend.editArchitect': 'change the architect assignment (form in Italian)',
   'legend.grey': 'Grey',
@@ -250,7 +255,7 @@ export const en: Dictionary = {
   'help.table1':
     'One system per row: name (with the station service icons), distance, Updated (age of the data), Factions (influence chart), State (wars, elections and {faction} Retreat), Priority, controlling faction, {faction} influence (ACFS), Margin (lead over, or gap to, the controlling faction), Architect and Preferred faction.',
   'help.table2':
-    'The table opens sorted by priority, from P1; click a column header to sort differently. Watchlist systems always stay on top, whatever the sort order. The "Distance from" box sorts by distance from a system of your choice. The quick filters show only systems with wars or elections, systems that need an update or systems with a Material Trader or Technology Broker; the Architect and Faction filters narrow the list to systems without an architect, with an ACFS architect or with an architect of your choice, to the systems we control or to those where a faction of your choice is present.',
+    'The table opens sorted by priority, from P1; click a column header to sort differently. Watchlist systems always stay on top, whatever the sort order. The "Distance from" box sorts by distance from a system of your choice. The quick filters show only systems with wars or elections, systems that need an update or systems with a Material Trader or Technology Broker; the Architect and Faction filters narrow the list to systems without an architect, with an ACFS architect or with an architect of your choice, to the systems we control or to those where a faction of your choice is present. The Services filter opens a row below it to pick the services to look for, Material Trader and Technology Broker at first; with Material Trader on, the trader kind can be picked next to it (Raw, Manufactured, Encoded; traders of unknown kind always stay). Turning on Interstellar Factors sorts the systems that have one by distance from the system in the box, without keeping the Watchlist on top: the first is the nearest, and its icon tooltip says which station to go to (largest landing pad first, then nearest to the star). The tool only knows the systems with Flotta Stellare: to search the whole galaxy there is the link to Inara.',
   'help.table3':
     'The Priority tooltip explains why. Clicking the State icons shows the score and stakes of wars and elections. The ⓘ icon opens the system details. The Legend button explains the colours and icons of the table.',
   'help.watchlistTitle': 'Watchlist',

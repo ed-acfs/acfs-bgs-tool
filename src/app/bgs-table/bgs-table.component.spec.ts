@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { BgsRow } from '../../core/bgs';
-import { FACTION_NAME } from '../../core/config';
+import { FACTION_NAME, HOME_SYSTEM } from '../../core/config';
 import { BgsPage, BgsService } from '../bgs.service';
 import { BgsTableComponent, comparePriorityRows } from './bgs-table.component';
 
@@ -295,7 +295,7 @@ describe('BgsTableComponent', () => {
     };
     await load([row('Plain'), zandu]);
     const host: HTMLElement = fixture.nativeElement;
-    host.querySelector<HTMLButtonElement>('button[title="Solo i sistemi con un Material Trader o un Technology Broker"]')!.click();
+    host.querySelector<HTMLButtonElement>('button[title^="Solo i sistemi con i servizi scelti"]')!.click();
     await fixture.whenStable();
 
     expect(visibleRows().map(r => r.systemName)).toEqual(['Zandu']);
@@ -304,6 +304,73 @@ describe('BgsTableComponent', () => {
       'Material Trader: Encoded\nVaucanson Hub, 282 ls',
       'Technology Broker: tipo non noto\nVaucanson Hub, 282 ls',
     ]);
+  });
+
+  it('narrows the Material Traders to the kinds picked next to the services, keeping those of unknown kind', async () => {
+    const trader = (systemName: string, type: string | null): BgsRow => ({
+      ...row(systemName),
+      stations: [{ name: 'Hub', type: null, controllingFaction: null, services: [{ kind: 'material-trader', type }] }],
+    });
+    await load([trader('Raw One', 'Raw'), trader('Encoded One', 'Encoded'), trader('Unknown One', null), row('Plain')]);
+    const host: HTMLElement = fixture.nativeElement;
+    host.querySelector<HTMLButtonElement>('button[title^="Solo i sistemi con i servizi scelti"]')!.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const kindButton = (label: string) =>
+      [...host.querySelectorAll<HTMLButtonElement>('[aria-label="Tipi di Material Trader da cercare"] button')].find(b => b.textContent!.trim() === label)!;
+    const names = () => visibleRows().map(r => r.systemName).sort();
+
+    expect(names()).toEqual(['Encoded One', 'Raw One', 'Unknown One']);
+    kindButton('Raw').click();
+    kindButton('Manufactured').click();
+    await fixture.whenStable();
+    expect(names()).toEqual(['Encoded One', 'Unknown One']);
+  });
+
+  it('finds the nearest Interstellar Factors, ignoring the Watchlist order, with the handiest station first', async () => {
+    const withFactors = (stations: [string, number, 'L' | 'M'][]) =>
+      stations.map(([name, distanceToArrival, pad]) => ({
+        name,
+        type: null,
+        controllingFaction: null,
+        distanceToArrival,
+        pad,
+        services: [{ kind: 'interstellar-factors' as const, type: null }],
+      }));
+    const home: BgsRow = { ...row(HOME_SYSTEM) };
+    const plain: BgsRow = { ...row('Plain'), x: 1 };
+    const near: BgsRow = { ...row('Near'), x: 10, stations: withFactors([['Small Site', 100, 'M'], ['Big Port', 900, 'L']]) };
+    const far: BgsRow = {
+      ...row('Far'),
+      x: 50,
+      stations: withFactors([['Far Port', 10, 'L']]),
+      watchlist: [{ systemName: 'Far', faction: FACTION_NAME, position: 1, details: '' }],
+    };
+    await load([home, plain, far, near]);
+    const host: HTMLElement = fixture.nativeElement;
+    host.querySelector<HTMLButtonElement>('button[title^="Solo i sistemi con i servizi scelti"]')!.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const kindButton = (label: string) =>
+      [...host.querySelectorAll<HTMLButtonElement>('[aria-label="Servizi da cercare"] button')].find(b => b.textContent!.trim() === label)!;
+    // Traders and brokers at first: no system here has one.
+    expect(visibleRows()).toEqual([]);
+    kindButton('Interstellar Factors').click();
+    kindButton('Material Trader').click();
+    kindButton('Technology Broker').click();
+    // The last service can't be turned off, or the filter would match nothing.
+    kindButton('Interstellar Factors').click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(kindButton('Interstellar Factors').getAttribute('aria-pressed')).toBe('true');
+
+    expect(visibleRows().map(r => r.systemName)).toEqual(['Near', 'Far']);
+    const icons = [...host.querySelectorAll<HTMLButtonElement>('.bgs-service-icon')];
+    expect(icons[0].title).toBe('Interstellar Factors\nBig Port, 900 ls, pad L\nSmall Site, 100 ls, pad M');
+    const inara = host.querySelector<HTMLAnchorElement>('.bgs-services-note a')!;
+    // From the "Distanza da" system: here the first one the service hands over, at the origin like the others.
+    expect(inara.href).toContain('ps1=System+0');
+    expect(inara.href).toContain('pa1%5B%5D=18');
   });
 
   it('flags a gap of 5 points or less from the controlling faction or a neighbour, and an expected Retreat', async () => {
