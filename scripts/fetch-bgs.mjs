@@ -36,7 +36,19 @@ const STATIONS_URL = 'https://spansh.co.uk/api/stations/search';
 /** System names per station search, as the squadron map's `spansh_sync.py` does. */
 const STATIONS_CHUNK = 40;
 /** Station services worth showing in the table, and the dataset field each is kept in. */
-const SERVICE_FIELDS = { 'Material Trader': 'material_trader', 'Technology Broker': 'technology_broker' };
+const SERVICE_FIELDS = {
+  'Material Trader': 'material_trader',
+  'Technology Broker': 'technology_broker',
+  'Interstellar Factors Contact': 'interstellar_factors',
+};
+/** The service with no kind: its field is just `true`. */
+const INTERSTELLAR_FACTORS_FIELD = 'interstellar_factors';
+/**
+ * An Interstellar Factors contact at a station Spansh hasn't heard of for this long is dropped:
+ * compared with Inara (13 Oct 2026) the only extra ones were stations last seen over a year ago.
+ * Six months would have dropped over half of ours, mostly settlements few pilots dock at.
+ */
+const STALE_SERVICE_MS = 365 * 24 * 60 * 60 * 1000;
 /** Placeholder for a service Spansh lists without saying its kind (Raw/Encoded…, Human/Guardian). */
 export const UNKNOWN_SERVICE_TYPE = 'unknown';
 /** Spansh's pseudo-faction for fleet carriers, which aren't stations the BGS cares about. */
@@ -73,8 +85,9 @@ export function slimSystem(system) {
 }
 
 /**
- * One station for the `assets` list. A station with a Material Trader or Technology Broker also
- * keeps its distance from the arrival star and the service, as {@link UNKNOWN_SERVICE_TYPE} until
+ * One station for the `assets` list. A station with a Material Trader, Technology Broker or
+ * Interstellar Factors also keeps its distance from the arrival star, its largest landing pad and
+ * the service: `true` for Interstellar Factors, {@link UNKNOWN_SERVICE_TYPE} for the others until
  * {@link applyServiceTypes} fills in the kind from the station search.
  */
 function slimStation(station) {
@@ -86,14 +99,26 @@ function slimStation(station) {
   const services = Object.entries(SERVICE_FIELDS).filter(([service]) => (station.services ?? []).includes(service));
   if (services.length > 0) {
     asset.distance_to_arrival = typeof station.distance_to_arrival === 'number' ? Math.round(station.distance_to_arrival) : null;
+    asset.pad = largestPad(station);
     for (const [, field] of services) {
-      asset[field] = UNKNOWN_SERVICE_TYPE;
+      asset[field] = field === INTERSTELLAR_FACTORS_FIELD ? true : UNKNOWN_SERVICE_TYPE;
     }
   }
   return asset;
 }
 
-/** The systems with at least one Material Trader or Technology Broker, the only ones worth a station search. */
+/** The largest landing pad a station has (L, M, S), null if Spansh doesn't say. */
+function largestPad(station) {
+  if (station.large_pads > 0 || station.has_large_pad) {
+    return 'L';
+  }
+  if (station.medium_pads > 0) {
+    return 'M';
+  }
+  return station.small_pads > 0 ? 'S' : null;
+}
+
+/** The systems with at least one of the {@link SERVICE_FIELDS}, the only ones worth a station search. */
 export function serviceSystems(systems) {
   const fields = Object.values(SERVICE_FIELDS);
   return systems.filter(system => (system.assets ?? []).some(asset => fields.some(field => asset[field]))).map(system => system.name);
@@ -102,9 +127,11 @@ export function serviceSystems(systems) {
 const stationKey = (systemName, stationName) => `${String(systemName).toLowerCase()} / ${String(stationName).toLowerCase()}`;
 
 /**
- * The kind of each Material Trader and Technology Broker in the given systems, from Spansh's
- * station search, keyed by system and station name. Like the EliteBGS scores, this only adds
- * detail: on an error it returns null and the services stay {@link UNKNOWN_SERVICE_TYPE}.
+ * The kind of each Material Trader and Technology Broker in the given systems, and when Spansh
+ * last updated each station with a service, from Spansh's station search (the system search
+ * has neither), keyed by system and station name. Like the EliteBGS scores, this only adds
+ * detail: on an error it returns null, the services stay {@link UNKNOWN_SERVICE_TYPE} and no
+ * Interstellar Factors contact is dropped as stale.
  */
 export async function fetchServiceTypes(systemNames) {
   const types = new Map();
@@ -121,10 +148,13 @@ export async function fetchServiceTypes(systemNames) {
           body: JSON.stringify({ filters: { system_name: { value: chunk } }, size: 100, page }),
         });
         for (const station of data.results ?? []) {
-          if (station.material_trader || station.technology_broker) {
+          // Unlike the system search's, these services are objects: `{ name: 'Interstellar Factors Contact' }`.
+          const hasFactors = (station.services ?? []).some(service => (service?.name ?? service) === 'Interstellar Factors Contact');
+          if (station.material_trader || station.technology_broker || hasFactors) {
             types.set(stationKey(station.system_name, station.name), {
               material_trader: station.material_trader || null,
               technology_broker: station.technology_broker || null,
+              updated_at: station.updated_at ?? null,
             });
           }
         }
@@ -140,17 +170,29 @@ export async function fetchServiceTypes(systemNames) {
   }
 }
 
-/** Replaces {@link UNKNOWN_SERVICE_TYPE} with the kind the station search found, where it found one. */
-export function applyServiceTypes(systems, types) {
+/**
+ * Replaces {@link UNKNOWN_SERVICE_TYPE} with the kind the station search found, where it found
+ * one, and drops the Interstellar Factors of stations not updated in {@link STALE_SERVICE_MS}.
+ */
+export function applyServiceTypes(systems, types, now = Date.now()) {
   if (!types) {
     return;
   }
+  const fields = Object.values(SERVICE_FIELDS);
   for (const system of systems) {
     for (const asset of system.assets ?? []) {
       const found = types.get(stationKey(system.name, asset.name));
-      for (const field of Object.values(SERVICE_FIELDS)) {
+      for (const field of fields) {
         if (asset[field] && found?.[field]) {
           asset[field] = found[field];
+        }
+      }
+      const updatedAt = Date.parse(found?.updated_at ?? '');
+      if (asset[INTERSTELLAR_FACTORS_FIELD] && now - updatedAt > STALE_SERVICE_MS) {
+        delete asset[INTERSTELLAR_FACTORS_FIELD];
+        if (!fields.some(field => asset[field])) {
+          delete asset.distance_to_arrival;
+          delete asset.pad;
         }
       }
     }

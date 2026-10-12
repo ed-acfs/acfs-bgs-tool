@@ -137,7 +137,7 @@ test('marks Material Traders and Technology Brokers as unknown kinds, with the d
   });
 
   assert.deepEqual(slim.assets, [
-    { name: 'Vaucanson Hub', type: 'Coriolis Starport', controlling_minor_faction: 'Flotta Stellare', distance_to_arrival: 282, material_trader: 'unknown', technology_broker: 'unknown' },
+    { name: 'Vaucanson Hub', type: 'Coriolis Starport', controlling_minor_faction: 'Flotta Stellare', distance_to_arrival: 282, pad: null, material_trader: 'unknown', technology_broker: 'unknown' },
     { name: 'Plain Port', type: 'Outpost', controlling_minor_faction: 'Other' },
   ]);
   assert.deepEqual(serviceSystems([slim, slimSystem(system)]), ['Zandu']);
@@ -162,6 +162,63 @@ test('reads trader and broker kinds from the station search, forty systems at a 
   const systems = [{ name: 'System 40', assets: [{ name: 'Hub', material_trader: 'unknown' }, { name: 'Other', technology_broker: 'unknown' }] }];
   applyServiceTypes(systems, types);
   assert.deepEqual(systems[0].assets, [{ name: 'Hub', material_trader: 'Encoded' }, { name: 'Other', technology_broker: 'unknown' }]);
+});
+
+test('marks Interstellar Factors with the largest landing pad', () => {
+  const slim = slimSystem({
+    name: 'Lyncis Sector LD-S b4-0',
+    stations: [
+      { name: 'The Rivahrock', type: 'Asteroid base', distance_to_arrival: 913.2, has_large_pad: true, large_pads: 6, medium_pads: 8, small_pads: 4, services: ['Interstellar Factors Contact'] },
+      { name: "Constancia's Watch", type: 'Settlement', distance_to_arrival: 3207, has_large_pad: false, large_pads: 0, medium_pads: 1, services: ['Interstellar Factors Contact'] },
+    ],
+  });
+
+  assert.deepEqual(
+    slim.assets.map(({ name, pad, interstellar_factors }) => ({ name, pad, interstellar_factors })),
+    [
+      { name: 'The Rivahrock', pad: 'L', interstellar_factors: true },
+      { name: "Constancia's Watch", pad: 'M', interstellar_factors: true },
+    ],
+  );
+  assert.deepEqual(serviceSystems([slim]), ['Lyncis Sector LD-S b4-0']);
+});
+
+test('drops the Interstellar Factors of stations Spansh has not updated in a year', async t => {
+  t.mock.method(globalThis, 'fetch', async () =>
+    new Response(JSON.stringify({
+      count: 4,
+      results: [
+        { system_name: 'Lyncis Sector LD-S b4-0', name: "Constancia's Watch", updated_at: '2026-01-19T10:00:00Z', services: [{ name: 'Interstellar Factors Contact' }] },
+        { system_name: 'Lyncis Sector LD-S b4-0', name: 'Guin Works', updated_at: '2026-10-09T10:00:00Z', services: [{ name: 'Dock' }, { name: 'Interstellar Factors Contact' }] },
+        { system_name: 'Lyncis Sector LD-S b4-0', name: 'System Colonisation Ship', updated_at: '2025-03-12T10:00:00Z', services: [{ name: 'Interstellar Factors Contact' }] },
+        { system_name: 'Lyncis Sector LD-S b4-0', name: 'Old Hub', updated_at: '2025-03-12T10:00:00Z', material_trader: 'Raw', services: [{ name: 'Material Trader' }, { name: 'Interstellar Factors Contact' }] },
+      ],
+    })),
+  );
+  const types = await fetchServiceTypes(['Lyncis Sector LD-S b4-0']);
+  const service = { distance_to_arrival: 100, pad: 'L', interstellar_factors: true };
+  const systems = [{
+    name: 'Lyncis Sector LD-S b4-0',
+    assets: [
+      { name: "Constancia's Watch", ...service },
+      { name: 'Guin Works', ...service },
+      { name: 'System Colonisation Ship', ...service },
+      { name: 'Old Hub', ...service, material_trader: 'unknown' },
+      { name: 'Not In Search', ...service },
+    ],
+  }];
+
+  applyServiceTypes(systems, types, Date.parse('2026-10-13T00:00:00Z'));
+
+  assert.deepEqual(systems[0].assets, [
+    // Nine months old: kept.
+    { name: "Constancia's Watch", ...service },
+    { name: 'Guin Works', ...service },
+    { name: 'System Colonisation Ship' },
+    { name: 'Old Hub', distance_to_arrival: 100, pad: 'L', material_trader: 'Raw' },
+    // Unknown age: kept.
+    { name: 'Not In Search', ...service },
+  ]);
 });
 
 test('keeps the services as unknown kinds when the station search fails', async t => {

@@ -27,6 +27,7 @@ import {
   faGem,
   faMagnifyingGlass,
   faMicrochip,
+  faScaleBalanced,
   faWrench,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
@@ -242,6 +243,7 @@ export class BgsTableComponent implements OnDestroy {
   protected readonly faGear = faGear;
   protected readonly faMicrochip = faMicrochip;
   protected readonly faWrench = faWrench;
+  protected readonly faScaleBalanced = faScaleBalanced;
   protected readonly faCircleQuestion = faCircleQuestion;
   protected readonly faListUl = faListUl;
   /** The release, from package.json, next to the title: the published site says which version it runs. */
@@ -350,8 +352,16 @@ export class BgsTableComponent implements OnDestroy {
   protected readonly warElectionOnly = signal(false);
   /** FR-5: "needs recon" pairs naturally with the Distance sort — stale systems near me. */
   protected readonly needsReconOnly = signal(false);
-  /** Only systems with a Material Trader or Technology Broker. */
+  /** Only systems with one of the {@link serviceKinds}. */
   protected readonly servicesOnly = signal(false);
+  /** The services the "Servizi" filter looks for, picked in the row under it: traders and brokers until changed. */
+  protected readonly serviceKinds = signal<ReadonlySet<StationServiceKind>>(new Set(DEFAULT_SERVICE_KINDS));
+  protected readonly serviceKindOptions = SERVICE_KIND_OPTIONS;
+  /** The Material Trader kinds the filter looks for, picked next to the services: all of them until changed. */
+  protected readonly traderKinds = signal<ReadonlySet<string>>(new Set(TRADER_KINDS));
+  protected readonly traderKindOptions = TRADER_KINDS.map(kind => ({ kind, icon: TRADER_ICONS[kind] }));
+  /** Looking for Interstellar Factors (where to clear fines and bounties): nearest first, with a link to Inara. */
+  protected readonly interstellarFactorsOnly = computed(() => this.servicesOnly() && this.serviceKinds().has('interstellar-factors'));
   protected readonly architectFilterMode = signal<ArchitectFilterMode>('all');
   /** Lower-cased names of the architects the registry records as squadron members, for the "ACFS" filter. */
   private readonly squadronArchitects = signal<ReadonlySet<string>>(new Set());
@@ -420,7 +430,11 @@ export class BgsTableComponent implements OnDestroy {
       rows = rows.filter(row => this.priorityFor(row).needsRecon);
     }
     if (this.servicesOnly()) {
-      rows = rows.filter(row => systemServices(row.stations).length > 0);
+      const kinds = [...this.serviceKinds()];
+      const traderKinds = this.traderKinds();
+      // A trader of unknown kind could be any of them: it stays in.
+      const wanted = (service: SystemService) => service.kind !== 'material-trader' || service.type === null || traderKinds.has(service.type);
+      rows = rows.filter(row => systemServices(row.stations, kinds).some(wanted));
     }
     switch (this.architectFilterMode()) {
       case 'none':
@@ -455,10 +469,17 @@ export class BgsTableComponent implements OnDestroy {
     return rows;
   });
 
-  /** {@link filteredDataset} in the current order, with the Priority Watchlist systems always on top (sorted among themselves the same way). */
+  /**
+   * {@link filteredDataset} in the current order, with the Priority Watchlist systems always on
+   * top (sorted among themselves the same way) — except when looking for the nearest
+   * Interstellar Factors, where only the distance matters.
+   */
   private readonly sortedRows = computed<BgsRow[] | null>(() => {
     const sorted = this.sortRows();
-    return sorted ? watchlistFirst(sorted) : null;
+    if (!sorted) {
+      return null;
+    }
+    return this.interstellarFactorsOnly() && this.mode() === 'distance' ? sorted : watchlistFirst(sorted);
   });
 
   private sortRows(): BgsRow[] | null {
@@ -723,6 +744,8 @@ export class BgsTableComponent implements OnDestroy {
     this.warElectionOnly.set(false);
     this.needsReconOnly.set(false);
     this.servicesOnly.set(false);
+    this.serviceKinds.set(new Set(DEFAULT_SERVICE_KINDS));
+    this.traderKinds.set(new Set(TRADER_KINDS));
     this.setArchitectFilterMode('all');
     this.architectFilterControl.setValue(readYourName());
     this.architectFilterControl.markAsPristine();
@@ -758,9 +781,53 @@ export class BgsTableComponent implements OnDestroy {
   }
 
   /**
+   * Adds or removes a service from the "Servizi" filter; the last one stays, or the filter
+   * would match nothing. Turning on Interstellar Factors also sorts by distance from the
+   * "Distanza da" system: the nearest one is what a pilot looking for one wants.
+   */
+  protected toggleServiceKind(kind: StationServiceKind): void {
+    const kinds = new Set(this.serviceKinds());
+    if (kinds.has(kind)) {
+      if (kinds.size === 1) {
+        return;
+      }
+      kinds.delete(kind);
+    } else {
+      kinds.add(kind);
+    }
+    this.serviceKinds.set(kinds);
+    this.pageIndex.set(0);
+    if (kind === 'interstellar-factors' && kinds.has(kind)) {
+      this.sortByDistance();
+    }
+  }
+
+  /** Adds or removes a Material Trader kind from the filter; as with the services, the last one stays. */
+  protected toggleTraderKind(kind: string): void {
+    const kinds = new Set(this.traderKinds());
+    if (kinds.has(kind)) {
+      if (kinds.size === 1) {
+        return;
+      }
+      kinds.delete(kind);
+    } else {
+      kinds.add(kind);
+    }
+    this.traderKinds.set(kinds);
+    this.pageIndex.set(0);
+  }
+
+  /** Inara's nearest-station search for Interstellar Factors around the "Distanza da" system, for when ours are all far away. */
+  protected readonly interstellarFactorsInaraUrl = computed(() => {
+    const system = this.anchorName() ?? HOME_SYSTEM;
+    return `https://inara.cz/elite/nearest-stations/?formbrief=1&ps1=${encodeURIComponent(system).replace(/%20/g, '+')}&pa1%5B%5D=18`;
+  });
+
+  /**
    * One icon per service and kind in the system — each Material Trader kind its own (gem for
    * Raw, gear for Manufactured, chip for Encoded, flask when Spansh doesn't know), a wrench for
-   * Technology Brokers — with every station offering it in the tooltip.
+   * Technology Brokers, scales for Interstellar Factors — with every station offering it in the
+   * tooltip, handiest first.
    */
   protected serviceIcons(row: BgsRow): ServiceIcon[] {
     const groups = new Map<string, SystemService[]>();
@@ -770,11 +837,11 @@ export class BgsTableComponent implements OnDestroy {
     }
     return [...groups].map(([key, services]) => {
       const { kind, type } = services[0];
-      const label = `${SERVICE_LABELS[kind]}: ${type ?? this.t('service.unknownType')}`;
+      const label = kind === 'interstellar-factors' ? SERVICE_LABELS[kind] : `${SERVICE_LABELS[kind]}: ${type ?? this.t('service.unknownType')}`;
       return {
         key,
         kind,
-        icon: kind === 'material-trader' ? (TRADER_ICONS[type ?? ''] ?? faFlask) : faWrench,
+        icon: SERVICE_ICONS[kind] ?? TRADER_ICONS[type ?? ''] ?? faFlask,
         title: [label, ...services.map(service => describeStation(service, this.i18n.integer))].join('\n'),
         ariaLabel: this.t('service.at', { service: label, system: row.systemName }),
       };
@@ -1394,6 +1461,23 @@ interface ServiceIcon {
 const SERVICE_LABELS: Record<StationServiceKind, string> = {
   'material-trader': 'Material Trader',
   'technology-broker': 'Technology Broker',
+  'interstellar-factors': 'Interstellar Factors',
+};
+
+/** The services the "Servizi" filter starts with: Interstellar Factors are in 4 systems out of 5, so they'd make it pointless. */
+const DEFAULT_SERVICE_KINDS: readonly StationServiceKind[] = ['material-trader', 'technology-broker'];
+
+/** The choices in the row under "Servizi", with their names as the game shows them. */
+const SERVICE_KIND_OPTIONS: readonly { kind: StationServiceKind; label: string }[] = [
+  { kind: 'material-trader', label: 'Material Trader' },
+  { kind: 'technology-broker', label: 'Technology Broker' },
+  { kind: 'interstellar-factors', label: 'Interstellar Factors' },
+];
+
+/** Icons of the services with one icon whatever their kind; Material Traders use {@link TRADER_ICONS}. */
+const SERVICE_ICONS: Partial<Record<StationServiceKind, IconDefinition>> = {
+  'technology-broker': faWrench,
+  'interstellar-factors': faScaleBalanced,
 };
 
 /** Material Trader icons by kind; a trader of unknown kind gets the flask. */
@@ -1403,8 +1487,12 @@ const TRADER_ICONS: Record<string, IconDefinition> = {
   Encoded: faMicrochip,
 };
 
-/** "Vaucanson Hub, 282 ls" for a service's tooltip line, with the distance in the language's style. */
+/** The Material Trader kinds, as the game names them. */
+const TRADER_KINDS: readonly string[] = ['Raw', 'Manufactured', 'Encoded'];
+
+/** "Vaucanson Hub, 282 ls, pad L" for a service's tooltip line, with the distance in the language's style. */
 function describeStation(service: SystemService, formatInteger: (value: number) => string): string {
   const distance = service.distanceToArrival === null ? '' : `, ${formatInteger(service.distanceToArrival)} ls`;
-  return `${service.station}${distance}`;
+  const pad = service.pad === null ? '' : `, pad ${service.pad}`;
+  return `${service.station}${distance}${pad}`;
 }

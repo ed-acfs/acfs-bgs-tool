@@ -335,8 +335,37 @@ describe('BgsService state summarisation (retreat, FR-1/FR-2)', () => {
       { kind: 'technology-broker', type: null },
     ]);
     expect(systemServices(zandu.stations)).toEqual([
-      { kind: 'material-trader', type: 'Encoded', station: 'Vaucanson Hub', distanceToArrival: 282 },
-      { kind: 'technology-broker', type: null, station: 'Vaucanson Hub', distanceToArrival: 282 },
+      { kind: 'material-trader', type: 'Encoded', station: 'Vaucanson Hub', distanceToArrival: 282, pad: null },
+      { kind: 'technology-broker', type: null, station: 'Vaucanson Hub', distanceToArrival: 282, pad: null },
+    ]);
+  });
+
+  it('reads Interstellar Factors, handiest station first: largest pad, then nearest to the star', async () => {
+    records = [
+      systemWithPresences('Lyncis Sector LD-S b4-0', [], {
+        assets: [
+          { name: "Constancia's Watch", type: 'Settlement', controlling_minor_faction: 'Other', distance_to_arrival: 3207, pad: 'M', interstellar_factors: true },
+          { name: 'Philip Platform', type: 'Planetary Outpost', controlling_minor_faction: 'Canonn', distance_to_arrival: 896, pad: 'L', interstellar_factors: true },
+          { name: 'The Rivahrock', type: 'Asteroid base', controlling_minor_faction: 'Other', distance_to_arrival: 913, pad: 'L', interstellar_factors: true },
+          { name: 'Hub', type: 'Outpost', controlling_minor_faction: 'Other', distance_to_arrival: 50, pad: 'M', material_trader: 'Raw' },
+        ],
+      }),
+    ];
+
+    const [system] = (await service.getPage(0)).rows;
+
+    expect(system.stations[0].services).toEqual([{ kind: 'interstellar-factors', type: null }]);
+    expect(system.stations[0].pad).toBe('M');
+    expect(systemServices(system.stations, ['interstellar-factors']).map(s => s.station)).toEqual([
+      'Philip Platform',
+      'The Rivahrock',
+      "Constancia's Watch",
+    ]);
+    expect(systemServices(system.stations).map(s => s.kind)).toEqual([
+      'material-trader',
+      'interstellar-factors',
+      'interstellar-factors',
+      'interstellar-factors',
     ]);
   });
 });
