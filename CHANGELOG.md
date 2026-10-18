@@ -15,7 +15,7 @@ Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitt
 
 ### Nota in fondo alla pagina
 
-- In fondo a ogni pagina una breve nota, sul modello di Inara: il tool è uno strumento non ufficiale dello squadrone, non affiliato a Frontier Developments, con dati da fonti pubbliche e dai piloti che possono essere in ritardo o non esatti (in italiano, tedesco e inglese); sotto, la nota sui marchi di Frontier, in inglese come testo legale. Nell'app installata (PWA) non compare.
+- In fondo a ogni pagina una breve nota, sul modello di Inara: il tool è uno strumento non ufficiale dello squadrone per Elite Dangerous, non affiliato a Frontier Developments (i due nomi portano ai siti ufficiali), con dati da fonti pubbliche e dai piloti che possono essere in ritardo o non esatti (in italiano, tedesco e inglese); sotto, la nota sui marchi di Frontier, in inglese come testo legale. Nell'app installata (PWA) non compare.
 
 ### Accedi con Discord
 

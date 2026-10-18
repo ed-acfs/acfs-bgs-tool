@@ -1,7 +1,15 @@
 <div class="app-background">
   <router-outlet></router-outlet>
   <footer class="app-footer">
-    <p>{{ i18n.t('footer.disclaimer') }}</p>
+    <p>
+      @for (part of disclaimer(); track $index) {
+        @if (part.href) {
+          <a [href]="part.href" target="_blank" rel="noopener">{{ part.text }}</a>
+        } @else {
+          {{ part.text }}
+        }
+      }
+    </p>
     <!-- Nota sui marchi di Frontier: testo legale, in inglese in tutte le lingue (come su Inara). -->
     <p lang="en">
       Elite © 1984 David Braben &amp; Ian Bell. Frontier © 1993 David Braben, Frontier: First Encounters © 1995 David
