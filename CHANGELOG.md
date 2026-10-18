@@ -2,9 +2,9 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
-## [1.5.3] - 2026-10-18 — Punteggio, stati e influenze dal server dello Squadrone; lavoro dello Squadrone; accesso con Discord e chiavi BGS-Tally
+## [1.5.4] - 2026-10-18 — Punteggio, stati e influenze dal server dello Squadrone; lavoro dello Squadrone; accesso con Discord e chiavi BGS-Tally
 
-Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon), la 1.5.0 (stati e influenze dal server, conflitti appena conclusi) la 1.5.1 (pagina del lavoro dello Squadrone, in beta), la 1.5.2 (accesso con Discord) e la 1.5.3 (chiave BGS-Tally per ogni pilota). La pagina è una funzione nuova, ma per scelta dell'utente la versione resta bassa.
+Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon), la 1.5.0 (stati e influenze dal server, conflitti appena conclusi) la 1.5.1 (pagina del lavoro dello Squadrone, in beta), la 1.5.2 (accesso con Discord), la 1.5.3 (chiave BGS-Tally per ogni pilota) e la 1.5.4 (nome Discord nelle Chiavi dei piloti). La pagina è una funzione nuova, ma per scelta dell'utente la versione resta bassa.
 
 ### Ordini e "Assegna" secondo il ruolo Discord
 
