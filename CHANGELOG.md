@@ -2,9 +2,16 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
-## [1.4.1] - 2026-10-18 — Punteggio dei conflitti dal server dello squadrone
+## [1.5.0] - 2026-10-18 — Punteggio, stati e influenze dal server dello squadrone
 
-Pubblicata in due passi: la 1.4.0 (punteggio dei conflitti) e poi la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon).
+Pubblicata in tre passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon) e la 1.5.0 (stati e influenze dal server, conflitti appena conclusi).
+
+### Stati e influenze dal server
+
+- Il tool legge dal server dello squadrone, oltre ai punteggi, **fazioni, influenze, stati e fazione di controllo** (`/v1/systems`, una sola richiesta al posto di `/v1/conflicts`). Per ogni sistema, se il server l'ha visto **dopo** Spansh, valgono i suoi dati; stazioni, popolazione e servizi restano sempre quelli di Spansh. Così la tabella si aggiorna pochi secondi dopo il passaggio di un giocatore con EDMC o EDDiscovery, invece di aspettare Spansh e il ciclo di 30 minuti, e il contatore dei sistemi aggiornati dopo il tick ne tiene conto.
+- Nella colonna **Aggiornato** il tooltip dice quando il dato viene dal server ("Dato dal server ACFS (EDDN), più recente di Spansh"); nel riquadro dello stato la riga in fondo diventa "Dato dal server ACFS (EDDN): …".
+- **Conflitti appena conclusi**: una guerra o un'elezione di Flotta Stellare che la fonte del punteggio vede già finita, mentre gli stati non ne mostrano più una dello stesso tipo, compare nella colonna Stato con una **bandierina a scacchi 🏁** (tooltip: "Conflitto concluso (Election): Total Victory 4-0"). Il riquadro la segna come "concluso" e mostra la scheda con il punteggio finale. Non conta per la priorità né per l'avviso sulle fazioni vicine, perché il conflitto è finito. Prima un caso come Crowfor (elezione vinta 4-0 il 18 ottobre) spariva dalla colonna appena Spansh smetteva di segnarla.
+- La Legenda spiega la bandierina; testi nuovi in italiano, tedesco e inglese.
 
 ### Priorità
 
@@ -31,7 +38,7 @@ Pubblicata in due passi: la 1.4.0 (punteggio dei conflitti) e poi la 1.4.1 (dife
 
 ### Test
 
-- Nuovi test per la lettura dal server (più recente fra le due fonti, server che non risponde), per le etichette dell'esito, per la scheda e per la difesa nei sistemi con architetto senza preferenza. Passano 277 test dell'app.
+- Nuovi test per la lettura dal server (più recente fra le due fonti, server che non risponde), per le etichette dell'esito, per la scheda, per la difesa nei sistemi con architetto senza preferenza e per gli stati dal server (dati più recenti di Spansh, conflitto concluso con la bandierina). Passano 279 test dell'app. Verificato con Edge headless sui dati veri: Crowfor mostra la bandierina.
 
 ## [1.3.1] - 2026-10-13 — Interstellar Factors
 

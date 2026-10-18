@@ -91,11 +91,19 @@ export interface BgsSystemRecord {
   assets?: StationRecord[] | null;
   /** Conflict scores from EliteBGS, only for systems with an active war or election of ours and only when EliteBGS answered. */
   ebgs_conflicts?: EbgsConflicts | null;
+  /**
+   * Where the factions, states and influence come from: Spansh (the dataset, the default) or the
+   * squadron server, when it saw the system after Spansh did (see `server-data.ts`).
+   */
+  data_source?: DataSource;
 }
+
+/** 'spansh': the dataset; 'server': the squadron's own server (EDDN), read live by the app. */
+export type DataSource = 'spansh' | 'server';
 
 /**
  * A system's conflicts with their scores: EliteBGS's view, as `scripts/fetch-bgs.mjs` slims it,
- * or the squadron server's (`acfs-server`, from EDDN), converted by `server-conflicts.ts`.
+ * or the squadron server's (`acfs-server`, from EDDN), converted by `server-data.ts`.
  */
 export interface EbgsConflicts {
   /** ISO 8601 time the source last saw the system. */
@@ -304,7 +312,11 @@ export interface StateEntry {
   kind: 'war' | 'election' | 'retreat';
   /** The state's name as the game spells it: "War", "CivilWar", "Election", "Retreat". */
   state: string;
-  status: 'active' | 'pending';
+  /**
+   * 'ended': a war or election of ours the score's source already sees over (final score), while
+   * no active state of the same kind is left: shown with its final score, never a priority.
+   */
+  status: 'active' | 'pending' | 'ended';
   /** The factions sharing the state, the squadron's first. */
   factions: string[];
   /** Days won so far, from the squadron server or EliteBGS; null when neither has a score for this conflict (or for a retreat, which has none). */
@@ -388,6 +400,8 @@ export interface BgsRow {
   z: number;
   /** Raw `updated_at` from the API, as-is; the Freshness column derives its pill from this. */
   updatedAt: string | null;
+  /** Where factions, states and {@link updatedAt} come from: Spansh, or the squadron server when it's fresher. */
+  dataSource: DataSource;
   /** Priority Watchlist entries naming this system, if any — see {@link PriorityWatchlistEntry}. */
   watchlist: PriorityWatchlistEntry[];
 }
@@ -703,7 +717,7 @@ export function conflictScore(
   ebgs: EbgsConflicts | null | undefined,
   entry: Pick<StateEntry, 'state' | 'status'>,
 ): ConflictScore | null {
-  if (!ebgs || entry.status !== 'active') {
+  if (!ebgs || entry.status === 'pending') {
     return null;
   }
   const type = normalizeStateName(entry.state);
@@ -815,6 +829,7 @@ export function toBgsRow(
       ...retreat.entries.map(entry => ({ ...entry, kind: 'retreat' as const, score: null })),
       ...war.entries.map(entry => ({ ...entry, kind: 'war' as const, score: conflictScore(record.ebgs_conflicts, entry) })),
       ...election.entries.map(entry => ({ ...entry, kind: 'election' as const, score: conflictScore(record.ebgs_conflicts, entry) })),
+      ...endedConflictEntries(record.ebgs_conflicts, [...war.entries, ...election.entries]),
     ],
     expansionState: expansion.status,
     bodyCount: record.body_count ?? null,
@@ -823,8 +838,42 @@ export function toBgsRow(
     y: record.y,
     z: record.z,
     updatedAt: record.updated_at ?? null,
+    dataSource: record.data_source ?? 'spansh',
     watchlist: watchlist.get(record.name) ?? [],
   };
+}
+
+/** The game's state name for a conflict type as the score sources spell it ("civilwar" → "CivilWar"). */
+const CONFLICT_STATE_NAMES: Record<string, string> = { war: 'War', civilwar: 'CivilWar', election: 'Election' };
+
+/**
+ * Conflicts of ours the score's source sees already over, as State entries with their final
+ * score — unless the states still show one of the same kind (then that entry already carries
+ * the score). They tell the squadron how a war or election just went, before Spansh catches up.
+ */
+function endedConflictEntries(
+  ebgs: EbgsConflicts | null | undefined,
+  current: readonly Pick<StateEntry, 'state'>[],
+): StateEntry[] {
+  const own = FACTION_NAME.toLowerCase();
+  const currentStates = new Set(current.map(entry => normalizeStateName(entry.state)));
+  const entries: StateEntry[] = [];
+  for (const conflict of ebgs?.conflicts ?? []) {
+    const state = CONFLICT_STATE_NAMES[normalizeStateName(conflict.type ?? '')];
+    const involvesUs = [conflict.faction1.name, conflict.faction2.name].some(name => name?.toLowerCase() === own);
+    if (conflict.status !== 'ended' || !state || !involvesUs || currentStates.has(normalizeStateName(state))) {
+      continue;
+    }
+    const entry = { state, status: 'ended' as const };
+    const score = conflictScore(ebgs, entry);
+    entries.push({
+      ...entry,
+      kind: state === 'Election' ? 'election' : 'war',
+      factions: score ? [FACTION_NAME, score.opponent] : [FACTION_NAME],
+      score,
+    });
+  }
+  return entries;
 }
 
 function influencePercent(presences: readonly MinorFactionPresence[], factionName: string): number | null {

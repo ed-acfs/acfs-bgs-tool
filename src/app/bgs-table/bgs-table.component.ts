@@ -33,6 +33,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {
   BgsRow,
+  conflictOutcome,
   StateEntry,
   StationServiceKind,
   SystemService,
@@ -1090,6 +1091,25 @@ export class BgsTableComponent implements OnDestroy {
     const name = entry.state.replace(/([a-z])([A-Z])/g, '$1 $2');
     const icon = entry.kind === 'war' ? '⚔️' : entry.kind === 'election' ? '🗳️' : null;
     return icon ? `${icon} ${name}` : name;
+  }
+
+  /** Conflicts of ours that just ended, shown with a chequered flag after the live states' icons. */
+  protected endedEntries(row: BgsRow): StateEntry[] {
+    return row.stateEntries.filter(entry => entry.status === 'ended');
+  }
+
+  /** Hover text of an ended conflict's flag: "Conflitto concluso (War): Victory 4-0". */
+  protected endedEntryTitle(entry: StateEntry): string {
+    const state = entry.state.replace(/([a-z])([A-Z])/g, '$1 $2');
+    const score = entry.score;
+    return score
+      ? this.t('state.endedTitle', { state, outcome: conflictOutcome(score.ours, score.theirs), score: `${score.ours}-${score.theirs}` })
+      : this.t('state.endedTitleNoScore', { state });
+  }
+
+  /** The Freshness pill's hover text, naming the squadron server when the row's data comes from it. */
+  protected freshnessTitle(row: BgsRow, freshness: FreshnessInfo): string {
+    return row.dataSource === 'server' ? `${freshness.title}\n${this.t('fresh.fromServer')}` : freshness.title;
   }
 
   /** When the score's source last saw the system, in the same words as the Spansh data's age. */

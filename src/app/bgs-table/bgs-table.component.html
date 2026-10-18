@@ -311,6 +311,7 @@
           <li><span class="bgs-legend-key"><span class="bgs-state-icon bgs-state-icon--election" aria-hidden="true">🗳️</span></span><span>{{ t('legend.election', { faction: factionName }) }}</span></li>
           <li><span class="bgs-legend-key"><span class="bgs-state-icon bgs-state-icon--retreat" aria-hidden="true"><img class="bgs-state-img" [src]="retreatIcon" alt="" /></span></span><span>{{ t('legend.retreat', { faction: factionName }) }}</span></li>
           <li><span class="bgs-legend-key"><span class="bgs-state-icon bgs-state-icon--pending" aria-hidden="true">⚔️</span></span><span>{{ t('legend.pending') }}</span></li>
+          <li><span class="bgs-legend-key"><span class="bgs-state-icon" aria-hidden="true">🏁</span></span><span>{{ t('legend.ended', { faction: factionName }) }}</span></li>
           <li><span class="bgs-legend-key"><span class="bgs-state-icon bgs-state-icon--retreat bgs-state-icon--expected" aria-hidden="true"><img class="bgs-state-img" [src]="retreatIcon" alt="" /></span></span><span>{{ t('legend.retreatExpected', { threshold: i18n.percent(retreatInfluencePercent) }) }}</span></li>
         </ul>
       </div>
@@ -636,7 +637,7 @@
                   <span
                     class="bgs-freshness-pill"
                     [class]="'bgs-freshness-pill--' + freshness.band"
-                    [title]="freshness.title"
+                    [title]="freshnessTitle(row, freshness)"
                     [attr.aria-label]="freshness.accessibleName"
                   >
                     <span class="bgs-freshness-dot" aria-hidden="true"></span>
@@ -691,6 +692,9 @@
                           [title]="row.electionDetails"
                           aria-hidden="true"
                         >🗳️</span>
+                      }
+                      @for (entry of endedEntries(row); track $index) {
+                        <span class="bgs-state-icon" [title]="endedEntryTitle(entry)" aria-hidden="true">🏁</span>
                       }
                     </button>
                   }
@@ -782,8 +786,12 @@
                   <img class="bgs-state-img" [src]="retreatIcon" alt="" />
                 }
                 {{ stateEntryTitle(entry) }}
-                <span class="bgs-state-entry-status" [class.bgs-state-entry-status--pending]="entry.status === 'pending'">
-                  {{ entry.status === 'pending' ? t('state.pending') : t('state.active') }}
+                <span
+                  class="bgs-state-entry-status"
+                  [class.bgs-state-entry-status--pending]="entry.status === 'pending'"
+                  [class.bgs-state-entry-status--ended]="entry.status === 'ended'"
+                >
+                  {{ t(entry.status === 'pending' ? 'state.pending' : entry.status === 'ended' ? 'state.ended' : 'state.active') }}
                 </span>
               </p>
               <ul class="bgs-state-factions">
@@ -819,7 +827,7 @@
               }
             </section>
           }
-          <p class="bgs-state-panel-age">{{ t('state.spanshAge', { age: freshnessFor(row).title }) }}</p>
+          <p class="bgs-state-panel-age">{{ t(row.dataSource === 'server' ? 'state.serverAge' : 'state.spanshAge', { age: freshnessFor(row).title }) }}</p>
         </div>
       </ng-template>
     </mat-menu>

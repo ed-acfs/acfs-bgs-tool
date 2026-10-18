@@ -36,6 +36,7 @@ function row(systemName: string): BgsRow {
     y: 0,
     z: 0,
     updatedAt: null,
+    dataSource: 'spansh',
     watchlist: [],
   };
 }
@@ -239,6 +240,35 @@ describe('BgsTableComponent', () => {
     header.click();
     await fixture.whenStable();
     expect(visibleRows().map(r => r.systemName)).toEqual(['Wong Sher', 'Crowfor', 'Sol', 'Achenar']);
+  });
+
+  it('marks a conflict of ours that just ended with a flag, and shows its final score in the panel', async () => {
+    const crowfor: BgsRow = {
+      ...row('Crowfor'),
+      dataSource: 'server',
+      stateEntries: [
+        {
+          kind: 'election',
+          state: 'Election',
+          status: 'ended',
+          factions: ['Flotta Stellare', 'LP 254-27 Free'],
+          score: { ours: 4, theirs: 0, opponent: 'LP 254-27 Free', ourStake: 'Apgar City', theirStake: 'Vaucanson Market', updatedAt: '2026-10-18T06:49:34Z', source: 'server', ended: true },
+        },
+      ],
+    };
+    await load([crowfor]);
+    const host: HTMLElement = fixture.nativeElement;
+
+    const flag = [...host.querySelectorAll<HTMLElement>('.bgs-state-icon')].find(icon => icon.textContent === '🏁')!;
+    expect(flag.title).toBe('Conflitto concluso (Election): Total Victory 4-0');
+
+    host.querySelector<HTMLButtonElement>('.bgs-state-button')!.click();
+    await fixture.whenStable();
+
+    const panel = document.querySelector('.bgs-state-panel')!;
+    expect(panel.querySelector('.bgs-state-entry-status--ended')!.textContent!.trim()).toBe('concluso');
+    expect(panel.querySelector('app-conflict-score-card .side--ours .outcome')!.textContent).toBe('Total Victory');
+    expect(panel.textContent).toContain('Dato dal server ACFS (EDDN)');
   });
 
   it('opens the State details panel from the State icons, with factions, influence and status', async () => {

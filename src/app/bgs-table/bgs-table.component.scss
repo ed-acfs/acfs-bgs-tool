@@ -577,7 +577,8 @@
   color: var(--color-text-bright);
 }
 
-.bgs-state-entry-status--pending {
+.bgs-state-entry-status--pending,
+.bgs-state-entry-status--ended {
   background-color: var(--color-surface-5);
   color: var(--color-text-2);
 }

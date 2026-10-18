@@ -4,13 +4,14 @@ import { CONFLICT_MARGIN_POINTS, FACTION_NAME } from './config';
 /**
  * Whether our faction is already in a conflict here, so warning that one might start is
  * pointless: our influence stays frozen until it ends, and a faction can't be in two conflicts in
- * the same system. That's a war or election of ours (active or pending, with whoever), or our
+ * the same system. That's a war or election of ours (active or pending, with whoever; not one
+ * that just ended), or our
  * influence equal to a neighbour's — factions in conflict sit at the same influence, and that's
  * how it starts even before Spansh reports the state.
  */
 export function alreadyInConflict(row: Pick<BgsRow, 'stateEntries' | 'factions'>): boolean {
   return (
-    row.stateEntries.some(entry => entry.kind !== 'retreat') ||
+    row.stateEntries.some(entry => entry.kind !== 'retreat' && entry.status !== 'ended') ||
     closeFactions(row.factions).some(faction => Math.abs(faction.points) < 0.05)
   );
 }
