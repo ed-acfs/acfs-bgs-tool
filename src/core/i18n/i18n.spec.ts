@@ -60,7 +60,7 @@ describe('translate', () => {
       'control-margin-under-3', 'lead-below-6', 'lead-lowest-ranked', 'lead-lowest-should-control', 'lead-lowest-preferred',
       'control-margin-3-7', 'lead-below-10', 'gap-to-leader', 'control-lights-red',
       'control-lights-mixed', 'control-lights-yellow',
-      'below-watchlist-position', 'out-of-scope', 'no-preference', 'assumed-needs-architect', 'none',
+      'below-watchlist-position', 'out-of-scope', 'no-preference', 'no-preference-defence', 'assumed-needs-architect', 'none',
     ];
     for (const code of codes) {
       expect(isMessageKey(`reason.${code}`), code).toBe(true);

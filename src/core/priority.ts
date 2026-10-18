@@ -144,7 +144,8 @@ function registeredAsOurs(row: BgsRow): boolean {
  *    hands-off agreement). A non-colony system facing withdrawal must not be hidden behind
  *    the "hands off" badge the way a genuine third-party agreement is.
  *  - An architect is confirmed but left the preference blank → "no-preference": someone has
- *    already looked and didn't name us, so it's simply excluded.
+ *    already looked and didn't name us, so no growth or control work — but a conflict of ours
+ *    is still defended (see {@link computePriorityAssessment}).
  *  - Nothing recorded at all → `unregistered`, from `unregisteredScope` in config.json:
  *    "in-scope" (the squadron's policy: every system we're present in is ours), or
  *    "assumed" (Canonn's policy): the caller then restricts it to defensive triggers only —
@@ -178,8 +179,8 @@ function influenceOf(row: BgsRow, faction: string | null): number | null {
 /**
  * War/election/retreat triggers involving the squadron's faction. Fires for a confirmed lead
  * (in-scope) and for an assumed one (no architect assigned yet — a live conflict there makes
- * getting an architect assigned urgent), but never for out-of-scope or no-preference, where an
- * architect has already looked and this isn't ours to work. See {@link computePriorityAssessment}.
+ * getting an architect assigned urgent) and for no-preference (defence only), but never for
+ * out-of-scope, a standing agreement to leave the system alone. See {@link computePriorityAssessment}.
  */
 function conflictReasons(row: BgsRow): PriorityReason[] {
   const reasons: PriorityReason[] = [];
@@ -402,9 +403,30 @@ export function computePriorityAssessment(
         };
       }
     }
-    // Neither scope is ours to work — a standing "hands off" agreement or an architect who's
-    // already looked and named nobody. A live war/election there doesn't change that; it's
-    // simply not a priority target, badge or no badge.
+    if (scope === 'no-preference') {
+      // An architect who named nobody isn't a hands-off agreement: the squadron still defends
+      // itself there (user's decision, 18 October 2026). A war, election or retreat involving
+      // us ranks as usual; growth and control triggers stay off.
+      const defence = conflictReasons(row);
+      if (defence.length > 0) {
+        defence.push({ code: 'no-preference-defence', label: 'Architetto senza fazione preferita: solo difesa nei conflitti', score: 0 });
+        defence.sort((a, b) => b.score - a.score);
+        const updatedAtMs = parseUpdatedAt(row.updatedAt);
+        const reconAgeDays = updatedAtMs === null ? null : daysElapsed(updatedAtMs, nowMs);
+        return {
+          tier: deriveTier(defence[0].score),
+          scope,
+          leadFaction: FACTION_NAME,
+          score: defence[0].score,
+          reasons: defence,
+          needsRecon: needsRecon(reconAgeDays),
+          reconAgeDays,
+        };
+      }
+    }
+    // Neither scope is ours to work — a standing "hands off" agreement, or an architect who's
+    // already looked and named nobody, with no conflict of ours to defend. A live war/election
+    // between others there doesn't change that; it's simply not a priority target.
     const scopeReason: PriorityReason =
       scope === 'out-of-scope'
         ? { code: 'out-of-scope', label: `La fazione preferita è ${row.preferredFaction}: non intervenire`, score: 0, params: { faction: row.preferredFaction ?? '' } }
