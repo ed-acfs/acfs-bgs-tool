@@ -27,6 +27,8 @@ export interface OrdersViewItem {
 export interface OrdersViewGroup {
   /** "Priorità 1" within Operazioni; null elsewhere. */
   title: string | null;
+  /** The priority number within Operazioni (1 = highest), for the P1…P5 pill; null elsewhere. */
+  priority: number | null;
   items: OrdersViewItem[];
 }
 
@@ -84,11 +86,12 @@ export function ordersView(data: { items: readonly OrderItem[]; meta?: { footerN
         title: SECTION_TITLES[key],
         groups: priorities.map(p => ({
           title: `Priorità ${p}`,
+          priority: p,
           items: items.filter(item => (item.priority ?? 0) === p).map(viewItem),
         })),
       });
     } else {
-      sections.push({ key, title: SECTION_TITLES[key], groups: [{ title: null, items: items.map(viewItem) }] });
+      sections.push({ key, title: SECTION_TITLES[key], groups: [{ title: null, priority: null, items: items.map(viewItem) }] });
     }
   }
   return { date: date ? formatOrdersDate(date) : '', sections, footerNote: data.meta?.footerNote ?? '' };

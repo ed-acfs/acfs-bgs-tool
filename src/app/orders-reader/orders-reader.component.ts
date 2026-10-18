@@ -28,6 +28,11 @@ export class OrdersReaderComponent implements OnInit {
   });
   protected readonly html = discordInlineToHtml;
 
+  /** Same colours as the Priority pills in the table: P1, P2, P3, then P4 and below alike. */
+  protected pillClass(priority: number): string {
+    return priority <= 3 ? `P${Math.max(priority, 1)}` : 'P4';
+  }
+
   /** "21:40 del 18/10" in local time: when and by whom, so the reader knows how fresh they are. */
   protected readonly publishedLabel = computed(() => {
     const doc = this.doc();

@@ -36,11 +36,14 @@
           <section class="reader-section" [class]="'reader-section reader-section--' + section.key">
             <h2>{{ section.title }}</h2>
             @for (group of section.groups; track $index) {
-              @if (group.title) {
-                <h3 class="reader-priority">{{ group.title }}</h3>
+              @if (group.priority !== null) {
+                <h3 class="reader-priority">
+                  <span class="reader-pill" [class]="'reader-pill reader-pill--' + pillClass(group.priority)">P{{ group.priority }}</span>
+                  {{ group.title }}
+                </h3>
               }
               @for (item of group.items; track item.id) {
-                <article class="reader-item">
+                <article class="reader-item" [class]="group.priority !== null ? 'reader-item reader-item--' + pillClass(group.priority) : 'reader-item'">
                   @if (item.system) {
                     <p class="reader-lead">
                       @if (item.icon) {

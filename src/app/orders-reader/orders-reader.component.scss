@@ -47,12 +47,54 @@
 }
 
 .reader-priority {
-  margin: 14px 0 6px;
-  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 8px;
+  font-size: 0.95rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
+  color: var(--color-text-bright);
+}
+
+/* Le pillole della colonna Priorità della tabella (bgs-table.component.scss), un po' più grandi. */
+.reader-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background-color: var(--priority-bg);
+  color: var(--priority-fg);
+}
+
+.reader-pill--P1,
+.reader-item--P1 {
+  --priority-bg: #f8d7da;
+  --priority-fg: #7a1420;
+}
+
+.reader-pill--P2,
+.reader-item--P2 {
+  --priority-bg: #faeeda;
+  --priority-fg: #633806;
+}
+
+.reader-pill--P3,
+.reader-item--P3 {
+  --priority-bg: #faece7;
+  --priority-fg: #712b13;
+}
+
+.reader-pill--P4,
+.reader-item--P4 {
+  --priority-bg: #eceef0;
+  --priority-fg: #5f6368;
+}
+
+/* La striscia a sinistra delle schede ripete il colore della priorità. */
+.reader-item[class*='reader-item--'] {
+  border-left: 5px solid var(--priority-bg);
 }
 
 .reader-item {
