@@ -73,7 +73,7 @@ describe('WorkPageComponent', () => {
       expect(host.querySelector('.work-system h3')?.textContent).toBe('LP 254-26');
     });
     expect(host.querySelector('.work-tick h2')!.textContent).toContain('17 ott 2026');
-    expect(host.querySelector('.work-total')!.textContent!.replace(/\s+/g, ' ').trim()).toBe('CBs 13,08 M CZ spaziali H×3');
+    expect(host.querySelector('.work-total')!.textContent!.replace(/\s+/g, ' ').trim()).toBe('CBs 13,1M CZ Spaziali H x 3');
     expect([...host.querySelectorAll('.work-pilot')].map(e => e.textContent)).toEqual(['Gabolander', 'Marziano Inside']);
   });
 

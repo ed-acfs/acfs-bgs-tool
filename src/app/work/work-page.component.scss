@@ -94,20 +94,28 @@
 .work-label {
   font-weight: 600;
 
-  &--combat {
-    color: #ff6b6b;
-  }
-
-  &--influence {
+  &--blue {
     color: #4dabf7;
   }
 
-  &--other {
-    color: var(--color-text-2);
+  &--red {
+    color: #ff6b6b;
   }
 
-  &--bad {
-    color: var(--color-warning);
+  &--cyan {
+    color: #3bc9db;
+  }
+
+  &--white {
+    color: var(--color-text-bright);
+  }
+
+  &--yellow {
+    color: #fcc419;
+  }
+
+  &--magenta {
+    color: #e599f7;
   }
 }
 

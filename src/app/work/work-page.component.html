@@ -56,7 +56,7 @@
               }
             </p>
             @for (s of system.settlements ?? []; track s.name) {
-              <p class="work-settlement"><span aria-hidden="true">⚔️</span> {{ s.name }} <span class="work-value">×{{ s.count }}</span></p>
+              <p class="work-settlement"><span aria-hidden="true">⚔️</span> {{ s.name }} x <span class="work-value">{{ s.count }}</span></p>
             }
             @if (system.pilots.length > 0) {
               <ul class="work-pilots">
