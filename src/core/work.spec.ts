@@ -1,6 +1,6 @@
-import { describeWork, humanFormat } from './work';
+import { describeWork, humanFormat, workPartText } from './work';
 
-const text = (parts: ReturnType<typeof describeWork>) => parts.map(p => [p.label, p.value, p.detail].filter(Boolean).join(' '));
+const text = (parts: ReturnType<typeof describeWork>) => parts.map(workPartText);
 
 describe('describeWork', () => {
   it('writes the work like the BGS-Tally summary, in its order and with its Italian labels', () => {
@@ -43,6 +43,13 @@ describe('describeWork', () => {
     expect(text(describeWork({ infelection: 12 }, { '3': 4 }))).toEqual(['INF Elezione +12 (3️⃣ x 4)']);
     expect(text(describeWork({ infwar: 5 }))).toEqual(['INF War +5']);
     expect(describeWork({ infelection: 2, cbs: 1 }).map(p => p.tone)).toEqual(['blue', 'red']);
+  });
+
+  it('highlights only the numbers, like BGS-Tally: "H x" stays plain, "3" is green', () => {
+    const [cz] = describeWork({ groundcz_high: 3 });
+    expect(cz.value).toEqual([{ text: 'H x ' }, { text: '3', number: true }]);
+    const [inf] = describeWork({ infprimary: 8 }, { '3': 1, '5': 1 });
+    expect(inf.detail!.filter(s => s.number).map(s => s.text)).toEqual(['1', '1']);
   });
 
   it('is empty when nothing was done', () => {

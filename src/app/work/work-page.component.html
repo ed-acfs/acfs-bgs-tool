@@ -45,9 +45,9 @@
               @for (part of describe(system.totals, system.inf_levels); track part.label) {
                 <span class="work-part"
                   ><span class="work-label" [class]="'work-label work-label--' + part.tone">{{ part.label + ' ' }}</span>
-                  <span class="work-value">{{ part.value }}</span>
+                  @for (seg of part.value; track $index) {<span [class.work-value]="seg.number">{{ seg.text }}</span>}
                   @if (part.detail) {
-                    <span class="work-detail">{{ ' ' + part.detail }}</span>
+                    <span class="work-detail">{{ ' ' }}@for (seg of part.detail; track $index) {<span [class.work-value]="seg.number">{{ seg.text }}</span>}</span>
                   }{{ ' ' }}</span
                 >
               } @empty {
@@ -65,9 +65,9 @@
                     @for (part of describe(pilot.totals, pilot.inf_levels); track part.label) {
                       <span class="work-part"
                         ><span [class]="'work-label work-label--' + part.tone">{{ part.label + ' ' }}</span>
-                        <span class="work-value">{{ part.value }}</span>
+                        @for (seg of part.value; track $index) {<span [class.work-value]="seg.number">{{ seg.text }}</span>}
                         @if (part.detail) {
-                          <span class="work-detail">{{ ' ' + part.detail }}</span>
+                          <span class="work-detail">{{ ' ' }}@for (seg of part.detail; track $index) {<span [class.work-value]="seg.number">{{ seg.text }}</span>}</span>
                         }{{ ' ' }}</span
                       >
                     } @empty {

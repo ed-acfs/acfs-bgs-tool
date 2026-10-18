@@ -79,12 +79,27 @@ export interface WorkResponse {
  */
 export type WorkTone = 'blue' | 'red' | 'cyan' | 'white' | 'yellow' | 'magenta';
 
+/** Un pezzo di valore: come in BGS-Tally, solo i numeri sono evidenziati (verdi), il resto ("H x") è testo normale. */
+export interface WorkSegment {
+  text: string;
+  number?: boolean;
+}
+
 /** Una voce del riepilogo: "CBs" e "13,5M", con l'eventuale dettaglio "(3️⃣ x 1 5️⃣ x 3)". */
 export interface WorkPart {
   label: string;
-  value: string;
-  detail?: string;
+  value: WorkSegment[];
+  detail?: WorkSegment[];
   tone: WorkTone;
+}
+
+const num = (text: string | number): WorkSegment => ({ text: String(text), number: true });
+const txt = (text: string): WorkSegment => ({ text });
+
+/** Il testo di una voce, senza colori: per i test e per chi lo copia. */
+export function workPartText(part: WorkPart): string {
+  const join = (segments?: WorkSegment[]) => (segments ?? []).map(s => s.text).join('');
+  return [part.label, join(part.value), join(part.detail)].filter(Boolean).join(' ');
 }
 
 /** Come `human_format` di BGS-Tally: tre cifre significative e K, M, B ("13,5M", "1,72M", "850K"). */
@@ -100,12 +115,18 @@ export function humanFormat(value: number): string {
 
 const KEYCAPS = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'];
 /** "(3️⃣ x 1 5️⃣ x 3)": le missioni per livello di influenza, dal più basso, come in BGS-Tally. */
-const levelsLabel = (levels?: InfluenceLevels) => {
+const levelsLabel = (levels?: InfluenceLevels): WorkSegment[] | undefined => {
   const entries = Object.entries(levels ?? {})
     .map(([level, count]) => [Number(level), count] as const)
     .filter(([level, count]) => level > 0 && count > 0)
     .sort(([a], [b]) => a - b);
-  return entries.length ? `(${entries.map(([level, count]) => `${KEYCAPS[level] ?? level} x ${count}`).join(' ')})` : undefined;
+  if (!entries.length) {
+    return undefined;
+  }
+  const segments: WorkSegment[] = [txt('(')];
+  entries.forEach(([level, count], i) => segments.push(txt(`${i ? ' ' : ''}${KEYCAPS[level] ?? level} x `), num(count)));
+  segments.push(txt(')'));
+  return segments;
 };
 
 /**
@@ -120,29 +141,29 @@ export function describeWork(t: WorkTotals, levels?: InfluenceLevels): WorkPart[
   for (const [key, label] of [['infprimary', 'INF'], ['infelection', 'INF Elezione'], ['infwar', 'INF War']] as const) {
     const value = t[key];
     if (value) {
-      parts.push({ label, value: `${value > 0 ? '+' : ''}${value}`, detail: levelsShown ? undefined : levelDetail, tone: 'blue' });
+      parts.push({ label, value: [num(`${value > 0 ? '+' : ''}${value}`)], detail: levelsShown ? undefined : levelDetail, tone: 'blue' });
       levelsShown = true;
     }
   }
-  if (t.infsecondary) parts.push({ label: 'INF secondaria', value: `+${t.infsecondary}`, tone: 'blue' });
-  if (t.bvs) parts.push({ label: 'BVs', value: humanFormat(t.bvs), tone: 'red' });
-  if (t.cbs) parts.push({ label: 'CBs', value: humanFormat(t.cbs), tone: 'red' });
-  if (t.trade_buy_value) parts.push({ label: 'ComAcq', value: humanFormat(t.trade_buy_value), tone: 'cyan' });
-  if (t.trade_sell_profit) parts.push({ label: 'ComProfit', value: humanFormat(t.trade_sell_profit), tone: 'cyan' });
-  if (t.tradebm) parts.push({ label: 'ComBMProfit', value: humanFormat(t.tradebm), tone: 'cyan' });
-  if (t.exploration) parts.push({ label: 'Expl', value: humanFormat(t.exploration), tone: 'white' });
-  if (t.exobiology) parts.push({ label: 'Exo', value: humanFormat(t.exobiology), tone: 'white' });
-  if (t.murdersspace) parts.push({ label: 'Uccisioni', value: String(t.murdersspace), tone: 'red' });
-  if (t.murdersground) parts.push({ label: 'Uccisioni a Terra', value: String(t.murdersground), tone: 'red' });
-  if (t.scenarios) parts.push({ label: 'Scenari', value: String(t.scenarios), tone: 'yellow' });
-  if (t.missionfails) parts.push({ label: 'Fallite', value: String(t.missionfails), tone: 'magenta' });
+  if (t.infsecondary) parts.push({ label: 'INF secondaria', value: [num(`+${t.infsecondary}`)], tone: 'blue' });
+  if (t.bvs) parts.push({ label: 'BVs', value: [num(humanFormat(t.bvs))], tone: 'red' });
+  if (t.cbs) parts.push({ label: 'CBs', value: [num(humanFormat(t.cbs))], tone: 'red' });
+  if (t.trade_buy_value) parts.push({ label: 'ComAcq', value: [num(humanFormat(t.trade_buy_value))], tone: 'cyan' });
+  if (t.trade_sell_profit) parts.push({ label: 'ComProfit', value: [num(humanFormat(t.trade_sell_profit))], tone: 'cyan' });
+  if (t.tradebm) parts.push({ label: 'ComBMProfit', value: [num(humanFormat(t.tradebm))], tone: 'cyan' });
+  if (t.exploration) parts.push({ label: 'Expl', value: [num(humanFormat(t.exploration))], tone: 'white' });
+  if (t.exobiology) parts.push({ label: 'Exo', value: [num(humanFormat(t.exobiology))], tone: 'white' });
+  if (t.murdersspace) parts.push({ label: 'Uccisioni', value: [num(t.murdersspace)], tone: 'red' });
+  if (t.murdersground) parts.push({ label: 'Uccisioni a Terra', value: [num(t.murdersground)], tone: 'red' });
+  if (t.scenarios) parts.push({ label: 'Scenari', value: [num(t.scenarios)], tone: 'yellow' });
+  if (t.missionfails) parts.push({ label: 'Fallite', value: [num(t.missionfails)], tone: 'magenta' });
   for (const [prefix, label] of [['spacecz', 'CZ Spaziali'], ['groundcz', 'CZ a terra']] as const) {
     const counts = (['low', 'medium', 'high'] as const)
       .map(level => [level, t[`${prefix}_${level}`] ?? 0] as const)
       .filter(([, count]) => count > 0)
-      .map(([level, count]) => `${level[0].toUpperCase()} x ${count}`);
-    if (counts.length > 0) parts.push({ label, value: counts.join(' '), tone: 'red' });
+      .flatMap(([level, count], i) => [txt(`${i ? ' ' : ''}${level[0].toUpperCase()} x `), num(count)]);
+    if (counts.length > 0) parts.push({ label, value: counts, tone: 'red' });
   }
-  if (t.sandr) parts.push({ label: 'SAR', value: String(t.sandr), tone: 'white' });
+  if (t.sandr) parts.push({ label: 'SAR', value: [num(t.sandr)], tone: 'white' });
   return parts;
 }

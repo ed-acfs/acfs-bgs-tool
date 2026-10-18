@@ -123,14 +123,16 @@
   color: #51cf66;
 }
 
-.work-detail {
-  color: var(--color-text-2);
+.work-part,
+.work-detail,
+.work-settlement {
+  /* Il testo fra i numeri ("H x", "3️⃣ x") resta chiaro e normale, come in BGS-Tally. */
+  color: var(--color-text-bright);
 }
 
 .work-settlement {
   margin: 2px 0 0 12px;
   font-size: 0.85rem;
-  color: var(--color-text-2);
 }
 
 .work-pilots .work-part {
