@@ -42,7 +42,7 @@
           <article class="work-system">
             <h3>{{ system.system_name }}</h3>
             <p class="work-total">
-              @for (part of describe(system.totals, system.inf_levels); track part.label) {
+              @for (part of describe(system.totals, system.inf_levels, system.cz_objectives); track part.label) {
                 <span class="work-part"
                   ><span class="work-label" [class]="'work-label work-label--' + part.tone">{{ part.label + ' ' }}</span>
                   @for (seg of part.value; track $index) {<span [class.work-value]="seg.number">{{ seg.text }}</span>}
@@ -62,7 +62,7 @@
                 @for (pilot of system.pilots; track pilot.pilot) {
                   <li>
                     <span class="work-pilot">{{ pilot.cmdr || pilot.pilot }}</span>
-                    @for (part of describe(pilot.totals, pilot.inf_levels); track part.label) {
+                    @for (part of describe(pilot.totals, pilot.inf_levels, pilot.cz_objectives); track part.label) {
                       <span class="work-part"
                         ><span [class]="'work-label work-label--' + part.tone">{{ part.label + ' ' }}</span>
                         @for (seg of part.value; track $index) {<span [class.work-value]="seg.number">{{ seg.text }}</span>}

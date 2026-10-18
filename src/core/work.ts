@@ -42,6 +42,14 @@ export interface WorkSettlement {
 /** Missioni chiuse per livello di influenza (numero di "+"): { "3": 1, "5": 3 }. */
 export type InfluenceLevels = Record<string, number>;
 
+/** Obiettivi delle CZ spaziali (eventi sintetici di BGS-Tally): Cap Ship, Spec Ops, Capitano, Propagandista. */
+export interface CzObjectives {
+  capship?: number;
+  specops?: number;
+  captain?: number;
+  correspondent?: number;
+}
+
 export interface WorkPilot {
   /** L'etichetta della chiave sul server (di solito il nome del comandante). */
   pilot: string;
@@ -51,6 +59,7 @@ export interface WorkPilot {
   totals: WorkTotals;
   settlements?: WorkSettlement[];
   inf_levels?: InfluenceLevels;
+  cz_objectives?: CzObjectives;
 }
 
 export interface WorkSystem {
@@ -59,6 +68,7 @@ export interface WorkSystem {
   totals: WorkTotals;
   settlements?: WorkSettlement[];
   inf_levels?: InfluenceLevels;
+  cz_objectives?: CzObjectives;
   pilots: WorkPilot[];
 }
 
@@ -113,6 +123,14 @@ export function humanFormat(value: number): string {
   return `${n.toLocaleString('it-IT', { maximumFractionDigits: 2 })}${['', 'K', 'M', 'B', 'T'][magnitude]}`;
 }
 
+/** Le icone di BGS-Tally per gli obiettivi delle CZ spaziali, con il nome per il passaggio del mouse. */
+const OBJECTIVE_ICONS: readonly [keyof CzObjectives, string][] = [
+  ['capship', '👑'],
+  ['specops', '🔠'],
+  ['captain', '👨‍✈️'],
+  ['correspondent', '✒️'],
+];
+
 const KEYCAPS = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'];
 /** "(3️⃣ x 1 5️⃣ x 3)": le missioni per livello di influenza, dal più basso, come in BGS-Tally. */
 const levelsLabel = (levels?: InfluenceLevels): WorkSegment[] | undefined => {
@@ -134,7 +152,7 @@ const levelsLabel = (levels?: InfluenceLevels): WorkSegment[] | undefined => {
  * sua traduzione italiana: INF (o INF Elezione, INF War) con le missioni per livello, BVs, CBs,
  * commercio, Expl, uccisioni, scenari, missioni fallite, CZ Spaziali, CZ a terra, SAR.
  */
-export function describeWork(t: WorkTotals, levels?: InfluenceLevels): WorkPart[] {
+export function describeWork(t: WorkTotals, levels?: InfluenceLevels, objectives?: CzObjectives): WorkPart[] {
   const parts: WorkPart[] = [];
   const levelDetail = levelsLabel(levels);
   let levelsShown = false;
@@ -162,7 +180,12 @@ export function describeWork(t: WorkTotals, levels?: InfluenceLevels): WorkPart[
       .map(level => [level, t[`${prefix}_${level}`] ?? 0] as const)
       .filter(([, count]) => count > 0)
       .flatMap(([level, count], i) => [txt(`${i ? ' ' : ''}${level[0].toUpperCase()} x `), num(count)]);
-    if (counts.length > 0) parts.push({ label, value: counts, tone: 'red' });
+    // Dopo le CZ spaziali, come in BGS-Tally, gli obiettivi: "(👑:1 🔠:2)".
+    const extra = prefix === 'spacecz'
+      ? OBJECTIVE_ICONS.filter(([key]) => (objectives?.[key] ?? 0) > 0).flatMap(([key, icon], i) => [txt(`${i ? ' ' : '('}${icon}:`), num(objectives![key]!)])
+      : [];
+    const detail = extra.length ? [...extra, txt(')')] : undefined;
+    if (counts.length > 0 || detail) parts.push({ label, value: counts, detail, tone: 'red' });
   }
   if (t.sandr) parts.push({ label: 'SAR', value: [num(t.sandr)], tone: 'white' });
   return parts;

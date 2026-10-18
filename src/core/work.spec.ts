@@ -52,6 +52,12 @@ describe('describeWork', () => {
     expect(inf.detail!.filter(s => s.number).map(s => s.text)).toEqual(['1', '1']);
   });
 
+  it('adds the space CZ objectives with the BGS-Tally icons', () => {
+    expect(text(describeWork({ spacecz_high: 2 }, undefined, { specops: 2, capship: 1, correspondent: 1 }))).toEqual([
+      'CZ Spaziali H x 2 (👑:1 🔠:2 ✒️:1)',
+    ]);
+  });
+
   it('is empty when nothing was done', () => {
     expect(describeWork({})).toEqual([]);
   });
