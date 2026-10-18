@@ -1,0 +1,61 @@
+<div class="work-container">
+  <div class="work-title-row">
+    <h1>Lavoro dello squadrone <span class="work-beta">beta</span></h1>
+    <div class="work-title-actions">
+      <a mat-stroked-button routerLink="/ordini">Ordini</a>
+      <a mat-stroked-button routerLink="/">&larr; Torna alla tabella</a>
+    </div>
+  </div>
+
+  <p class="work-intro">
+    Il lavoro BGS per Flotta Stellare mandato da BGS-Tally dai piloti collegati al server dello squadrone, per tick,
+    sistema e pilota. Riservato agli ufficiali: la password la controlla il server. Chi non usa BGS-Tally non compare,
+    quindi i totali non sono il lavoro completo dello squadrone.
+  </p>
+
+  @if (state() === 'locked') {
+    <section class="work-gate">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Password degli ufficiali</mat-label>
+        <input matInput type="password" autocomplete="current-password" [formControl]="passwordControl" (keyup.enter)="unlock()" />
+      </mat-form-field>
+      <button mat-flat-button type="button" (click)="unlock()">Entra</button>
+    </section>
+  }
+  @if (error(); as message) {
+    <p class="work-error" role="alert">{{ message }}</p>
+  }
+  @if (state() === 'loading') {
+    <p class="work-note">Caricamento…</p>
+  }
+
+  @if (state() === 'ready') {
+    <div class="work-toolbar">
+      <button mat-stroked-button type="button" (click)="load()">Aggiorna</button>
+      <button mat-stroked-button type="button" (click)="lock()">Esci</button>
+    </div>
+    @for (tick of ticks(); track tick.tickid) {
+      <section class="work-tick">
+        <h2>Tick del {{ tickLabel(tick) }}</h2>
+        @for (system of tick.systems; track system.system_address) {
+          <article class="work-system">
+            <h3>{{ system.system_name }}</h3>
+            <p class="work-total">{{ describe(system.totals).join(' · ') || 'nessun lavoro registrato' }}</p>
+            @if (system.pilots.length > 0) {
+              <ul class="work-pilots">
+                @for (pilot of system.pilots; track pilot.pilot) {
+                  <li>
+                    <span class="work-pilot">{{ pilot.cmdr || pilot.pilot }}</span>
+                    <span>{{ describe(pilot.totals).join(' · ') || '—' }}</span>
+                  </li>
+                }
+              </ul>
+            }
+          </article>
+        }
+      </section>
+    } @empty {
+      <p class="work-note">Nessun lavoro ricevuto finora da BGS-Tally.</p>
+    }
+  }
+</div>

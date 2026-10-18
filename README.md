@@ -25,6 +25,10 @@ La parte di consultazione (tabella, filtri, Legenda, Guida, dettagli dei sistemi
 
 Il progetto è in sviluppo. Le fasi, le decisioni prese e le domande aperte sono in [ROADMAP.md](ROADMAP.md). Le modifiche fatte finora sono in [CHANGELOG.md](CHANGELOG.md).
 
+## Lavoro dello squadrone (beta)
+
+La pagina `/activity` (pulsante **Lavoro (beta)** negli Ordini, solo in italiano) mostra il lavoro BGS per Flotta Stellare che i piloti mandano con BGS-Tally al server dello squadrone, per tick, sistema e pilota. È riservata agli ufficiali: la password la controlla il server (`/v1/work` di [`acfs-server`](https://github.com/ed-acfs/acfs-server)), che la tiene nel suo `.env` (`OFFICERS_PASSWORD`); il tool la ricorda sul dispositivo finché non si clicca "Esci".
+
 ## Dati
 
 I dati vengono da [Spansh](https://spansh.co.uk). Spansh non accetta chiamate dirette dal browser, quindi lo script `scripts/fetch-bgs.mjs` scarica tutti i sistemi con Flotta Stellare presente e li salva in `public/data/bgs.json`. L'app legge quel file. Il file non è versionato.

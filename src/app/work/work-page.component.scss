@@ -1,0 +1,81 @@
+.work-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.work-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  h1 {
+    margin: 0;
+    color: var(--color-accent);
+  }
+}
+
+.work-title-actions,
+.work-toolbar,
+.work-gate {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.work-beta {
+  margin-left: 6px;
+  padding: 1px 6px;
+  border: 1px solid var(--color-accent);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  vertical-align: middle;
+}
+
+.work-intro,
+.work-note {
+  color: var(--color-text-2);
+}
+
+.work-error {
+  color: var(--color-danger);
+}
+
+.work-tick h2 {
+  margin: 24px 0 8px;
+  font-size: 1.1rem;
+  color: var(--color-text-bright);
+}
+
+.work-system {
+  margin: 0 0 10px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: var(--color-surface);
+
+  h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--color-accent);
+  }
+}
+
+.work-total {
+  margin: 4px 0 0;
+  color: var(--color-text-bright);
+}
+
+.work-pilots {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  color: var(--color-text-2);
+  font-size: 0.85rem;
+}
+
+.work-pilot {
+  margin-right: 8px;
+  font-weight: 600;
+}

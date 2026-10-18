@@ -2,9 +2,15 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
-## [1.5.0] - 2026-10-18 — Punteggio, stati e influenze dal server dello squadrone
+## [1.5.1] - 2026-10-18 — Punteggio, stati e influenze dal server dello squadrone; lavoro dello squadrone
 
-Pubblicata in tre passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon) e la 1.5.0 (stati e influenze dal server, conflitti appena conclusi).
+Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon), la 1.5.0 (stati e influenze dal server, conflitti appena conclusi) e la 1.5.1 (pagina del lavoro dello squadrone, in beta). La pagina è una funzione nuova, ma per scelta dell'utente la versione resta bassa.
+
+### Lavoro dello squadrone (beta, solo ufficiali)
+
+- Nuova pagina **`/activity`**, "Lavoro dello squadrone", raggiungibile dal pulsante **Lavoro (beta)** nella pagina Ordini: il lavoro BGS per Flotta Stellare che i piloti collegati mandano con **BGS-Tally** al server dello squadrone, per tick, sistema e pilota, con i totali per sistema nelle sigle del canale ("BVs 8,04 M · CBs 13,08 M · Inf +5 · CZ spaziali M×1 H×3"; omicidi e missioni fallite in fondo, con ⚠️).
+- **Riservata agli ufficiali** (decisione dell'utente del 18 ottobre 2026, in beta): la password la controlla il **server** (`/v1/work` di acfs-server), non il browser come per gli Ordini, quindi senza password i dati non arrivano proprio; dopo 10 tentativi sbagliati il server blocca per qualche minuto. Il tool la ricorda sul dispositivo (`acfs-bgs:officers-password`) fino a "Esci".
+- Solo in italiano, come gli Ordini. Chi non usa BGS-Tally non compare: i totali non sono il lavoro completo dello squadrone, e la pagina lo dice.
 
 ### Stati e influenze dal server
 
