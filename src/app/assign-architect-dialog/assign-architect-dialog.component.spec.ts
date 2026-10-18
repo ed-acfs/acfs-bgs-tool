@@ -45,6 +45,7 @@ const ROW: BgsRow = {
   y: 0,
   z: 0,
   updatedAt: null,
+  dataSource: 'spansh',
   watchlist: [],
 };
 

@@ -15,7 +15,7 @@ import {
 } from '../core/config';
 import { logger } from '../core/logger';
 import { PriorityWatchlistEntry, buildWatchlistMap, parseWatchlistTsv, watchlistFirst } from '../core/priority-watchlist';
-import { ServerConflictsResponse, serverConflictsBySystem, withFreshestConflicts } from '../core/server-conflicts';
+import { ServerData, ServerSystemsResponse, serverDataFrom, withServerData } from '../core/server-data';
 
 /**
  * The published sheets ({@link ARCHITECTS_SHEET_URL}, {@link WATCHLIST_SHEET_URL}) are
@@ -26,7 +26,7 @@ const ARCHITECTS_SHEET_TIMEOUT_MS = 8000;
 const WATCHLIST_SHEET_TIMEOUT_MS = 8000;
 /**
  * The squadron server is optional: without its answer the table still loads, with the dataset's
- * scores. Short and not retried, so a server that's down delays the page by this much at most.
+ * data. Short and not retried, so a server that's down delays the page by this much at most.
  */
 const SERVER_API_TIMEOUT_MS = 6000;
 
@@ -133,7 +133,7 @@ export class BgsService {
   }
 
   private datasetPromise?: Promise<BgsDataset>;
-  /** Whether the squadron server answered with its conflict scores this session. */
+  /** Whether the squadron server answered this session. */
   private serverConflictsAvailable = false;
   private readonly pagePromises = new Map<number, Promise<BgsPage>>();
   private registryPromise?: Promise<ArchitectRegistryRow[]>;
@@ -306,14 +306,14 @@ export class BgsService {
   }
 
   /**
-   * Loads the dataset at most once per session, with the squadron server's conflict scores
-   * folded in where they're fresher; a failure clears the memo so a later call can retry.
+   * Loads the dataset at most once per session, with the squadron server's states and conflict
+   * scores folded in where they're fresher; a failure clears the memo so a later call can retry.
    */
   private getDataset(): Promise<BgsDataset> {
     if (!this.datasetPromise) {
-      this.datasetPromise = Promise.all([this.resilientGet<BgsDataset>(BGS_DATA_URL), this.loadServerConflicts()])
+      this.datasetPromise = Promise.all([this.resilientGet<BgsDataset>(BGS_DATA_URL), this.loadServerData()])
         .then(([dataset, server]) =>
-          server ? { ...dataset, results: dataset.results.map(record => withFreshestConflicts(record, server)) } : dataset,
+          server ? { ...dataset, results: dataset.results.map(record => withServerData(record, server)) } : dataset,
         )
         .catch(error => {
           this.datasetPromise = undefined;
@@ -323,18 +323,18 @@ export class BgsService {
     return this.datasetPromise;
   }
 
-  /** The server's conflicts by system, or null if it's not configured or didn't answer in time (never throws). */
-  private async loadServerConflicts(): Promise<ReturnType<typeof serverConflictsBySystem> | null> {
+  /** The server's systems, or null if it's not configured or didn't answer in time (never throws). */
+  private async loadServerData(): Promise<ServerData | null> {
     if (!SERVER_API_URL) {
       return null;
     }
     try {
-      const text = await this.fetchTextOnce(`${SERVER_API_URL}/v1/conflicts`, SERVER_API_TIMEOUT_MS);
-      const conflicts = serverConflictsBySystem(JSON.parse(text) as ServerConflictsResponse);
+      const text = await this.fetchTextOnce(`${SERVER_API_URL}/v1/systems`, SERVER_API_TIMEOUT_MS);
+      const data = serverDataFrom(JSON.parse(text) as ServerSystemsResponse);
       this.serverConflictsAvailable = true;
-      return conflicts;
+      return data;
     } catch (error) {
-      logger.warn('Squadron server unavailable; conflict scores come from the dataset only.', error);
+      logger.warn('Squadron server unavailable; states and conflict scores come from the dataset only.', error);
       return null;
     }
   }

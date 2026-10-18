@@ -78,6 +78,7 @@ export const de: Dictionary = {
   'legend.factionsChart': 'Einfluss der Fraktionen, {faction} in Orange',
   'legend.war': 'Krieg von {faction}',
   'legend.election': 'Wahl von {faction}',
+  'legend.ended': 'gerade beendeter Krieg oder Wahl von {faction}: das Feld zeigt den Endstand',
   'legend.retreat': 'Rückzug von {faction}',
   'legend.pending': 'grau: bevorstehend (pending)',
   'legend.retreatExpected': 'gestrichelt: Einfluss bei {threshold} oder weniger, Retreat beim nächsten Tick wahrscheinlich',
@@ -186,6 +187,10 @@ export const de: Dictionary = {
 
   // State details panel
   'state.active': 'läuft',
+  'state.ended': 'beendet',
+  'state.endedTitle': 'Konflikt beendet ({state}): {outcome} {score}',
+  'state.endedTitleNoScore': 'Konflikt beendet ({state})',
+  'state.serverAge': 'Daten vom ACFS-Server (EDDN): {age}',
   'state.pending': 'bevorstehend',
   'state.scorePending': 'Stand: Draw; 0-0, der Konflikt hat noch nicht begonnen.',
   'state.stakeAtRisk': 'Bei Niederlage verloren',
@@ -225,6 +230,7 @@ export const de: Dictionary = {
   'fresh.yearAgo': 'vor mehr als einem Jahr',
   'fresh.accessible': '{band}, aktualisiert {age}',
   'fresh.title': 'Aktualisiert am {time} UTC',
+  'fresh.fromServer': 'Daten vom ACFS-Server (EDDN), neuer als Spansh',
 
   // System info dialog
   'info.close': 'Schließen',

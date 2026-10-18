@@ -80,6 +80,7 @@ export const it = {
   'legend.factionsChart': 'influenza delle fazioni, in arancione {faction}',
   'legend.war': 'guerra di {faction}',
   'legend.election': 'elezione di {faction}',
+  'legend.ended': 'guerra o elezione di {faction} appena conclusa: il riquadro mostra il punteggio finale',
   'legend.retreat': 'ritirata di {faction}',
   'legend.pending': 'in grigio: in arrivo (pending)',
   'legend.retreatExpected': 'tratteggiato: influenza al {threshold} o meno, Retreat probabile al prossimo tick',
@@ -188,6 +189,10 @@ export const it = {
 
   // State details panel
   'state.active': 'in corso',
+  'state.ended': 'concluso',
+  'state.endedTitle': 'Conflitto concluso ({state}): {outcome} {score}',
+  'state.endedTitleNoScore': 'Conflitto concluso ({state})',
+  'state.serverAge': 'Dato dal server ACFS (EDDN): {age}',
   'state.pending': 'in pending',
   'state.scorePending': 'Punteggio: Draw; 0-0, il conflitto non è ancora iniziato.',
   'state.stakeAtRisk': 'Se perde, cede',
@@ -227,6 +232,7 @@ export const it = {
   'fresh.yearAgo': 'più di un anno fa',
   'fresh.accessible': '{band}, aggiornato {age}',
   'fresh.title': 'Aggiornato il {time} UTC',
+  'fresh.fromServer': 'Dato dal server ACFS (EDDN), più recente di Spansh',
 
   // System info dialog
   'info.close': 'Chiudi',

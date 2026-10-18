@@ -147,7 +147,7 @@ interface FactionPresenceFixture {
 function systemWithPresences(
   name: string,
   presences: FactionPresenceFixture[],
-  extra: { body_count?: number; population?: number; ebgs_conflicts?: unknown; assets?: unknown[] } = {},
+  extra: { body_count?: number; population?: number; ebgs_conflicts?: unknown; assets?: unknown[]; updated_at?: string } = {},
 ) {
   return { name, controlling_minor_faction: null, x: 0, y: 0, z: 0, minor_faction_presences: presences, ...extra };
 }
@@ -156,18 +156,18 @@ describe('BgsService state summarisation (retreat, FR-1/FR-2)', () => {
   let service: BgsService;
   let fetchMock: ReturnType<typeof vi.fn>;
   let records: ReturnType<typeof systemWithPresences>[];
-  /** The squadron server's /v1/conflicts answer; null = the server doesn't answer. */
-  let serverConflicts: unknown[] | null;
+  /** The squadron server's /v1/systems answer; null = the server doesn't answer. */
+  let serverSystems: unknown[] | null;
 
   beforeEach(() => {
     localStorage.clear();
     records = [];
-    serverConflicts = null;
+    serverSystems = null;
     fetchMock = vi.fn((url: string) =>
       url === BGS_DATA_URL
         ? Promise.resolve(textResponse(dataset(records)))
-        : url === `${SERVER_API_URL}/v1/conflicts` && serverConflicts
-          ? Promise.resolve(textResponse(JSON.stringify({ conflicts: serverConflicts })))
+        : url === `${SERVER_API_URL}/v1/systems` && serverSystems
+          ? Promise.resolve(textResponse(JSON.stringify({ systems: serverSystems })))
           : Promise.reject(new Error(`Unexpected fetch in test: ${url}`)),
     );
     vi.stubGlobal('fetch', fetchMock);
@@ -272,10 +272,7 @@ describe('BgsService state summarisation (retreat, FR-1/FR-2)', () => {
           },
         },
       );
-    const serverEntry = (lastSeen: string, status: string) => ({
-      system_address: '123',
-      system_name: 'MISIR',
-      last_seen: lastSeen,
+    const conflict = (status: string) => ({
       type: 'civilwar',
       status,
       involves_us: true,
@@ -283,10 +280,22 @@ describe('BgsService state summarisation (retreat, FR-1/FR-2)', () => {
       faction2: { name: 'Earth Defense Fleet', stake: 'Bolden Port', won_days: 0 },
       score: '4-0',
     });
+    /** A server system; no factions = only the conflict scores count, the states stay Spansh's. */
+    const serverSystem = (lastSeen: string, status: string, factions: unknown[] = []) => ({
+      system_address: '123',
+      name: 'MISIR',
+      last_seen: lastSeen,
+      controlling_faction: 'Flotta Stellare',
+      factions,
+      conflicts: [conflict(status)],
+    });
+    const serverFaction = (name: string, influence: number, recovering: string[] = []) => ({
+      name, influence, active_states: [], pending_states: [], recovering_states: recovering, government: null, allegiance: null,
+    });
 
     it("uses the server's score when it saw the system after EliteBGS, telling a finished conflict apart", async () => {
       records = [civilWar()];
-      serverConflicts = [serverEntry('2026-10-18T06:49:34Z', 'ended')];
+      serverSystems = [serverSystem('2026-10-18T06:49:34Z', 'ended')];
 
       const page = await service.getPage(0);
       const info = await service.getDatasetInfo();
@@ -306,7 +315,7 @@ describe('BgsService state summarisation (retreat, FR-1/FR-2)', () => {
 
     it("keeps EliteBGS's score when the server's observation is older", async () => {
       records = [civilWar()];
-      serverConflicts = [serverEntry('2026-10-01T00:00:00Z', 'active')];
+      serverSystems = [serverSystem('2026-10-01T00:00:00Z', 'active')];
 
       const page = await service.getPage(0);
 
@@ -322,7 +331,45 @@ describe('BgsService state summarisation (retreat, FR-1/FR-2)', () => {
 
       expect(page.rows[0].stateEntries[0].score).toMatchObject({ ours: 1, theirs: 2, source: 'elitebgs' });
       expect(info.conflictScoresAvailable).toBe(false);
-      expect(warnSpy).toHaveBeenCalledWith('Squadron server unavailable; conflict scores come from the dataset only.', expect.any(Error));
+      expect(page.rows[0].dataSource).toBe('spansh');
+      expect(warnSpy).toHaveBeenCalledWith('Squadron server unavailable; states and conflict scores come from the dataset only.', expect.any(Error));
+    });
+
+    it("takes factions and states from the server when it saw the system after Spansh, and shows a conflict of ours that just ended", async () => {
+      records = [{ ...civilWar(), updated_at: '2026-10-17 20:00:00+00' }];
+      serverSystems = [
+        serverSystem('2026-10-18T06:49:34Z', 'ended', [
+          serverFaction('Flotta Stellare', 0.55, ['CivilWar']),
+          serverFaction('Earth Defense Fleet', 0.2, ['CivilWar']),
+        ]),
+      ];
+
+      const [row] = (await service.getPage(0)).rows;
+
+      expect(row.dataSource).toBe('server');
+      expect(row.updatedAt).toBe('2026-10-18T06:49:34Z');
+      expect(row.factionInfluence).toBeCloseTo(55);
+      expect(row.warState).toBeNull();
+      expect(row.stateEntries).toEqual([
+        {
+          kind: 'war',
+          state: 'CivilWar',
+          status: 'ended',
+          factions: ['Flotta Stellare', 'Earth Defense Fleet'],
+          score: expect.objectContaining({ ours: 4, theirs: 0, source: 'server', ended: true }),
+        },
+      ]);
+    });
+
+    it("keeps Spansh's factions and states when Spansh saw the system after the server", async () => {
+      records = [{ ...civilWar(), updated_at: '2026-10-18 08:00:00+00' }];
+      serverSystems = [serverSystem('2026-10-18T06:49:34Z', 'active', [serverFaction('Flotta Stellare', 0.9)])];
+
+      const [row] = (await service.getPage(0)).rows;
+
+      expect(row.dataSource).toBe('spansh');
+      expect(row.factionInfluence).toBeCloseTo(30);
+      expect(row.warState).toBe('active');
     });
   });
 
