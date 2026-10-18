@@ -316,6 +316,7 @@ export const en: Dictionary = {
     "The tool can be installed as an app: on a phone with \"Add to Home screen\" from the browser menu, on a PC with the \"Install\" icon in the address bar. It also opens without a connection, with the last downloaded data: the timestamp under the title says how old it is. Search by distance only works online.",
   'help.login': 'Signing in with Discord',
   'help.login1': 'You can use the tool without signing in. “Sign in with Discord”, in the row with the flags, is for anyone in the ACFS Discord server: from the menu with your name you generate your BGS-Tally key, to send your work for Flotta Stellare to the squadron server; officers also find their tools there. The tool never sees your Discord password: Discord only tells it who you are and which roles you have in the ACFS server.',
+  'footer.disclaimer': 'ACFS BGS Tool is an unofficial tool of the ACFS squadron for the game Elite Dangerous and is not affiliated with Frontier Developments. The data comes from public sources (Spansh, EDDN, EliteBGS) and from the squadron pilots: it may be late or not entirely accurate.',
   'help.internal': 'Squadron tools',
   'help.internalNote': 'The squadron also has internal tools, such as architect assignment: they are only available in Italian.',
 };

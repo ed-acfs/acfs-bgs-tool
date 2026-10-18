@@ -319,6 +319,7 @@ export const de: Dictionary = {
     "Das Tool lässt sich als App installieren: auf dem Handy über \"Zum Startbildschirm hinzufügen\" im Browsermenü, am PC über das Symbol \"Installieren\" in der Adressleiste. Es öffnet sich auch ohne Verbindung, mit den zuletzt geladenen Daten: Die Angabe unter dem Titel zeigt, wie alt sie sind. Die Suche nach Entfernung funktioniert nur online.",
   'help.login': 'Anmeldung mit Discord',
   'help.login1': 'Das Tool ist ohne Anmeldung nutzbar. „Mit Discord anmelden“ in der Zeile mit den Flaggen ist für alle im ACFS-Discord-Server: Im Menü mit deinem Namen erzeugst du deinen BGS-Tally-Schlüssel, um deine Arbeit für Flotta Stellare an den Server der Staffel zu senden; die Offiziere finden dort auch ihre Werkzeuge. Das Tool sieht dein Discord-Passwort nicht: Discord teilt ihm nur mit, wer du bist und welche Rollen du im ACFS-Server hast.',
+  'footer.disclaimer': 'ACFS BGS Tool ist ein inoffizielles Werkzeug der Staffel ACFS für das Spiel Elite Dangerous und steht in keiner Verbindung zu Frontier Developments. Die Daten stammen aus öffentlichen Quellen (Spansh, EDDN, EliteBGS) und von den Piloten der Staffel: Sie können verspätet oder nicht ganz genau sein.',
   'help.internal': 'Werkzeuge des Geschwaders',
   'help.internalNote': 'Das Geschwader hat auch interne Werkzeuge, etwa die Zuordnung der Architekten: Sie sind nur auf Italienisch verfügbar.',
 };

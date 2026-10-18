@@ -322,6 +322,7 @@ export const it = {
   // Shown only in the other languages: in Italian the guide explains these tools in full.
   'help.login': 'Accesso con Discord',
   'help.login1': 'Il tool si consulta senza accesso. «Accedi con Discord», nella riga con le bandiere, serve a chi è nel server Discord ACFS: dal menu con il tuo nome generi la tua chiave BGS-Tally, per mandare il tuo lavoro per Flotta Stellare al server dello squadrone; gli ufficiali vi trovano anche i loro strumenti. Il tool non vede la tua password di Discord: Discord gli dice solo chi sei e quali ruoli hai nel server ACFS.',
+  'footer.disclaimer': 'ACFS BGS Tool è uno strumento non ufficiale dello squadrone ACFS per il gioco Elite Dangerous e non è affiliato a Frontier Developments. I dati vengono da fonti pubbliche (Spansh, EDDN, EliteBGS) e dai piloti dello squadrone: possono essere in ritardo o non del tutto esatti.',
   'help.internal': 'Strumenti dello squadrone',
   'help.internalNote':
     "Lo squadrone ha anche strumenti interni, come l'assegnazione degli architetti: sono solo in italiano.",

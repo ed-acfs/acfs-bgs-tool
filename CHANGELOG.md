@@ -13,6 +13,10 @@ Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitt
 - Una chiave per account Discord; il nome del pilota nella pagina del lavoro è quello di Discord. Le chiavi date a mano finora restano valide.
 - La **Guida** ha una sezione nuova, "Accesso con Discord", in italiano, tedesco e inglese; la nota sugli Ordini riservati dice che gli ufficiali li trovano nel menu con il loro nome. Ogni sezione della Guida ha ora un'icona davanti al titolo (📊 tabella, 👁️ Watchlist, il logo di Discord per l'accesso, 📜 Ordini…), per trovarla più in fretta. Il pulsante **Accedi con Discord** ha il logo di Discord al posto della freccia.
 
+### Nota in fondo alla pagina
+
+- In fondo a ogni pagina una breve nota, sul modello di Inara: il tool è uno strumento non ufficiale dello squadrone, non affiliato a Frontier Developments, con dati da fonti pubbliche e dai piloti che possono essere in ritardo o non esatti (in italiano, tedesco e inglese); sotto, la nota sui marchi di Frontier, in inglese come testo legale. Nell'app installata (PWA) non compare.
+
 ### Accedi con Discord
 
 - Nell'intestazione, nella riga sotto con le bandiere delle lingue, il pulsante **Accedi con Discord**: Discord chiede di autorizzare l'applicazione "ACFS BGS Tool" e il server dello squadrone legge identità e ruoli nel server Discord ACFS (fase 8b della roadmap). Dopo l'accesso al suo posto c'è l'**avatar con il nome**; il menu dice il livello (Ufficiale, Membro dello squadrone o Collegato) e ha **Esci**. Al ritorno da Discord un breve messaggio sotto il pulsante ("Accesso eseguito.", "Accesso negato: non risulti nel server Discord ACFS."…), che non sposta l'intestazione.
