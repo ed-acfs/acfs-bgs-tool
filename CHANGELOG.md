@@ -15,6 +15,8 @@ Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitt
 - **Attività** (lavoro dello Squadrone) senza la password di riserva: si entra solo con il ruolo da ufficiale. La password ricordata sul dispositivo viene cancellata.
 - Guida aggiornata (Ordini, "Assegnare un architetto").
 - La pagina del lavoro si chiama ovunque **Attività** (prima "Lavoro (beta)" nel pulsante degli Ordini e "Lavoro dello Squadrone" nel titolo, "Attività (beta)" nel menu). Segnalato dall'utente.
+- **Attività sul modello del riepilogo di BGS-Tally** (indicazione dell'utente): per sistema e per pilota, etichetta colorata per tipo e valore in verde. CBs, CZ a terra e spaziali per intensità (H×2), con gli **insediamenti** delle CZ a terra su righe proprie (⚔️ Gutierrez Engineering Silo ×2); **INF** con le missioni per livello di influenza (3️⃣×1 5️⃣×3, ricavate dalle missioni completate, perché il riepilogo del plugin dà solo il totale) e **INF Elezione** a parte quando la fazione era in elezione; BVs, SAR, Expl, Exo, commercio; missioni fallite e omicidi in fondo. "Nessuna attività registrata al momento" quando non c'è niente.
+- Il server dello Squadrone ora riceve davvero il riepilogo del tick di BGS-Tally: il plugin lo manda con PUT e il server accettava solo POST, quindi finora la pagina restava vuota; anche i nomi delle CZ (`czspace`, `czground`) erano sbagliati. Sistemi senza nessun valore diverso da zero non compaiono più.
 
 ### Esito dei conflitti conclusi
 

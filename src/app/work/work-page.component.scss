@@ -79,3 +79,52 @@
   margin-right: 8px;
   font-weight: 600;
 }
+
+/* Come il riepilogo di BGS-Tally: etichetta colorata per tipo, valore in verde. */
+.work-total {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+}
+
+.work-part {
+  white-space: nowrap;
+}
+
+.work-label {
+  font-weight: 600;
+
+  &--combat {
+    color: #ff6b6b;
+  }
+
+  &--influence {
+    color: #4dabf7;
+  }
+
+  &--other {
+    color: var(--color-text-2);
+  }
+
+  &--bad {
+    color: var(--color-warning);
+  }
+}
+
+.work-value {
+  color: #51cf66;
+}
+
+.work-detail {
+  color: var(--color-text-2);
+}
+
+.work-settlement {
+  margin: 2px 0 0 12px;
+  font-size: 0.85rem;
+  color: var(--color-text-2);
+}
+
+.work-pilots .work-part {
+  margin-right: 10px;
+}
