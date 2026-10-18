@@ -13,8 +13,17 @@ export interface AuthSession {
 }
 
 /** La chiave BGS-Tally del pilota collegato, come la dà `/auth/tally-key`. */
+/** Risposta non riuscita di `/auth/tally-key`: 400 nome non valido, 409 nome già preso. */
+export class TallyKeyError extends Error {
+  constructor(readonly status: number) {
+    super(`HTTP ${status}`);
+  }
+}
+
 export interface TallyKeyStatus {
   exists: boolean;
+  /** Il nome della chiave (lettere minuscole e cifre), che ne è anche l'inizio; null se non è mai stata creata. */
+  name?: string | null;
   created_at?: string;
   revoked_at?: string | null;
   last_seen_at?: string | null;
@@ -81,16 +90,22 @@ export class AuthService {
   }
 
   /** La propria chiave BGS-Tally: stato (GET), nuova o rigenerata (POST, con la chiave in chiaro), revoca (DELETE). */
-  async tallyKey(method: 'GET' | 'POST' | 'DELETE'): Promise<TallyKeyStatus> {
+  async tallyKey(method: 'GET' | 'POST' | 'DELETE'): Promise<TallyKeyStatus>;
+  async tallyKey(method: 'PATCH', body: { name: string }): Promise<TallyKeyStatus>;
+  async tallyKey(method: 'GET' | 'POST' | 'PATCH' | 'DELETE', body?: { name: string }): Promise<TallyKeyStatus> {
     const response = await fetch(`${SERVER_API_URL}/auth/tally-key`, {
       method,
       credentials: 'include',
       cache: 'no-store',
-      headers: method === 'GET' ? {} : { 'X-Requested-With': 'acfs-bgs-tool' },
+      headers: {
+        ...(method === 'GET' ? {} : { 'X-Requested-With': 'acfs-bgs-tool' }),
+        ...(body ? { 'Content-Type': 'application/json' } : {}),
+      },
+      body: body ? JSON.stringify(body) : undefined,
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+      throw new TallyKeyError(response.status);
     }
     return (await response.json()) as TallyKeyStatus;
   }

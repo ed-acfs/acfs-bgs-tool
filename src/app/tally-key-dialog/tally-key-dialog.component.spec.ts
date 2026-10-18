@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef } from '@angular/material/dialog';
-import { AuthService, TallyKeyStatus } from '../auth.service';
+import { AuthService, TallyKeyError, TallyKeyStatus } from '../auth.service';
 import { TallyKeyDialogComponent } from './tally-key-dialog.component';
 
 const SERVER_URL = 'https://api.flottastellare.it/tally/';
@@ -85,5 +85,32 @@ describe('TallyKeyDialogComponent', () => {
     const el = await open(new Error('HTTP 502'));
     expect(el.querySelector('[role="alert"]')?.textContent).toContain('non risponde');
     expect(buttons(el)).toEqual(['Chiudi']);
+  });
+
+  it('renames the key, and says so when the name belongs to another pilot', async () => {
+    const el = await open({ exists: true, name: 'wiitifulsky', created_at: '2026-10-18T10:00:00Z', server_url: SERVER_URL });
+    expect(el.querySelector('.tally-key-name code')?.textContent).toBe('wiitifulsky');
+    (el.querySelector('.tally-key-name button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    const input = el.querySelector('form.tally-key-name input') as HTMLInputElement;
+    input.value = 'Gabolander';
+    input.dispatchEvent(new Event('input'));
+    auth.tallyKey.mockRejectedValueOnce(new TallyKeyError(409));
+    (el.querySelector('form.tally-key-name') as HTMLFormElement).dispatchEvent(new Event('submit'));
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(auth.tallyKey).toHaveBeenLastCalledWith('PATCH', { name: 'Gabolander' });
+    expect(el.querySelector('form [role="alert"]')?.textContent).toContain('già di un altro pilota');
+
+    auth.tallyKey.mockResolvedValueOnce({ exists: true, name: 'skyflash', created_at: '2026-10-18T10:00:00Z', server_url: SERVER_URL });
+    input.value = 'Sky Flash';
+    input.dispatchEvent(new Event('input'));
+    (el.querySelector('form.tally-key-name') as HTMLFormElement).dispatchEvent(new Event('submit'));
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(el.querySelector('form.tally-key-name')).toBeNull();
+    expect(el.querySelector('.tally-key-name code')?.textContent).toBe('skyflash');
   });
 });

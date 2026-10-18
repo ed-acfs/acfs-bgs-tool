@@ -7,6 +7,35 @@
   }
 
   @if (status(); as s) {
+    @if (s.name) {
+      @if (editingName() !== null) {
+        <form class="tally-key-name" (submit)="$event.preventDefault(); saveName()">
+          <label>
+            <span>{{ t('tallyKey.name') }}</span>
+            <span class="tally-key-row">
+              <input
+                [value]="editingName()"
+                (input)="editingName.set($any($event.target).value)"
+                maxlength="40"
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <button mat-flat-button type="submit" [disabled]="busy()">{{ t('tallyKey.save') }}</button>
+              <button mat-button type="button" (click)="editingName.set(null)">{{ t('tallyKey.cancel') }}</button>
+            </span>
+          </label>
+          @if (nameError(); as err) {
+            <p class="tally-key-error" role="alert">{{ err === 'nameTaken' ? t('tallyKey.nameTaken') : t('tallyKey.nameInvalid') }}</p>
+          }
+          <p class="tally-key-hint">{{ t('tallyKey.nameHint') }}</p>
+        </form>
+      } @else {
+        <p class="tally-key-name">
+          {{ t('tallyKey.name') }}: <code>{{ s.name }}</code>
+          <button mat-button type="button" [disabled]="busy()" (click)="startRename()">{{ t('tallyKey.rename') }}</button>
+        </p>
+      }
+    }
     @if (s.key) {
       <section class="tally-key-new">
         <p class="tally-key-warning">{{ t('tallyKey.showOnce') }}</p>

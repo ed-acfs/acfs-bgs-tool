@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { formatUtcTime } from '../../core/i18n';
-import { AuthService, TallyKeyStatus } from '../auth.service';
+import { AuthService, TallyKeyError, TallyKeyStatus } from '../auth.service';
 import { I18nService } from '../i18n.service';
 
 /**
@@ -25,6 +25,9 @@ export class TallyKeyDialogComponent implements OnInit {
   protected readonly busy = signal(false);
   protected readonly error = signal(false);
   protected readonly copied = signal<'key' | 'url' | null>(null);
+  /** Il nome mentre lo si cambia; null quando non lo si sta cambiando. */
+  protected readonly editingName = signal<string | null>(null);
+  protected readonly nameError = signal<'nameTaken' | 'nameInvalid' | null>(null);
 
   ngOnInit(): void {
     void this.run('GET');
@@ -40,6 +43,36 @@ export class TallyKeyDialogComponent implements OnInit {
   protected revoke(): void {
     if (window.confirm(this.t('tallyKey.confirmRevoke'))) {
       void this.run('DELETE');
+    }
+  }
+
+  protected startRename(): void {
+    this.nameError.set(null);
+    this.editingName.set(this.status()?.name ?? '');
+  }
+
+  protected async saveName(): Promise<void> {
+    const name = this.editingName();
+    if (name === null) {
+      return;
+    }
+    this.busy.set(true);
+    this.error.set(false);
+    this.nameError.set(null);
+    try {
+      this.status.set(await this.auth.tallyKey('PATCH', { name }));
+      this.editingName.set(null);
+    } catch (e) {
+      const status = e instanceof TallyKeyError ? e.status : 0;
+      if (status === 409) {
+        this.nameError.set('nameTaken');
+      } else if (status === 400) {
+        this.nameError.set('nameInvalid');
+      } else {
+        this.error.set(true);
+      }
+    } finally {
+      this.busy.set(false);
     }
   }
 

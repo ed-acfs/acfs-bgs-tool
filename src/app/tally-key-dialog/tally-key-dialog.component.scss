@@ -32,6 +32,39 @@
   }
 }
 
+.tally-key-name {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
+
+  code {
+    color: var(--color-text-bright);
+  }
+
+  label {
+    flex: 1 1 100%;
+  }
+
+  label > span:first-child {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+}
+
+form.tally-key-name {
+  display: block;
+  margin: 10px 0;
+}
+
+.tally-key-hint {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
 .tally-key-warning {
   color: var(--color-warning);
 }
