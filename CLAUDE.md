@@ -12,7 +12,7 @@ Per una modifica a logica o interfaccia, avvia il server (`npm start`) e mostra 
 
 ## Prima del push
 
-Il repo è pubblico e un push su `main` pubblica sul sito reale entro circa 30 minuti (workflow automatico). Committa pure senza chiedere, ma chiedi sempre conferma esplicita prima di `git push`.
+Il repo è pubblico e un push su `main` pubblica sul sito reale entro circa 30 minuti (workflow automatico). Committa pure senza chiedere, ma chiedi sempre conferma esplicita prima di `git push`. Un parere positivo su un risultato ("mi sembra ok", "mi piace") **non è** un ok al push: serve una richiesta esplicita ("pubblica", "fai il push", "luce verde"). Vale anche per `acfs-server`, dove il push su `main` va in produzione da solo (errore del 18 ottobre 2026: avvisi Discord pubblicati dopo un "mi sembra ok").
 
 ## Memoria locale dell'altro PC
 

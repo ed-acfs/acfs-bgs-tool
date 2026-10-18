@@ -256,6 +256,18 @@ Nata dall'analisi del sistema dei Canonn (vedi fase 7) e dalla voce "Un'app nost
 
 **Fatto quando:** il tool mostra dati dal nostro server, compreso il punteggio dei conflitti, e torna da solo ai dati Spansh se il server si ferma.
 
+### 10b. Classifiche del lavoro (decise il 18 ottobre 2026, da fare)
+
+Evoluzione della pagina `/activity` (lavoro BGS-Tally per pilota, beta, solo ufficiali), sui dati che il server già raccoglie. Decisioni dell'utente:
+
+- **Periodi**: per **tick** (giornaliera); **settimanale da giovedì a giovedì**, come il reset settimanale del gioco (Powerplay, Community Goal; ora esatta del reset da verificare); **mensile solare**; **di campagna**.
+- **Campagne**: sia **automatiche**, una per ogni guerra o elezione di Flotta Stellare, dall'inizio alla fine che il server già rileva (eventi `conflict_start` / `conflict_end`), sia **manuali**, aperte e chiuse da un ufficiale per obiettivi diversi (es. "Difesa di LP 254-26", un'espansione, un recupero di influenza), anche su più sistemi.
+- **Categorie separate, nessun punteggio unico**: combattimento (CBs e CZ per intensità), taglie (BVs), missioni (+Inf), commercio, esplorazione ed esobiologia, **Scout** (sistemi visitati quando il dato era vecchio, dagli eventi di salto mandati da BGS-Tally: la classifica della Pattuglia). Sommare crediti di commercio, bond e taglie premierebbe chi fa numeri, non chi aiuta il BGS.
+- **Nessun peso** per i sistemi prioritari: il lavoro per Flotta Stellare vale uguale ovunque.
+- **Visibilità**: in beta solo agli ufficiali; poi pubbliche nello squadrone, solo per i piloti che danno il consenso (da chiedere quando li si collega).
+- **Chi non usa BGS-Tally** (es. l'utente e Habba-Nero): un modulo nella pagina per **inserire a mano** il proprio lavoro del tick, segnato come "dichiarato" e distinto da quello raccolto dal plugin.
+- Proposte ancora da confermare: un **riepilogo settimanale su Discord** il giovedì dopo il reset, con il podio per categoria; la classifica di una campagna pubblicata alla sua chiusura.
+
 ### 11. Plugin nostro per EDMC (fase avanzata, messa a piano il 18 ottobre 2026)
 
 Un plugin EDMC dello squadrone, sul modello di [EDMC-Canonn](https://github.com/canonn-science/EDMC-Canonn) (vedi "Ecosistema di strumenti" più sotto), che **mostra** al pilota, mentre gioca, quello che il tool sa: priorità del sistema in cui si trova, architetto e fazione preferita, Ordini del giorno, prossimo sistema della Pattuglia, eventualmente in sovrimpressione con EDMC-Overlay. Legge dalla nostra API (fase 10); non serve per **inviare** dati, che arrivano già da EDDN e, per chi lo usa, da BGS-Tally.
