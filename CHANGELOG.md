@@ -2,9 +2,9 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
-## [1.5.3] - 2026-10-18 — Punteggio, stati e influenze dal server dello Squadrone; lavoro dello Squadrone; accesso con Discord e chiavi BGS-Tally
+## [1.5.4] - 2026-10-18 — Punteggio, stati e influenze dal server dello Squadrone; lavoro dello Squadrone; accesso con Discord e chiavi BGS-Tally
 
-Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon), la 1.5.0 (stati e influenze dal server, conflitti appena conclusi) la 1.5.1 (pagina del lavoro dello Squadrone, in beta), la 1.5.2 (accesso con Discord) e la 1.5.3 (chiave BGS-Tally per ogni pilota). La pagina è una funzione nuova, ma per scelta dell'utente la versione resta bassa.
+Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon), la 1.5.0 (stati e influenze dal server, conflitti appena conclusi) la 1.5.1 (pagina del lavoro dello Squadrone, in beta), la 1.5.2 (accesso con Discord), la 1.5.3 (chiave BGS-Tally per ogni pilota) e la 1.5.4 (nome Discord nelle Chiavi dei piloti). La pagina è una funzione nuova, ma per scelta dell'utente la versione resta bassa.
 
 ### Ordini e "Assegna" secondo il ruolo Discord
 
@@ -31,6 +31,7 @@ Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitt
 - Ogni chiave ha un **nome** di lettere minuscole e cifre, ricavato dal nome Discord (es. `wiitifulsky`, con una cifra in fondo se è già preso), che è anche l'**inizio della chiave**: nelle impostazioni di BGS-Tally e nei registri del server si riconosce a chi appartiene. Si cambia con **Rinomina** nella finestra (la chiave prende il nome nuovo alla rigenerazione successiva) ed è il nome del pilota nella pagina del lavoro.
 - Una chiave per account Discord. Le chiavi date a mano finora restano valide; quelle di Gabolander e Marziano Inside sono state collegate ai loro account Discord (comando `link` sul server), così le vedono e le gestiscono dal tool.
 - **Chiavi dei piloti**, nel menu dell'account solo per gli ufficiali e solo in italiano: l'elenco delle chiavi (nome, nome Discord o "data a mano", creata, ultimo invio, stato) e **Revoca**, con conferma, per chi lascia lo Squadrone. Serve perché il server non sa da solo chi esce dal server Discord. Le chiavi non si vedono, solo il loro nome.
+- Chiavi dei piloti: il **nome Discord** ora il server lo salva con la chiave a ogni accesso al tool, invece di cercarlo nelle sessioni, che si cancellano all'uscita e alla scadenza: prima, dopo un logout il pilota compariva come "collegata". Resta "collegata, mai entrato nel tool" solo per una chiave data a mano e collegata a un account Discord che nel tool non è mai entrato (oggi Gabolander). Segnalato dall'utente.
 - La **Guida** ha una sezione nuova, "Accesso con Discord", in italiano, tedesco e inglese; la nota sugli Ordini riservati dice che gli ufficiali li trovano nel menu con il loro nome. Ogni sezione della Guida ha ora un'icona davanti al titolo (📊 tabella, 👁️ Watchlist, il logo di Discord per l'accesso, 📜 Ordini…), per trovarla più in fretta. Il pulsante **Accedi con Discord** ha il logo di Discord al posto della freccia.
 
 ### Nota in fondo alla pagina

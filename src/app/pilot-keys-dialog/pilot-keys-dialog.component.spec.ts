@@ -5,6 +5,7 @@ import { PilotKeysDialogComponent } from './pilot-keys-dialog.component';
 
 const PILOTS: PilotKey[] = [
   { id: 1, name: 'gabolander', discord_id: '1', discord_name: 'Gabolander', created_at: '2026-10-18T12:38:48Z', revoked_at: null, last_seen_at: '2026-10-18T12:43:46Z' },
+  { id: 3, name: 'nuovo', discord_id: '3', discord_name: null, created_at: '2026-10-18T12:30:00Z', revoked_at: null, last_seen_at: null },
   { id: 2, name: 'vecchio', discord_id: null, discord_name: null, created_at: '2026-10-18T12:00:00Z', revoked_at: '2026-10-18T13:00:00Z', last_seen_at: null },
 ];
 
@@ -37,11 +38,12 @@ describe('PilotKeysDialogComponent', () => {
   it('lists the keys, with a Revoke button only on the active ones', async () => {
     const { el } = await open();
     const rows = [...el.querySelectorAll('tbody tr')];
-    expect(rows.map(r => r.querySelector('code')?.textContent)).toEqual(['gabolander', 'vecchio']);
+    expect(rows.map(r => r.querySelector('code')?.textContent)).toEqual(['gabolander', 'nuovo', 'vecchio']);
     expect(rows[0].textContent).toContain('Gabolander');
-    expect(rows[1].textContent).toContain('data a mano');
-    expect(rows[1].textContent).toContain('revocata il');
-    expect(el.querySelectorAll('tbody button').length).toBe(1);
+    expect(rows[1].textContent).toContain('collegata, mai entrato nel tool');
+    expect(rows[2].textContent).toContain('data a mano');
+    expect(rows[2].textContent).toContain('revocata il');
+    expect(el.querySelectorAll('tbody button').length).toBe(2);
   });
 
   it('revokes a key after confirmation and reloads the list', async () => {
