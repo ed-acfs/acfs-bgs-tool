@@ -798,13 +798,13 @@
                 @if (entry.status === 'pending') {
                   <p class="bgs-state-score">{{ t('state.scorePending') }}</p>
                 } @else if (entry.score; as score) {
-                  <p class="bgs-state-score">
-                    {{ t('state.score') }} <strong class="bgs-state-score-value">{{ score.ours }}-{{ score.theirs }}</strong>&nbsp;<span class="bgs-state-score-note">{{ t('state.scoreNote') }}</span>
-                  </p>
-                  @if (stakesLabel(score); as stakes) {
-                    <p class="bgs-state-score">{{ t('state.stakes', { stakes }) }}</p>
+                  <app-conflict-score-card [score]="score" [faction]="factionName" />
+                  @if (score.ended) {
+                    <p class="bgs-state-score">{{ t('state.scoreEnded') }}</p>
                   }
-                  <p class="bgs-state-score bgs-state-score-note">{{ t('state.scoreAge', { age: scoreAgeTitle(score.updatedAt) }) }}</p>
+                  <p class="bgs-state-score bgs-state-score-note">
+                    {{ t(score.source === 'server' ? 'state.scoreAgeServer' : 'state.scoreAge', { age: scoreAgeTitle(score.updatedAt) }) }}
+                  </p>
                 } @else {
                   <p class="bgs-state-score">
                     {{ datasetInfo()?.conflictScoresAvailable ? t('state.noScoreYet') : t('state.noScoreSource') }}

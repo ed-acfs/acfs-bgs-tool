@@ -33,7 +33,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {
   BgsRow,
-  ConflictScore,
   StateEntry,
   StationServiceKind,
   SystemService,
@@ -68,6 +67,7 @@ import { computeTickCoverage, formatTickCoverage } from '../../core/tick-coverag
 import { readYourName } from '../your-name';
 import { version } from '../../../package.json';
 import { I18nService } from '../i18n.service';
+import { ConflictScoreCardComponent } from '../conflict-score-card/conflict-score-card.component';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 import { PriorityReason } from '../../core/priority';
 import { isMessageKey } from '../../core/i18n';
@@ -215,6 +215,7 @@ function toAnchorPoint(system: TypeaheadSystem): AnchorPoint {
     FaIconComponent,
     AcfsLogoComponent,
     LanguageSwitcherComponent,
+    ConflictScoreCardComponent,
   ],
   templateUrl: './bgs-table.component.html',
   styleUrl: './bgs-table.component.scss',
@@ -1091,19 +1092,7 @@ export class BgsTableComponent implements OnDestroy {
     return icon ? `${icon} ${name}` : name;
   }
 
-  /**
-   * What each side risks losing, naming only the sides that risk something: "Bolden Port
-   * (nostra); Prova Station di Earth Defense Fleet". Null when nothing is at stake.
-   */
-  protected stakesLabel(score: ConflictScore): string | null {
-    const parts = [
-      score.ourStake ? this.t('state.ourStake', { station: score.ourStake }) : null,
-      score.theirStake ? this.t('state.theirStake', { station: score.theirStake, faction: score.opponent }) : null,
-    ].filter(part => part !== null);
-    return parts.length > 0 ? parts.join('; ') : null;
-  }
-
-  /** When EliteBGS last updated a conflict score, in the same words as the Spansh data's age. */
+  /** When the score's source last saw the system, in the same words as the Spansh data's age. */
   protected scoreAgeTitle(updatedAt: string | null): string {
     return computeFreshness(updatedAt, this.now(), this.i18n.lang()).title;
   }

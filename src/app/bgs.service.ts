@@ -8,12 +8,14 @@ import {
   ARCHITECTS_SHEET_URL,
   ASSIGN_SCRIPT_URL,
   BGS_DATA_URL,
+  SERVER_API_URL,
   STORAGE_PREFIX,
   TYPEAHEAD_URL,
   WATCHLIST_SHEET_URL,
 } from '../core/config';
 import { logger } from '../core/logger';
 import { PriorityWatchlistEntry, buildWatchlistMap, parseWatchlistTsv, watchlistFirst } from '../core/priority-watchlist';
+import { ServerConflictsResponse, serverConflictsBySystem, withFreshestConflicts } from '../core/server-conflicts';
 
 /**
  * The published sheets ({@link ARCHITECTS_SHEET_URL}, {@link WATCHLIST_SHEET_URL}) are
@@ -22,6 +24,11 @@ import { PriorityWatchlistEntry, buildWatchlistMap, parseWatchlistTsv, watchlist
  */
 const ARCHITECTS_SHEET_TIMEOUT_MS = 8000;
 const WATCHLIST_SHEET_TIMEOUT_MS = 8000;
+/**
+ * The squadron server is optional: without its answer the table still loads, with the dataset's
+ * scores. Short and not retried, so a server that's down delays the page by this much at most.
+ */
+const SERVER_API_TIMEOUT_MS = 6000;
 
 /** Default per-request timeout for remote API calls (ms). */
 const HTTP_TIMEOUT_MS = 20000;
@@ -75,7 +82,7 @@ export interface DatasetInfo {
   /** ISO 8601 time of the last BGS tick at that moment; null if unknown. */
   tickAt: string | null;
   count: number;
-  /** Whether EliteBGS answered when the dataset was downloaded, i.e. whether conflict scores could be fetched. */
+  /** Whether any score source answered: the squadron server now, or EliteBGS when the dataset was downloaded. */
   conflictScoresAvailable: boolean;
 }
 
@@ -126,6 +133,8 @@ export class BgsService {
   }
 
   private datasetPromise?: Promise<BgsDataset>;
+  /** Whether the squadron server answered with its conflict scores this session. */
+  private serverConflictsAvailable = false;
   private readonly pagePromises = new Map<number, Promise<BgsPage>>();
   private registryPromise?: Promise<ArchitectRegistryRow[]>;
   /** The resolved registry, once loaded — what {@link recordAssignment} appends to. */
@@ -161,7 +170,7 @@ export class BgsService {
       tickAt: dataset.tick_at ?? null,
       count: dataset.results.length,
       // Files written before the EliteBGS lookup existed have no flag: no scores either.
-      conflictScoresAvailable: dataset.conflict_scores_available ?? false,
+      conflictScoresAvailable: this.serverConflictsAvailable || (dataset.conflict_scores_available ?? false),
     };
   }
 
@@ -296,15 +305,38 @@ export class BgsService {
     };
   }
 
-  /** Loads the dataset at most once per session; a failure clears the memo so a later call can retry. */
+  /**
+   * Loads the dataset at most once per session, with the squadron server's conflict scores
+   * folded in where they're fresher; a failure clears the memo so a later call can retry.
+   */
   private getDataset(): Promise<BgsDataset> {
     if (!this.datasetPromise) {
-      this.datasetPromise = this.resilientGet<BgsDataset>(BGS_DATA_URL).catch(error => {
-        this.datasetPromise = undefined;
-        throw error;
-      });
+      this.datasetPromise = Promise.all([this.resilientGet<BgsDataset>(BGS_DATA_URL), this.loadServerConflicts()])
+        .then(([dataset, server]) =>
+          server ? { ...dataset, results: dataset.results.map(record => withFreshestConflicts(record, server)) } : dataset,
+        )
+        .catch(error => {
+          this.datasetPromise = undefined;
+          throw error;
+        });
     }
     return this.datasetPromise;
+  }
+
+  /** The server's conflicts by system, or null if it's not configured or didn't answer in time (never throws). */
+  private async loadServerConflicts(): Promise<ReturnType<typeof serverConflictsBySystem> | null> {
+    if (!SERVER_API_URL) {
+      return null;
+    }
+    try {
+      const text = await this.fetchTextOnce(`${SERVER_API_URL}/v1/conflicts`, SERVER_API_TIMEOUT_MS);
+      const conflicts = serverConflictsBySystem(JSON.parse(text) as ServerConflictsResponse);
+      this.serverConflictsAvailable = true;
+      return conflicts;
+    } catch (error) {
+      logger.warn('Squadron server unavailable; conflict scores come from the dataset only.', error);
+      return null;
+    }
   }
 
   /** The system -> architect lookup the table's rows are built from, derived from the registry once. */

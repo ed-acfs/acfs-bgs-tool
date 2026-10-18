@@ -1,6 +1,6 @@
 import { systemServices } from '../core/bgs';
 import { TestBed } from '@angular/core/testing';
-import { ARCHITECT_FORM_ACTION, ARCHITECTS_SHEET_URL, WATCHLIST_SHEET_URL } from '../core/config';
+import { ARCHITECT_FORM_ACTION, ARCHITECTS_SHEET_URL, SERVER_API_URL, WATCHLIST_SHEET_URL } from '../core/config';
 import { BgsService } from './bgs.service';
 import { logger } from '../core/logger';
 
@@ -156,14 +156,19 @@ describe('BgsService state summarisation (retreat, FR-1/FR-2)', () => {
   let service: BgsService;
   let fetchMock: ReturnType<typeof vi.fn>;
   let records: ReturnType<typeof systemWithPresences>[];
+  /** The squadron server's /v1/conflicts answer; null = the server doesn't answer. */
+  let serverConflicts: unknown[] | null;
 
   beforeEach(() => {
     localStorage.clear();
     records = [];
+    serverConflicts = null;
     fetchMock = vi.fn((url: string) =>
       url === BGS_DATA_URL
         ? Promise.resolve(textResponse(dataset(records)))
-        : Promise.reject(new Error(`Unexpected fetch in test: ${url}`)),
+        : url === `${SERVER_API_URL}/v1/conflicts` && serverConflicts
+          ? Promise.resolve(textResponse(JSON.stringify({ conflicts: serverConflicts })))
+          : Promise.reject(new Error(`Unexpected fetch in test: ${url}`)),
     );
     vi.stubGlobal('fetch', fetchMock);
     TestBed.configureTestingModule({});
@@ -240,6 +245,84 @@ describe('BgsService state summarisation (retreat, FR-1/FR-2)', () => {
       ourStake: null,
       theirStake: 'Bolden Port',
       updatedAt: '2026-10-06T08:00:00.000Z',
+      source: 'elitebgs',
+      ended: false,
+    });
+  });
+
+  describe('with the squadron server', () => {
+    const civilWar = () =>
+      systemWithPresences(
+        'Misir',
+        [
+          { name: 'Earth Defense Fleet', influence: 0.3, active_states: ['CivilWar'] },
+          { name: 'Flotta Stellare', influence: 0.3, active_states: ['CivilWar'] },
+        ],
+        {
+          ebgs_conflicts: {
+            updated_at: '2026-10-06T08:00:00.000Z',
+            conflicts: [
+              {
+                type: 'civilwar',
+                status: 'active',
+                faction1: { name: 'Earth Defense Fleet', stake: 'Bolden Port', days_won: 2 },
+                faction2: { name: 'Flotta Stellare', stake: null, days_won: 1 },
+              },
+            ],
+          },
+        },
+      );
+    const serverEntry = (lastSeen: string, status: string) => ({
+      system_address: '123',
+      system_name: 'MISIR',
+      last_seen: lastSeen,
+      type: 'civilwar',
+      status,
+      involves_us: true,
+      faction1: { name: 'Flotta Stellare', stake: null, won_days: 4 },
+      faction2: { name: 'Earth Defense Fleet', stake: 'Bolden Port', won_days: 0 },
+      score: '4-0',
+    });
+
+    it("uses the server's score when it saw the system after EliteBGS, telling a finished conflict apart", async () => {
+      records = [civilWar()];
+      serverConflicts = [serverEntry('2026-10-18T06:49:34Z', 'ended')];
+
+      const page = await service.getPage(0);
+      const info = await service.getDatasetInfo();
+
+      expect(page.rows[0].stateEntries[0].score).toEqual({
+        ours: 4,
+        theirs: 0,
+        opponent: 'Earth Defense Fleet',
+        ourStake: null,
+        theirStake: 'Bolden Port',
+        updatedAt: '2026-10-18T06:49:34Z',
+        source: 'server',
+        ended: true,
+      });
+      expect(info.conflictScoresAvailable).toBe(true);
+    });
+
+    it("keeps EliteBGS's score when the server's observation is older", async () => {
+      records = [civilWar()];
+      serverConflicts = [serverEntry('2026-10-01T00:00:00Z', 'active')];
+
+      const page = await service.getPage(0);
+
+      expect(page.rows[0].stateEntries[0].score).toMatchObject({ ours: 1, theirs: 2, source: 'elitebgs' });
+    });
+
+    it('still loads the table, with the dataset scores, when the server does not answer', async () => {
+      const warnSpy = vi.spyOn(logger, 'warn');
+      records = [civilWar()];
+
+      const page = await service.getPage(0);
+      const info = await service.getDatasetInfo();
+
+      expect(page.rows[0].stateEntries[0].score).toMatchObject({ ours: 1, theirs: 2, source: 'elitebgs' });
+      expect(info.conflictScoresAvailable).toBe(false);
+      expect(warnSpy).toHaveBeenCalledWith('Squadron server unavailable; conflict scores come from the dataset only.', expect.any(Error));
     });
   });
 

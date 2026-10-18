@@ -256,7 +256,7 @@ describe('BgsTableComponent', () => {
           state: 'CivilWar',
           status: 'active',
           factions: ['Flotta Stellare', 'Earth Defense Fleet'],
-          score: { ours: 1, theirs: 2, opponent: 'Earth Defense Fleet', ourStake: null, theirStake: 'Bolden Port', updatedAt: '2026-10-06T08:00:00Z' },
+          score: { ours: 1, theirs: 2, opponent: 'Earth Defense Fleet', ourStake: null, theirStake: 'Bolden Port', updatedAt: '2026-10-06T08:00:00Z', source: 'server', ended: true },
         },
       ],
     };
@@ -273,8 +273,12 @@ describe('BgsTableComponent', () => {
     expect(panel.textContent).toContain('in corso');
     expect(panel.textContent).toContain('Earth Defense Fleet');
     expect(panel.textContent).toContain('25,0%');
-    expect(panel.textContent).toContain('1-2');
+    expect(panel.querySelector('app-conflict-score-card .days')!.textContent!.replace(/\s/g, '')).toBe('1vs2');
+    expect(panel.querySelector('app-conflict-score-card .side--ours .outcome')!.textContent).toBe('Close Defeat');
+    expect(panel.querySelector('app-conflict-score-card .side--theirs .outcome')!.textContent).toBe('Close Victory');
     expect(panel.textContent).toContain('Bolden Port');
+    expect(panel.textContent).toContain('Conflitto concluso');
+    expect(panel.textContent).toContain('dal server ACFS');
   });
 
   it('marks the services next to the system name and filters to the systems that have one', async () => {
