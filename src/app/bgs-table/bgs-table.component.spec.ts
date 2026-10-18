@@ -261,14 +261,15 @@ describe('BgsTableComponent', () => {
     const host: HTMLElement = fixture.nativeElement;
 
     const flag = [...host.querySelectorAll<HTMLElement>('.bgs-state-icon')].find(icon => icon.textContent === '🏁')!;
-    expect(flag.title).toBe('Conflitto concluso (Election): Total Victory 4-0');
+    expect(flag.title).toBe('Conflitto concluso (Election): Vinto, 4-0');
 
     host.querySelector<HTMLButtonElement>('.bgs-state-button')!.click();
     await fixture.whenStable();
 
     const panel = document.querySelector('.bgs-state-panel')!;
     expect(panel.querySelector('.bgs-state-entry-status--ended')!.textContent!.trim()).toBe('concluso');
-    expect(panel.querySelector('app-conflict-score-card .side--ours .outcome')!.textContent).toBe('Total Victory');
+    expect(panel.querySelector('app-conflict-score-card .side--ours .outcome')!.textContent).toBe('Vinto');
+    expect(panel.querySelector('app-conflict-score-card .side--theirs .outcome')!.textContent).toBe('Perso');
     expect(panel.textContent).toContain('Dato dal server ACFS (EDDN)');
   });
 
@@ -305,8 +306,8 @@ describe('BgsTableComponent', () => {
     expect(panel.textContent).toContain('Earth Defense Fleet');
     expect(panel.textContent).toContain('25,0%');
     expect(panel.querySelector('app-conflict-score-card .days')!.textContent!.replace(/\s/g, '')).toBe('1vs2');
-    expect(panel.querySelector('app-conflict-score-card .side--ours .outcome')!.textContent).toBe('Close Defeat');
-    expect(panel.querySelector('app-conflict-score-card .side--theirs .outcome')!.textContent).toBe('Close Victory');
+    expect(panel.querySelector('app-conflict-score-card .side--ours .outcome')!.textContent).toBe('Perso');
+    expect(panel.querySelector('app-conflict-score-card .side--theirs .outcome')!.textContent).toBe('Vinto');
     expect(panel.textContent).toContain('Bolden Port');
     expect(panel.textContent).toContain('Conflitto concluso');
     expect(panel.textContent).toContain('dal server ACFS');

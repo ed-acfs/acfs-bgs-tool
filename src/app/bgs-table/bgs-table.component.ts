@@ -33,7 +33,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {
   BgsRow,
-  conflictOutcome,
+  conflictResult,
   StateEntry,
   StationServiceKind,
   SystemService,
@@ -1100,12 +1100,12 @@ export class BgsTableComponent implements OnDestroy {
     return row.stateEntries.filter(entry => entry.status === 'ended');
   }
 
-  /** Hover text of an ended conflict's flag: "Conflitto concluso (War): Victory 4-0". */
+  /** Hover text of an ended conflict's flag: "Conflitto concluso (War): Vinto, 4-0". */
   protected endedEntryTitle(entry: StateEntry): string {
     const state = entry.state.replace(/([a-z])([A-Z])/g, '$1 $2');
     const score = entry.score;
     return score
-      ? this.t('state.endedTitle', { state, outcome: conflictOutcome(score.ours, score.theirs), score: `${score.ours}-${score.theirs}` })
+      ? this.t('state.endedTitle', { state, outcome: this.t(`state.result.${conflictResult(score.ours, score.theirs)}`), score: `${score.ours}-${score.theirs}` })
       : this.t('state.endedTitleNoScore', { state });
   }
 

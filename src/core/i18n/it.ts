@@ -232,8 +232,11 @@ export const it = {
   // State details panel
   'state.active': 'in corso',
   'state.ended': 'concluso',
-  'state.endedTitle': 'Conflitto concluso ({state}): {outcome} {score}',
+  'state.endedTitle': 'Conflitto concluso ({state}): {outcome}, {score}',
   'state.endedTitleNoScore': 'Conflitto concluso ({state})',
+  'state.result.won': 'Vinto',
+  'state.result.lost': 'Perso',
+  'state.result.drawn': 'Pari',
   'state.serverAge': 'Dato dal server ACFS (EDDN): {age}',
   'state.pending': 'in pending',
   'state.scorePending': 'Punteggio: Draw; 0-0, il conflitto non è ancora iniziato.',

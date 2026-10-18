@@ -6,6 +6,10 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
 Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon), la 1.5.0 (stati e influenze dal server, conflitti appena conclusi) la 1.5.1 (pagina del lavoro dello squadrone, in beta), la 1.5.2 (accesso con Discord) e la 1.5.3 (chiave BGS-Tally per ogni pilota). La pagina è una funzione nuova, ma per scelta dell'utente la versione resta bassa.
 
+### Esito dei conflitti conclusi
+
+- Un conflitto **concluso** (finito per la fonte del punteggio, o con 4 giorni vinti da una parte) non mostra più le etichette dello scarto: il tooltip della bandierina 🏁 dice "Conflitto concluso (Election): Vinto, 4-0" (prima "Total Victory 4-0") e la scheda del punteggio "Vinto" / "Perso" / "Pari", in italiano, tedesco e inglese. Le etichette (Draw, Close, Victory/Defeat, Total) descrivono lo scarto a conflitto **in corso** e arrivano a 3 giorni: chi arriva a 4 giorni vinti ha già vinto, quindi un quarto livello non esiste. La regola in `CLAUDE.md` diceva per errore "3 o più".
+
 ### Chiave BGS-Tally per ogni pilota
 
 - Nel menu dell'account, per **chiunque sia collegato** con Discord (anche senza ruoli dello squadrone) e in tutte e tre le lingue, la voce **🔑 Chiave BGS-Tally**: il pilota si genera da solo la chiave con cui il plugin BGS-Tally manda il suo lavoro per Flotta Stellare al server dello squadrone, senza chiederla a un ufficiale (passo 4 della fase 8b). La finestra mostra **Url Server** e **Chiave API** con il pulsante Copia e i quattro passi da fare in EDMC.

@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh pr *)",
+      "Bash(git fetch *)",
+      "Bash(git pull *)",
+      "Bash(git push *)",
+      "Bash(git branch *)",
+      "Bash(gh run *)",
+      "Bash(git update-index *)",
+      "Bash(bash -n scripts/bgslogs)",
+      "Bash(ssh -i ~/.ssh/acfs_oracle -o BatchMode=yes ubuntu@92.5.45.233 'sudo -n ln -sf /opt/acfs-server/scripts/bgslogs /usr/local/bin/bgslogs && cd ~ && bgslogs stato && echo ---- && timeout 5 bgslogs stat | tail -2; echo ----; N=3 timeout 4 bgslogs | tail -3; echo ----; bgslogs boh | head -3')",
+      "Bash(bash -n scripts/bgslogs.bash-completion)"
+    ]
+  }
+}

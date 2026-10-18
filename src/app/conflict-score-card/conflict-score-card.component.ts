@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { ConflictOutcome, ConflictScore, conflictOutcome } from '../../core/bgs';
+import { ConflictScore, conflictIsOver, conflictOutcome, conflictResult } from '../../core/bgs';
 import { I18nService } from '../i18n.service';
 
 /**
@@ -13,7 +13,7 @@ import { I18nService } from '../i18n.service';
     <div class="score-card" [attr.aria-label]="i18n.t('state.scoreAria', { ours: s.ours, theirs: s.theirs })">
       <div class="side side--ours" [attr.data-outcome]="tone(s.ours, s.theirs)">
         <span class="faction">{{ faction() }}</span>
-        <span class="outcome">{{ outcome(s.ours, s.theirs) }}</span>
+        <span class="outcome">{{ outcome(s, s.ours, s.theirs) }}</span>
         <span class="stake-label">{{ i18n.t('state.stakeAtRisk') }}</span>
         <span class="stake">{{ s.ourStake ?? '—' }}</span>
       </div>
@@ -23,7 +23,7 @@ import { I18nService } from '../i18n.service';
       </div>
       <div class="side side--theirs" [attr.data-outcome]="tone(s.theirs, s.ours)">
         <span class="faction">{{ s.opponent }}</span>
-        <span class="outcome">{{ outcome(s.theirs, s.ours) }}</span>
+        <span class="outcome">{{ outcome(s, s.theirs, s.ours) }}</span>
         <span class="stake-label">{{ i18n.t('state.stakeAtRisk') }}</span>
         <span class="stake">{{ s.theirStake ?? '—' }}</span>
       </div>
@@ -39,9 +39,12 @@ export class ConflictScoreCardComponent {
   /** Our faction's name, for the left side. */
   readonly faction = input.required<string>();
 
-  /** "Close Victory", "Draw", "Defeat"… for the side that won `days` against `otherDays` (see CLAUDE.md). */
-  protected outcome(days: number, otherDays: number): ConflictOutcome {
-    return conflictOutcome(days, otherDays);
+  /**
+   * In progress: "Close Victory", "Draw", "Total Defeat"… for the side that won `days` against
+   * `otherDays` (see CLAUDE.md). Over: just won, lost or drawn — the gap labels don't apply any more.
+   */
+  protected outcome(score: ConflictScore, days: number, otherDays: number): string {
+    return conflictIsOver(score) ? this.i18n.t(`state.result.${conflictResult(days, otherDays)}`) : conflictOutcome(days, otherDays);
   }
 
   /** Colours a side: ahead, level or behind. */
