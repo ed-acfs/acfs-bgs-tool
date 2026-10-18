@@ -27,7 +27,7 @@
           @for (p of list; track p.id) {
             <tr [class.pilot-keys-revoked]="p.revoked_at">
               <td><code>{{ p.name }}</code></td>
-              <td>{{ p.discord_name ?? (p.discord_id ? 'collegata' : 'data a mano') }}</td>
+              <td>{{ p.discord_name ?? (p.discord_id ? 'collegata, mai entrato nel tool' : 'data a mano') }}</td>
               <td>{{ when(p.created_at) }}</td>
               <td>{{ when(p.last_seen_at) }}</td>
               <td>
