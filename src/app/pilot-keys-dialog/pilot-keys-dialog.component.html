@@ -1,0 +1,51 @@
+<h2 mat-dialog-title>Chiavi dei piloti</h2>
+<mat-dialog-content class="pilot-keys">
+  <p>
+    Le chiavi BGS-Tally dello squadrone. Quando qualcuno lascia lo squadrone, revoca la sua chiave: il server non sa da
+    solo chi esce dal server Discord. Le chiavi non si vedono qui, solo il loro nome.
+  </p>
+
+  @if (error()) {
+    <p class="pilot-keys-error" role="alert">Il server dello squadrone non risponde. Riprova fra poco.</p>
+  }
+
+  @if (pilots(); as list) {
+    @if (list.length === 0) {
+      <p>Nessuna chiave.</p>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Nome</th>
+            <th scope="col">Discord</th>
+            <th scope="col">Creata</th>
+            <th scope="col">Ultimo invio</th>
+            <th scope="col"><span class="visually-hidden">Stato</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of list; track p.id) {
+            <tr [class.pilot-keys-revoked]="p.revoked_at">
+              <td><code>{{ p.name }}</code></td>
+              <td>{{ p.discord_name ?? (p.discord_id ? 'collegata' : 'data a mano') }}</td>
+              <td>{{ when(p.created_at) }}</td>
+              <td>{{ when(p.last_seen_at) }}</td>
+              <td>
+                @if (p.revoked_at) {
+                  revocata il {{ when(p.revoked_at) }}
+                } @else {
+                  <button mat-stroked-button type="button" [disabled]="busy()" (click)="revoke(p)">Revoca</button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  } @else if (!error()) {
+    <p>Caricamento…</p>
+  }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" mat-dialog-close>Chiudi</button>
+</mat-dialog-actions>

@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
-import { faChartColumn, faClipboardList, faKey, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { faChartColumn, faClipboardList, faKey, faRightFromBracket, faUserLock } from '@fortawesome/free-solid-svg-icons';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { I18nService } from '../i18n.service';
+import { PilotKeysDialogComponent } from '../pilot-keys-dialog/pilot-keys-dialog.component';
 import { TallyKeyDialogComponent } from '../tally-key-dialog/tally-key-dialog.component';
 
 /**
@@ -32,6 +33,7 @@ import { TallyKeyDialogComponent } from '../tally-key-dialog/tally-key-dialog.co
         @if (session.officer && i18n.isItalian()) {
           <a mat-menu-item routerLink="/ordini"><fa-icon [icon]="faClipboardList" aria-hidden="true"></fa-icon> Ordini</a>
           <a mat-menu-item routerLink="/activity"><fa-icon [icon]="faChartColumn" aria-hidden="true"></fa-icon> Attività (beta)</a>
+          <button mat-menu-item type="button" (click)="openPilotKeys()"><fa-icon [icon]="faUserLock" aria-hidden="true"></fa-icon> Chiavi dei piloti</button>
         }
         <button mat-menu-item type="button" (click)="openTallyKey()">
           <fa-icon [icon]="faKey" aria-hidden="true"></fa-icon> {{ i18n.t('account.tallyKey') }}
@@ -77,11 +79,17 @@ export class AccountComponent implements OnInit {
   protected readonly faClipboardList = faClipboardList;
   protected readonly faChartColumn = faChartColumn;
   protected readonly faKey = faKey;
+  protected readonly faUserLock = faUserLock;
   private readonly dialog = inject(MatDialog);
 
   /** La propria chiave BGS-Tally: per chiunque sia collegato, in tutte le lingue. */
   protected openTallyKey(): void {
     this.dialog.open(TallyKeyDialogComponent, { autoFocus: 'first-tabbable', restoreFocus: true, maxWidth: 'min(640px, 92vw)' });
+  }
+
+  /** Solo ufficiali, solo in italiano: le chiavi di tutti, per revocare quella di chi esce. */
+  protected openPilotKeys(): void {
+    this.dialog.open(PilotKeysDialogComponent, { autoFocus: 'first-tabbable', restoreFocus: true, maxWidth: 'min(820px, 96vw)' });
   }
 
   ngOnInit(): void {

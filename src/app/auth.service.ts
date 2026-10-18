@@ -20,6 +20,18 @@ export class TallyKeyError extends Error {
   }
 }
 
+/** Una chiave BGS-Tally nell'elenco degli ufficiali (`/auth/tally-keys`): mai la chiave, solo i suoi dati. */
+export interface PilotKey {
+  id: number;
+  name: string;
+  discord_id: string | null;
+  /** Il nome Discord dall'ultima sessione del pilota, se ne ha una. */
+  discord_name: string | null;
+  created_at: string;
+  revoked_at: string | null;
+  last_seen_at: string | null;
+}
+
 export interface TallyKeyStatus {
   exists: boolean;
   /** Il nome della chiave (lettere minuscole e cifre), che ne è anche l'inizio; null se non è mai stata creata. */
@@ -108,6 +120,32 @@ export class AuthService {
       throw new TallyKeyError(response.status);
     }
     return (await response.json()) as TallyKeyStatus;
+  }
+
+  /** Solo ufficiali: le chiavi di tutti i piloti. */
+  async pilotKeys(): Promise<PilotKey[]> {
+    const response = await fetch(`${SERVER_API_URL}/auth/tally-keys`, {
+      credentials: 'include',
+      cache: 'no-store',
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    if (!response.ok) {
+      throw new TallyKeyError(response.status);
+    }
+    return ((await response.json()) as { pilots: PilotKey[] }).pilots;
+  }
+
+  /** Solo ufficiali: revoca la chiave di un pilota. */
+  async revokePilotKey(id: number): Promise<void> {
+    const response = await fetch(`${SERVER_API_URL}/auth/tally-keys/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: { 'X-Requested-With': 'acfs-bgs-tool' },
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    if (!response.ok) {
+      throw new TallyKeyError(response.status);
+    }
   }
 
   private async fetchSession(): Promise<void> {
