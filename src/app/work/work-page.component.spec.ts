@@ -26,12 +26,19 @@ const WORK = {
 describe('WorkPageComponent', () => {
   let fixture: ComponentFixture<WorkPageComponent>;
   let fetchMock: ReturnType<typeof vi.fn>;
+  /** Cosa risponde /auth/me: nessuno collegato, salvo dove il test lo cambia. */
+  let me: object;
 
   beforeEach(() => {
     localStorage.clear();
+    me = { logged_in: false, configured: true };
     fetchMock = vi.fn((url: string, init: RequestInit) => {
+      if (url === `${SERVER_API_URL}/auth/me`) {
+        return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(me) } as Response);
+      }
       const auth = (init.headers as Record<string, string>)['Authorization'];
-      const ok = url.startsWith(`${SERVER_API_URL}/v1/work`) && auth === 'Bearer giusta';
+      const officerSession = (me as { officer?: boolean }).officer === true && init.credentials === 'include';
+      const ok = url.startsWith(`${SERVER_API_URL}/v1/work`) && (auth === 'Bearer giusta' || (!auth && officerSession));
       return Promise.resolve({ ok, status: ok ? 200 : 401, json: () => Promise.resolve(WORK) } as Response);
     });
     vi.stubGlobal('fetch', fetchMock);
@@ -70,5 +77,32 @@ describe('WorkPageComponent', () => {
     expect(host.querySelector('.work-total')!.textContent).toBe('CBs 13,08 M · CZ spaziali H×3');
     expect([...host.querySelectorAll('.work-pilot')].map(e => e.textContent)).toEqual(['Gabolander', 'Marziano Inside']);
     expect(localStorage.getItem(`${STORAGE_PREFIX}officers-password`)).toBe('giusta');
+  });
+
+  const user = { id: '1', username: 'witifulsky', display_name: 'WiitifulSky', avatar_url: null };
+
+  it("opens straight away for an officer signed in with Discord, without the password", async () => {
+    me = { logged_in: true, user, member: true, officer: true };
+    fixture.detectChanges();
+
+    const host: HTMLElement = fixture.nativeElement;
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(host.querySelector('.work-system h3')?.textContent).toBe('LP 254-26');
+    });
+    expect(host.querySelector('input[type="password"]')).toBeNull();
+    expect([...host.querySelectorAll('button')].some(b => b.textContent!.trim() === 'Esci')).toBe(false);
+  });
+
+  it('tells a signed-in member who is not an officer that the page is reserved', async () => {
+    me = { logged_in: true, user, member: true, officer: false };
+    fixture.detectChanges();
+
+    const host: HTMLElement = fixture.nativeElement;
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(host.textContent).toContain('Sei collegato come WiitifulSky, ma la pagina è riservata agli ufficiali.');
+    });
+    expect(host.querySelector('.work-system')).toBeNull();
   });
 });

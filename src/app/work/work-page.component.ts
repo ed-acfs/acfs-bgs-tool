@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { RouterLink } from '@angular/router';
 import { SERVER_API_URL, STORAGE_PREFIX } from '../../core/config';
 import { WorkResponse, WorkTick, describeWork } from '../../core/work';
+import { AuthService } from '../auth.service';
 
 /** Dove si ricorda la password degli ufficiali su questo dispositivo, come la password di "Assegna". */
 const PASSWORD_KEY = `${STORAGE_PREFIX}officers-password`;
@@ -14,8 +15,9 @@ const TIMEOUT_MS = 10_000;
 
 /**
  * "Lavoro (beta)": il lavoro BGS ricevuto da BGS-Tally, per tick, sistema e pilota. Riservato agli
- * ufficiali: la password la controlla il server (acfs-server, /v1/work), non il browser, quindi
- * senza password i dati non arrivano proprio. Solo in italiano, come gli Ordini.
+ * ufficiali: si entra con l'accesso con Discord (ruolo da ufficiale) o, finché serve, con la password
+ * degli ufficiali; in entrambi i casi il controllo lo fa il server (acfs-server, /v1/work), quindi
+ * senza permesso i dati non arrivano proprio. Solo in italiano, come gli Ordini.
  */
 @Component({
   selector: 'app-work-page',
@@ -25,16 +27,23 @@ const TIMEOUT_MS = 10_000;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkPageComponent implements OnInit {
+  protected readonly auth = inject(AuthService);
   protected readonly passwordControl = new FormControl('', { nonNullable: true });
   protected readonly state = signal<'locked' | 'loading' | 'ready'>('locked');
   protected readonly error = signal<string | null>(null);
   protected readonly ticks = signal<WorkTick[]>([]);
   protected readonly describe = describeWork;
 
-  ngOnInit(): void {
-    if (this.storedPassword()) {
+  async ngOnInit(): Promise<void> {
+    await this.auth.load();
+    if (this.auth.session()?.officer || this.storedPassword()) {
       void this.load();
     }
+  }
+
+  /** Si è entrati con la password (e non con Discord): solo allora "Esci" della pagina ha senso. */
+  protected usingPassword(): boolean {
+    return !this.auth.session()?.officer && this.storedPassword() !== null;
   }
 
   protected unlock(): void {
@@ -55,8 +64,9 @@ export class WorkPageComponent implements OnInit {
   }
 
   protected async load(): Promise<void> {
-    const password = this.storedPassword();
-    if (!password || !SERVER_API_URL) {
+    const officer = this.auth.session()?.officer === true;
+    const password = officer ? null : this.storedPassword();
+    if ((!officer && !password) || !SERVER_API_URL) {
       this.state.set('locked');
       return;
     }
@@ -64,12 +74,14 @@ export class WorkPageComponent implements OnInit {
     this.error.set(null);
     try {
       const response = await fetch(`${SERVER_API_URL}/v1/work?ticks=${TICKS}`, {
-        headers: { Authorization: `Bearer ${password}` },
+        // Il cookie della sessione Discord, se c'è; altrimenti la password.
+        headers: password ? { Authorization: `Bearer ${password}` } : {},
+        credentials: 'include',
         cache: 'no-store',
         signal: AbortSignal.timeout(TIMEOUT_MS),
       });
       if (!response.ok) {
-        if (response.status === 401) {
+        if (response.status === 401 && password) {
           this.store(null);
         }
         this.error.set(this.messageFor(response.status));
@@ -98,6 +110,8 @@ export class WorkPageComponent implements OnInit {
     switch (status) {
       case 401:
         return 'Password sbagliata.';
+      case 403:
+        return 'Riservato agli ufficiali.';
       case 429:
         return 'Troppi tentativi sbagliati: riprova fra qualche minuto.';
       case 503:

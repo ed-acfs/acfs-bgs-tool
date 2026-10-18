@@ -2,9 +2,17 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
-## [1.5.1] - 2026-10-18 — Punteggio, stati e influenze dal server dello squadrone; lavoro dello squadrone
+## [1.5.2] - 2026-10-18 — Punteggio, stati e influenze dal server dello squadrone; lavoro dello squadrone; accesso con Discord
 
-Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon), la 1.5.0 (stati e influenze dal server, conflitti appena conclusi) e la 1.5.1 (pagina del lavoro dello squadrone, in beta). La pagina è una funzione nuova, ma per scelta dell'utente la versione resta bassa.
+Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon), la 1.5.0 (stati e influenze dal server, conflitti appena conclusi) la 1.5.1 (pagina del lavoro dello squadrone, in beta) e la 1.5.2 (accesso con Discord). La pagina è una funzione nuova, ma per scelta dell'utente la versione resta bassa.
+
+### Accedi con Discord
+
+- Nell'intestazione, nella riga sotto con le bandiere delle lingue, il pulsante **Accedi con Discord**: Discord chiede di autorizzare l'applicazione "ACFS BGS Tool" e il server dello squadrone legge identità e ruoli nel server Discord ACFS (fase 8b della roadmap). Dopo l'accesso al suo posto c'è l'**avatar con il nome**; il menu dice il livello (Ufficiale, Membro dello squadrone o Collegato) e ha **Esci**. Al ritorno da Discord un breve messaggio sotto il pulsante ("Accesso eseguito.", "Accesso negato: non risulti nel server Discord ACFS."…), che non sposta l'intestazione.
+- Il tool resta **aperto a tutti senza accesso**: il login serve solo ad abilitare gli strumenti riservati. Se il server dello squadrone non risponde, il pulsante non compare e il resto funziona come sempre.
+- **Ordini** esce dalla riga dei pulsanti e va nel **menu dell'account**, insieme ad **Attività (beta)**: solo per chi ha un ruolo da ufficiale (oggi Ammiraglio, Vice Ammiraglio, Contrammiraglio) e solo in italiano. Chi entra senza ruoli dello squadrone non vede altre sezioni riservate. Finché gli Ordini hanno anche la loro passphrase, `/ordini` resta raggiungibile dall'indirizzo.
+- La pagina **Attività** si apre direttamente a un ufficiale collegato, senza password; a chi è collegato senza esserlo dice che è riservata; a chi non è collegato propone "Accedi con Discord" e, finché serve, la password degli ufficiali.
+- Testi dell'accesso in italiano, tedesco e inglese.
 
 ### Lavoro dello squadrone (beta, solo ufficiali)
 

@@ -25,9 +25,13 @@ La parte di consultazione (tabella, filtri, Legenda, Guida, dettagli dei sistemi
 
 Il progetto è in sviluppo. Le fasi, le decisioni prese e le domande aperte sono in [ROADMAP.md](ROADMAP.md). Le modifiche fatte finora sono in [CHANGELOG.md](CHANGELOG.md).
 
+## Accedi con Discord
+
+Il tool si consulta senza accesso. Il pulsante **Accedi con Discord** (nella riga con le bandiere delle lingue) serve ad abilitare gli strumenti riservati: il server dello squadrone ([`acfs-server`](https://github.com/ed-acfs/acfs-server), servizio `auth`) legge i ruoli nel server Discord ACFS e tiene la sessione in un suo cookie. Livelli: **collegato** (chiunque sia nel server Discord), **membro** (Membro Flotta, Cadetto), **ufficiale** (Ammiraglio, Vice Ammiraglio, Contrammiraglio: Ordini e Attività nel menu dell'account, solo in italiano). Il servizio che chiede chi è collegato è `src/app/auth.service.ts`; il pulsante e il menu sono `src/app/account/`.
+
 ## Lavoro dello squadrone (beta)
 
-La pagina `/activity` (pulsante **Lavoro (beta)** negli Ordini, solo in italiano) mostra il lavoro BGS per Flotta Stellare che i piloti mandano con BGS-Tally al server dello squadrone, per tick, sistema e pilota. È riservata agli ufficiali: la password la controlla il server (`/v1/work` di [`acfs-server`](https://github.com/ed-acfs/acfs-server)), che la tiene nel suo `.env` (`OFFICERS_PASSWORD`); il tool la ricorda sul dispositivo finché non si clicca "Esci".
+La pagina `/activity` (nel menu dell'account per gli ufficiali e dal pulsante **Lavoro (beta)** negli Ordini, solo in italiano) mostra il lavoro BGS per Flotta Stellare che i piloti mandano con BGS-Tally al server dello squadrone, per tick, sistema e pilota. È riservata agli ufficiali: si entra con Discord (ruolo da ufficiale) o, finché serve, con la password, e il controllo lo fa il server (`/v1/work` di [`acfs-server`](https://github.com/ed-acfs/acfs-server)), che la tiene nel suo `.env` (`OFFICERS_PASSWORD`); il tool la ricorda sul dispositivo finché non si clicca "Esci".
 
 ## Dati
 

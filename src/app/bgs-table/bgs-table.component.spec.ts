@@ -169,7 +169,8 @@ describe('BgsTableComponent', () => {
     const host: HTMLElement = fixture.nativeElement;
     const headerText = () => host.querySelector('[aria-controls="bgs-legend"]')!.textContent!.trim();
     expect(headerText()).toBe('Legenda');
-    expect(host.querySelector('a[routerLink="/ordini"]')).not.toBeNull();
+    // The Ordini are in the account menu (officers signed in with Discord), not in the header.
+    expect(host.querySelector('a[routerLink="/ordini"]')).toBeNull();
 
     host.querySelector<HTMLButtonElement>('.lang-button[lang="de"]')!.click();
     await fixture.whenStable();
