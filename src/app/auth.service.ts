@@ -12,6 +12,18 @@ export interface AuthSession {
   officer: boolean;
 }
 
+/** La chiave BGS-Tally del pilota collegato, come la dà `/auth/tally-key`. */
+export interface TallyKeyStatus {
+  exists: boolean;
+  created_at?: string;
+  revoked_at?: string | null;
+  last_seen_at?: string | null;
+  /** L'indirizzo da inserire nel plugin ("Url Server"). */
+  server_url: string;
+  /** Solo nella risposta che la genera: dopo non si vede più. */
+  key?: string;
+}
+
 /** Esito del ritorno da Discord (`?login=` nell'indirizzo), come chiave del messaggio da mostrare. */
 const LOGIN_MESSAGES: Record<string, MessageKey> = {
   ok: 'account.loginOk',
@@ -66,6 +78,21 @@ export class AuthService {
       logger.warn('Logout non riuscito sul server.', error);
     }
     this.session.set(null);
+  }
+
+  /** La propria chiave BGS-Tally: stato (GET), nuova o rigenerata (POST, con la chiave in chiaro), revoca (DELETE). */
+  async tallyKey(method: 'GET' | 'POST' | 'DELETE'): Promise<TallyKeyStatus> {
+    const response = await fetch(`${SERVER_API_URL}/auth/tally-key`, {
+      method,
+      credentials: 'include',
+      cache: 'no-store',
+      headers: method === 'GET' ? {} : { 'X-Requested-With': 'acfs-bgs-tool' },
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    return (await response.json()) as TallyKeyStatus;
   }
 
   private async fetchSession(): Promise<void> {

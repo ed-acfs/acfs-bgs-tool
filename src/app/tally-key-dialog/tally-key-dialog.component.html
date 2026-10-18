@@ -1,0 +1,59 @@
+<h2 mat-dialog-title>{{ t('tallyKey.title') }}</h2>
+<mat-dialog-content class="tally-key">
+  <p>{{ t('tallyKey.intro') }}</p>
+
+  @if (error()) {
+    <p class="tally-key-error" role="alert">{{ t('tallyKey.error') }}</p>
+  }
+
+  @if (status(); as s) {
+    @if (s.key) {
+      <section class="tally-key-new">
+        <p class="tally-key-warning">{{ t('tallyKey.showOnce') }}</p>
+        <label>
+          <span>{{ t('tallyKey.serverUrl') }}</span>
+          <span class="tally-key-row">
+            <input readonly [value]="s.server_url" (focus)="$any($event.target).select()" />
+            <button mat-stroked-button type="button" (click)="copy('url', s.server_url)">
+              {{ copied() === 'url' ? t('tallyKey.copied') : t('tallyKey.copy') }}
+            </button>
+          </span>
+        </label>
+        <label>
+          <span>{{ t('tallyKey.apiKey') }}</span>
+          <span class="tally-key-row">
+            <input readonly [value]="s.key" (focus)="$any($event.target).select()" />
+            <button mat-stroked-button type="button" (click)="copy('key', s.key)">
+              {{ copied() === 'key' ? t('tallyKey.copied') : t('tallyKey.copy') }}
+            </button>
+          </span>
+        </label>
+        <ol>
+          <li>{{ t('tallyKey.step1') }}</li>
+          <li>{{ t('tallyKey.step2') }}</li>
+          <li>{{ t('tallyKey.step3') }}</li>
+          <li>{{ t('tallyKey.step4') }}</li>
+        </ol>
+      </section>
+    } @else if (s.exists) {
+      <p>{{ t('tallyKey.active', { created: when(s.created_at), lastSeen: when(s.last_seen_at) }) }}</p>
+    } @else if (s.revoked_at) {
+      <p>{{ t('tallyKey.revoked', { when: when(s.revoked_at) }) }}</p>
+    } @else {
+      <p>{{ t('tallyKey.none') }}</p>
+    }
+  } @else if (!error()) {
+    <p>{{ t('tallyKey.loading') }}</p>
+  }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  @if (status(); as s) {
+    @if (s.exists) {
+      <button mat-stroked-button type="button" [disabled]="busy()" (click)="revoke()">{{ t('tallyKey.revoke') }}</button>
+    }
+    <button mat-flat-button type="button" [disabled]="busy()" (click)="generate()">
+      {{ s.exists ? t('tallyKey.regenerate') : t('tallyKey.generate') }}
+    </button>
+  }
+  <button mat-button type="button" mat-dialog-close>{{ t('tallyKey.close') }}</button>
+</mat-dialog-actions>

@@ -29,6 +29,11 @@
     <p>{{ t('help.app1') }}</p>
   </section>
 
+  <section class="info-card">
+    <h3 class="info-heading">{{ t('help.login') }}</h3>
+    <p>{{ t('help.login1') }}</p>
+  </section>
+
   @if (!i18n.isItalian()) {
     <section class="info-card">
       <h3 class="info-heading">{{ t('help.internal') }}</h3>
@@ -44,7 +49,7 @@
   @if (!showOrders) {
     <section class="info-card">
       <h3 class="info-heading">Ordini Ufficiali</h3>
-      <p>La pagina <strong>Ordini</strong> è riservata: per maggiori informazioni chiedi ai tuoi Ufficiali sul Discord dello squadrone.</p>
+      <p>La pagina <strong>Ordini</strong> è riservata agli ufficiali: la trovano nel menu con il loro nome, dopo l'accesso con Discord. Per maggiori informazioni chiedi ai tuoi Ufficiali sul Discord dello squadrone.</p>
     </section>
   } @else {
   <section class="info-card">

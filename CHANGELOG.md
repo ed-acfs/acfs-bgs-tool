@@ -2,9 +2,16 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
-## [1.5.2] - 2026-10-18 — Punteggio, stati e influenze dal server dello squadrone; lavoro dello squadrone; accesso con Discord
+## [1.5.3] - 2026-10-18 — Punteggio, stati e influenze dal server dello squadrone; lavoro dello squadrone; accesso con Discord e chiavi BGS-Tally
 
-Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon), la 1.5.0 (stati e influenze dal server, conflitti appena conclusi) la 1.5.1 (pagina del lavoro dello squadrone, in beta) e la 1.5.2 (accesso con Discord). La pagina è una funzione nuova, ma per scelta dell'utente la versione resta bassa.
+Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon), la 1.5.0 (stati e influenze dal server, conflitti appena conclusi) la 1.5.1 (pagina del lavoro dello squadrone, in beta), la 1.5.2 (accesso con Discord) e la 1.5.3 (chiave BGS-Tally per ogni pilota). La pagina è una funzione nuova, ma per scelta dell'utente la versione resta bassa.
+
+### Chiave BGS-Tally per ogni pilota
+
+- Nel menu dell'account, per **chiunque sia collegato** con Discord (anche senza ruoli dello squadrone) e in tutte e tre le lingue, la voce **🔑 Chiave BGS-Tally**: il pilota si genera da solo la chiave con cui il plugin BGS-Tally manda il suo lavoro per Flotta Stellare al server dello squadrone, senza chiederla a un ufficiale (passo 4 della fase 8b). La finestra mostra **Url Server** e **Chiave API** con il pulsante Copia e i quattro passi da fare in EDMC.
+- La chiave si vede **solo appena generata**: il server ne tiene l'impronta, non la chiave. Dopo, la finestra dice quando è stata creata e quando il plugin ha inviato l'ultima volta. **Rigenera** (con conferma: la vecchia smette subito di valere) e **Revoca**.
+- Una chiave per account Discord; il nome del pilota nella pagina del lavoro è quello di Discord. Le chiavi date a mano finora restano valide.
+- La **Guida** ha una sezione nuova, "Accesso con Discord", in italiano, tedesco e inglese; la nota sugli Ordini riservati dice che gli ufficiali li trovano nel menu con il loro nome.
 
 ### Accedi con Discord
 

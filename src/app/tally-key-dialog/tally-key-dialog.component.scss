@@ -1,0 +1,41 @@
+.tally-key {
+  max-width: 560px;
+  color: var(--color-text);
+}
+
+.tally-key-new label {
+  display: block;
+  margin: 10px 0;
+
+  > span:first-child {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+}
+
+.tally-key-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  input {
+    flex: 1;
+    min-width: 0;
+    padding: 6px 8px;
+    border: 1px solid var(--color-border-muted);
+    border-radius: 4px;
+    background: var(--color-surface);
+    color: var(--color-text-bright);
+    font-family: monospace;
+  }
+}
+
+.tally-key-warning {
+  color: var(--color-warning);
+}
+
+.tally-key-error {
+  color: var(--color-danger);
+}

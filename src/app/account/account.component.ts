@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faChartColumn, faClipboardList, faRightFromBracket, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
+import { faChartColumn, faClipboardList, faKey, faRightFromBracket, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { I18nService } from '../i18n.service';
+import { TallyKeyDialogComponent } from '../tally-key-dialog/tally-key-dialog.component';
 
 /**
  * Nell'intestazione: "Accedi con Discord", oppure chi è collegato con un menu. Compare solo se il
@@ -29,8 +31,11 @@ import { I18nService } from '../i18n.service';
         @if (session.officer && i18n.isItalian()) {
           <a mat-menu-item routerLink="/ordini"><fa-icon [icon]="faClipboardList" aria-hidden="true"></fa-icon> Ordini</a>
           <a mat-menu-item routerLink="/activity"><fa-icon [icon]="faChartColumn" aria-hidden="true"></fa-icon> Attività (beta)</a>
-          <hr class="account-separator" />
         }
+        <button mat-menu-item type="button" (click)="openTallyKey()">
+          <fa-icon [icon]="faKey" aria-hidden="true"></fa-icon> {{ i18n.t('account.tallyKey') }}
+        </button>
+        <hr class="account-separator" />
         <button mat-menu-item type="button" (click)="auth.logout()">
           <fa-icon [icon]="faRightFromBracket" aria-hidden="true"></fa-icon> {{ i18n.t('account.logout') }}
         </button>
@@ -69,6 +74,13 @@ export class AccountComponent implements OnInit {
   protected readonly faRightFromBracket = faRightFromBracket;
   protected readonly faClipboardList = faClipboardList;
   protected readonly faChartColumn = faChartColumn;
+  protected readonly faKey = faKey;
+  private readonly dialog = inject(MatDialog);
+
+  /** La propria chiave BGS-Tally: per chiunque sia collegato, in tutte le lingue. */
+  protected openTallyKey(): void {
+    this.dialog.open(TallyKeyDialogComponent, { autoFocus: 'first-tabbable', restoreFocus: true, maxWidth: 'min(640px, 92vw)' });
+  }
 
   ngOnInit(): void {
     void this.auth.load();
