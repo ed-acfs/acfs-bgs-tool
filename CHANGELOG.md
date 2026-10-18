@@ -2,7 +2,17 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
-## [1.4.0] - 2026-10-18 — Punteggio dei conflitti dal server dello squadrone
+## [1.4.1] - 2026-10-18 — Punteggio dei conflitti dal server dello squadrone
+
+Pubblicata in due passi: la 1.4.0 (punteggio dei conflitti) e poi la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon).
+
+### Priorità
+
+- Un sistema con **architetto assegnato ma fazione preferita vuota** era escluso del tutto dalla priorità, anche con una guerra, un'elezione o una ritirata che coinvolge Flotta Stellare: finiva in fondo alla lista, sotto i sistemi senza nessun dato nel Registro. Segnalato dall'utente su BD+21 717 (guerra in corso, architetto azghaaar senza preferenza). Ora, su decisione dell'utente, vale **solo la difesa**: un conflitto che ci coinvolge ha la sua priorità come altrove, con la motivazione "Architetto senza fazione preferita: solo difesa nei conflitti"; senza conflitti il sistema resta escluso (niente obiettivi di crescita o di controllo). Una fazione preferita diversa da Flotta Stellare resta invece un accordo da rispettare: nessuna priorità, nemmeno nei conflitti.
+
+### Icone
+
+- Il `favicon.ico` del tool aveva lo sfondo bianco pieno (16×16, nessun pixel trasparente) e si vedeva come un riquadro bianco nei browser che lo usano al posto del PNG. Rigenerato dal logo trasparente, in 16, 32 e 48 px.
 
 ### Punteggio dei conflitti
 
@@ -21,7 +31,7 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
 ### Test
 
-- Nuovi test per la lettura dal server (più recente fra le due fonti, server che non risponde), per le etichette dell'esito e per la scheda. Passano 276 test dell'app.
+- Nuovi test per la lettura dal server (più recente fra le due fonti, server che non risponde), per le etichette dell'esito, per la scheda e per la difesa nei sistemi con architetto senza preferenza. Passano 277 test dell'app.
 
 ## [1.3.1] - 2026-10-13 — Interstellar Factors
 

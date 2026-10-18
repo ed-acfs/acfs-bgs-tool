@@ -177,6 +177,7 @@ export const en: Dictionary = {
   'reason.below-watchlist-position': '{faction} is #{current}, below the required position (#{required})',
   'reason.out-of-scope': 'The preferred faction is {faction}: hands off',
   'reason.no-preference': 'Architect assigned with no preferred faction: not a target',
+  'reason.no-preference-defence': 'Architect with no preferred faction: defend in conflicts only',
   'reason.assumed-needs-architect': 'No architect assigned: assign one before working this conflict',
   'reason.none': 'Nothing to report',
 

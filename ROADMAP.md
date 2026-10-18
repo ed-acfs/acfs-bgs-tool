@@ -73,7 +73,7 @@ Ogni fase si chiude con qualcosa da vedere o provare, su un branch, prima di far
 
 ### 4. Priorità a fazione singola
 
-- [x] `resolveScope()` a fazione singola: in scope se la fazione preferita è Flotta Stellare o il sistema "non è una colonia"; out-of-scope se la fazione preferita è un'altra (accordo da rispettare); "no-preference" se c'è un architetto senza preferenza
+- [x] `resolveScope()` a fazione singola: in scope se la fazione preferita è Flotta Stellare o il sistema "non è una colonia"; out-of-scope se la fazione preferita è un'altra (accordo da rispettare); "no-preference" se c'è un architetto senza preferenza (dal 18 ottobre 2026, decisione dell'utente dopo il caso di BD+21 717: in "no-preference" i conflitti che ci coinvolgono hanno comunque priorità, solo difesa; prima il sistema era escluso del tutto, sotto quelli senza nessun dato)
 - [x] **Politica per i sistemi non registrati** (decisa il 4 ottobre 2026 su una simulazione con i dati reali): sono tutti "nostri" (in scope), quindi si difendono e si spinge per il controllo. È configurabile con `unregisteredScope` in `config.json` (`"in-scope"`, oppure `"assumed"` per la politica Canonn: solo difesa finché il sistema non viene registrato)
 - [x] Regole Canonn mantenute come sono: "Nessun architetto assegnato" (101 punti, solo per i sistemi "assumed", quindi inattiva con la politica attuale) e "Ultima su 4+ fazioni" (P1, ora legata all'ambito "nostro" invece che alla preferenza registrata)
 - [x] Tolti i trigger a coppia (`canonn-cdsr-close`, `isCanonnOnlyPair`), le icone "Canonn vs Canonn" e `canonn.svg`; i conflitti mostrati sono solo quelli di Flotta Stellare

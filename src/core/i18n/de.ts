@@ -180,6 +180,7 @@ export const de: Dictionary = {
   'reason.below-watchlist-position': '{faction} ist auf Platz {current}, unter der geforderten Position (Platz {required})',
   'reason.out-of-scope': 'Die bevorzugte Fraktion ist {faction}: nicht eingreifen',
   'reason.no-preference': 'Architekt ohne bevorzugte Fraktion zugeordnet: kein Ziel',
+  'reason.no-preference-defence': 'Architekt ohne bevorzugte Fraktion: nur Verteidigung in Konflikten',
   'reason.assumed-needs-architect': 'Kein Architekt zugeordnet: erst einen zuordnen, dann an diesem Konflikt arbeiten',
   'reason.none': 'Nichts zu melden',
 

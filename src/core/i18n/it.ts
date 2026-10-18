@@ -182,6 +182,7 @@ export const it = {
   'reason.below-watchlist-position': '{faction} è {current}ª, sotto la posizione richiesta ({required}ª)',
   'reason.out-of-scope': 'La fazione preferita è {faction}: non intervenire',
   'reason.no-preference': 'Architetto assegnato senza fazione preferita: non è un obiettivo',
+  'reason.no-preference-defence': 'Architetto senza fazione preferita: solo difesa nei conflitti',
   'reason.assumed-needs-architect': 'Nessun architetto assegnato: assegnarne uno prima di lavorare a questo conflitto',
   'reason.none': 'Niente da segnalare',
 

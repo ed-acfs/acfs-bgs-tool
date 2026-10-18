@@ -315,13 +315,13 @@ describe('computePriorityAssessment', () => {
     expect(assessment.score).toBeNull();
   });
 
-  it('does not surface a priority badge for a pending conflict when an architect is confirmed with no faction preference', () => {
+  it('surfaces a pending conflict of ours when an architect is confirmed with no faction preference (defence only)', () => {
     const assessment = computePriorityAssessment(
       row({ architect: 'Some Commander', electionState: 'pending', updatedAt: current }),
       NOW,
     );
-    expect(assessment.tier).toBe('not-applicable');
-    expect(assessment.score).toBeNull();
+    expect(assessment.tier).toBe('P1');
+    expect(assessment.score).toBe(85);
   });
 
   it('surfaces an active conflict when no architect has been assigned yet (assumed scope) — getting one assigned is urgent', () => {
@@ -350,14 +350,23 @@ describe('computePriorityAssessment', () => {
     expect(assessment.reasons.some(r => r.code === 'assumed-needs-architect')).toBe(false);
   });
 
-  it('never surfaces a priority badge for a conflict once an architect has confirmed no preference (no-preference scope)', () => {
+  it('still defends a conflict of ours when an architect is confirmed with no preference (no-preference scope)', () => {
     const assessment = computePriorityAssessment(
       row({ architect: 'Some Commander', factionInfluence: 50, warState: 'active', updatedAt: current }),
       NOW,
     );
     expect(assessment.scope).toBe('no-preference');
-    expect(assessment.tier).toBe('not-applicable');
-    expect(assessment.score).toBeNull();
+    expect(assessment.tier).toBe('P1');
+    expect(assessment.score).toBe(95);
+    expect(assessment.reasons.map(r => r.code)).toEqual(['war-active', 'no-preference-defence']);
+  });
+
+  it('adds no growth or control triggers when an architect is confirmed with no preference, only the conflict', () => {
+    const assessment = computePriorityAssessment(
+      row({ architect: 'Some Commander', factionInfluence: 3, electionState: 'pending', updatedAt: current }),
+      NOW,
+    );
+    expect(assessment.reasons.map(r => r.code)).toEqual(['election-pending', 'no-preference-defence']);
   });
 
   it('scores an active retreat at 100 (P1), unweighted, outranking an active war', () => {
