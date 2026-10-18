@@ -1,6 +1,6 @@
 <div class="work-container">
   <div class="work-title-row">
-    <h1>Lavoro dello squadrone <span class="work-beta">beta</span></h1>
+    <h1>Attività dello squadrone <span class="work-beta">beta</span></h1>
     <div class="work-title-actions">
       <a mat-stroked-button routerLink="/ordini">Ordini</a>
       <a mat-stroked-button routerLink="/">&larr; Torna alla tabella</a>
@@ -9,8 +9,8 @@
 
   <p class="work-intro">
     Il lavoro BGS per Flotta Stellare mandato da BGS-Tally dai piloti collegati al server dello squadrone, per tick,
-    sistema e pilota. Riservato agli ufficiali: si entra con Discord (ruolo da ufficiale) o con la password, e il
-    controllo lo fa il server. Chi non usa BGS-Tally non compare,
+    sistema e pilota. Riservato agli ufficiali: si entra con Discord (ruolo da ufficiale), e il controllo lo fa il
+    server. Chi non usa BGS-Tally non compare,
     quindi i totali non sono il lavoro completo dello squadrone.
   </p>
 
@@ -22,16 +22,8 @@
     } @else if (auth.available()) {
       <p class="work-note">
         <button mat-flat-button type="button" (click)="auth.login()">Accedi con Discord</button>
-        oppure usa la password degli ufficiali:
       </p>
     }
-    <section class="work-gate">
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>Password degli ufficiali</mat-label>
-        <input matInput type="password" autocomplete="current-password" [formControl]="passwordControl" (keyup.enter)="unlock()" />
-      </mat-form-field>
-      <button mat-flat-button type="button" (click)="unlock()">Entra</button>
-    </section>
   }
   @if (error(); as message) {
     <p class="work-error" role="alert">{{ message }}</p>
@@ -43,9 +35,6 @@
   @if (state() === 'ready') {
     <div class="work-toolbar">
       <button mat-stroked-button type="button" (click)="load()">Aggiorna</button>
-      @if (usingPassword()) {
-        <button mat-stroked-button type="button" (click)="lock()">Esci</button>
-      }
     </div>
     @for (tick of ticks(); track tick.tickid) {
       <section class="work-tick">

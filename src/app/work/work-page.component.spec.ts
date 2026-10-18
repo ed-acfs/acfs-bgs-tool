@@ -36,9 +36,8 @@ describe('WorkPageComponent', () => {
       if (url === `${SERVER_API_URL}/auth/me`) {
         return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(me) } as Response);
       }
-      const auth = (init.headers as Record<string, string>)['Authorization'];
       const officerSession = (me as { officer?: boolean }).officer === true && init.credentials === 'include';
-      const ok = url.startsWith(`${SERVER_API_URL}/v1/work`) && (auth === 'Bearer giusta' || (!auth && officerSession));
+      const ok = url.startsWith(`${SERVER_API_URL}/v1/work`) && officerSession;
       return Promise.resolve({ ok, status: ok ? 200 : 401, json: () => Promise.resolve(WORK) } as Response);
     });
     vi.stubGlobal('fetch', fetchMock);
@@ -48,40 +47,23 @@ describe('WorkPageComponent', () => {
 
   afterEach(() => vi.unstubAllGlobals());
 
-  async function enter(password: string) {
-    const host: HTMLElement = fixture.nativeElement;
-    const input = host.querySelector<HTMLInputElement>('input[type="password"]')!;
-    input.value = password;
-    input.dispatchEvent(new Event('input'));
-    host.querySelector<HTMLButtonElement>('.work-gate button')!.click();
-    await fixture.whenStable();
+  it('without Discord offers only "Accedi con Discord": no password any more, and the old one is forgotten', async () => {
+    localStorage.setItem(`${STORAGE_PREFIX}officers-password`, 'vecchia');
     fixture.detectChanges();
-  }
-
-  it('asks the password, refuses a wrong one and forgets it', async () => {
-    fixture.detectChanges();
-    await enter('sbagliata');
 
     const host: HTMLElement = fixture.nativeElement;
-    expect(host.querySelector('.work-error')!.textContent).toContain('Password sbagliata');
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect([...host.querySelectorAll('button')].some(b => b.textContent!.trim() === 'Accedi con Discord')).toBe(true);
+    });
+    expect(host.querySelector('input[type="password"]')).toBeNull();
     expect(localStorage.getItem(`${STORAGE_PREFIX}officers-password`)).toBeNull();
-  });
-
-  it('shows the work per system and pilot with the right password, and remembers it', async () => {
-    fixture.detectChanges();
-    await enter('giusta');
-
-    const host: HTMLElement = fixture.nativeElement;
-    expect(host.querySelector('.work-tick h2')!.textContent).toContain('17 ott 2026');
-    expect(host.querySelector('.work-system h3')!.textContent).toBe('LP 254-26');
-    expect(host.querySelector('.work-total')!.textContent).toBe('CBs 13,08 M · CZ spaziali H×3');
-    expect([...host.querySelectorAll('.work-pilot')].map(e => e.textContent)).toEqual(['Gabolander', 'Marziano Inside']);
-    expect(localStorage.getItem(`${STORAGE_PREFIX}officers-password`)).toBe('giusta');
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/v1/work'))).toBe(false);
   });
 
   const user = { id: '1', username: 'witifulsky', display_name: 'WiitifulSky', avatar_url: null };
 
-  it("opens straight away for an officer signed in with Discord, without the password", async () => {
+  it('shows the work per system and pilot to an officer signed in with Discord', async () => {
     me = { logged_in: true, user, member: true, officer: true };
     fixture.detectChanges();
 
@@ -90,8 +72,9 @@ describe('WorkPageComponent', () => {
       fixture.detectChanges();
       expect(host.querySelector('.work-system h3')?.textContent).toBe('LP 254-26');
     });
-    expect(host.querySelector('input[type="password"]')).toBeNull();
-    expect([...host.querySelectorAll('button')].some(b => b.textContent!.trim() === 'Esci')).toBe(false);
+    expect(host.querySelector('.work-tick h2')!.textContent).toContain('17 ott 2026');
+    expect(host.querySelector('.work-total')!.textContent).toBe('CBs 13,08 M · CZ spaziali H×3');
+    expect([...host.querySelectorAll('.work-pilot')].map(e => e.textContent)).toEqual(['Gabolander', 'Marziano Inside']);
   });
 
   it('tells a signed-in member who is not an officer that the page is reserved', async () => {

@@ -87,12 +87,16 @@ export function buildArchitectFormBody(submission: ArchitectSubmission): URLSear
  * The request body for the password-protected Apps Script (`apps-script/assegna.gs`): the
  * same fields as the Form, as JSON. "Don't know" for the preferred faction is '' there too.
  */
-export function buildAssignScriptBody(submission: ArchitectSubmission, password: string): string {
-  return JSON.stringify({ password, ...submission });
+/** What the tool sends to the squadron server's `/auth/assign`: no password, the server adds it. */
+export function buildAssignBody(submission: ArchitectSubmission): string {
+  return JSON.stringify(submission);
 }
 
-/** Why the Apps Script refused an assignment — the `error` field of its reply. */
-export type AssignRejection = 'bad-request' | 'locked' | 'not-configured' | 'password' | 'invalid' | 'unknown';
+/**
+ * Why an assignment was refused — the `error` field of the server's reply, which passes on the
+ * Apps Script's own reasons; `forbidden` when the session isn't an officer's.
+ */
+export type AssignRejection = 'bad-request' | 'forbidden' | 'not-configured' | 'invalid' | 'unknown';
 
 /** An assignment the Apps Script answered but refused; nothing was written. */
 export class AssignRejectedError extends Error {
@@ -105,10 +109,10 @@ export class AssignRejectedError extends Error {
   }
 }
 
-const KNOWN_REJECTIONS: ReadonlySet<string> = new Set(['bad-request', 'locked', 'not-configured', 'password', 'invalid']);
+const KNOWN_REJECTIONS: ReadonlySet<string> = new Set(['bad-request', 'forbidden', 'not-configured', 'invalid']);
 
 /**
- * Reads the Apps Script's reply: returns when the row was written, throws
+ * Reads the server's reply (the Apps Script's, passed on): returns when the row was written, throws
  * {@link AssignRejectedError} otherwise — including for a reply it doesn't recognise, since
  * only an explicit `ok: true` means the registry has the row.
  */

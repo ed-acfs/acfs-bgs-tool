@@ -359,7 +359,7 @@
           <li><span class="bgs-legend-key"><span class="bgs-legend-muted">{{ i18n.decimal(12.3) }} ly</span></span><span>{{ t('legend.distance', { distanceFrom: t('toolbar.distanceFrom') }) }}</span></li>
           <li><span class="bgs-legend-key"><fa-icon class="bgs-legend-link" [icon]="faCircleInfo" aria-hidden="true"></fa-icon></span><span>{{ t('legend.info') }}</span></li>
           <li><span class="bgs-legend-key"><fa-icon class="bgs-watchlist-icon" [icon]="faEye" aria-hidden="true"></fa-icon></span><span>{{ t('legend.watchlist') }}</span></li>
-          @if (i18n.isItalian()) {
+          @if (i18n.isItalian() && isOfficer()) {
             <li><span class="bgs-legend-key"><fa-icon class="bgs-legend-link" [icon]="faClipboardList" aria-hidden="true"></fa-icon></span><span>aggiungi agli Ordini Ufficiali</span></li>
           }
         </ul>
@@ -605,7 +605,7 @@
                     <!-- Watchlist systems get an eye instead of the ⓘ, in their own colour, so they stand out. -->
                     <fa-icon [icon]="row.watchlist.length > 0 ? faEye : faCircleInfo"></fa-icon>
                   </button>
-                  @if (i18n.isItalian()) {
+                  @if (i18n.isItalian() && isOfficer()) {
                     <button
                       type="button"
                       class="bgs-info-button"
@@ -744,7 +744,9 @@
                   [title]="marginTitle(row)"
                 >{{ marginLabel(row) }}</td>
                 <td class="bgs-col-wrap bgs-cell-architect" [attr.data-label]="t('col.architect')">
-                  @if (row.architect === null && !row.notAColony) {
+                  @if (!isOfficer()) {
+                    <span class="bgs-architect">{{ row.notAColony || row.architect === null ? '—' : row.architect }}</span>
+                  } @else if (row.architect === null && !row.notAColony) {
                     <button
                       type="button"
                       class="bgs-system-link bgs-assign-button"

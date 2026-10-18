@@ -4,7 +4,7 @@ import {
   ArchitectSubmission,
   AssignRejectedError,
   buildArchitectFormBody,
-  buildAssignScriptBody,
+  buildAssignBody,
   checkAssignScriptReply,
 } from './architect-form';
 
@@ -45,10 +45,9 @@ describe('buildArchitectFormBody', () => {
   });
 });
 
-describe('buildAssignScriptBody', () => {
-  it('sends the same fields as the form plus the password, as JSON', () => {
-    expect(JSON.parse(buildAssignScriptBody(submission({ preferredFaction: '' }), 'segreta'))).toEqual({
-      password: 'segreta',
+describe('buildAssignBody', () => {
+  it('sends the same fields as the form as JSON, with no password (the server adds it)', () => {
+    expect(JSON.parse(buildAssignBody(submission({ preferredFaction: '' })))).toEqual({
       yourName: 'LCU No Fool Like One',
       systemName: 'Varati',
       architect: 'Herix',

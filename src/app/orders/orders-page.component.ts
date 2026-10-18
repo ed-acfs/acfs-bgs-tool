@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { AuthService } from '../auth.service';
 import { BgsService } from '../bgs.service';
 import { HelpDialogComponent, HelpDialogData } from '../help-dialog/help-dialog.component';
 import { findOrderType, ORDER_STATUSES, ORDER_TRENDS, ORDER_TYPES } from '../../core/order-types';
@@ -44,10 +45,10 @@ const SECTION_OPTIONS: { value: OrderSection; label: string }[] = [
 ];
 
 /**
- * The "Ordini Ufficiali" cart: compose a day's operations and copy the result into Discord.
- * Gated by a shared passphrase (see {@link OrdersStore}) — not real security, just a deterrent
- * until phase 8 (Cloudflare Access) exists. Persists to localStorage only, so the draft doesn't
- * follow the user between the two computers they use (see CLAUDE.md).
+ * The "Ordini Ufficiali" editor: compose a day's operations, copy the result into Discord and
+ * publish it for the members. For officers (Discord role, checked again by the server); a member
+ * who opens it is sent to the read-only page, anyone else is asked to sign in. The draft is the
+ * one shared on the squadron server (see {@link OrdersStore}).
  */
 @Component({
   selector: 'app-orders-page',
@@ -65,8 +66,10 @@ const SECTION_OPTIONS: { value: OrderSection; label: string }[] = [
   styleUrl: './orders-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrdersPageComponent {
+export class OrdersPageComponent implements OnInit {
   protected readonly store = inject(OrdersStore);
+  protected readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
   private readonly bgsService = inject(BgsService);
   private readonly dialog = inject(MatDialog);
 
@@ -77,9 +80,10 @@ export class OrdersPageComponent {
   protected readonly findOrderType = findOrderType;
   protected readonly Number = Number;
 
-  protected readonly passphraseControl = new FormControl('', { nonNullable: true });
-  protected readonly unlockError = signal<string | null>(null);
-  protected readonly unlocking = signal(false);
+  /** Officers edit; the server checks the role again on every save. */
+  protected readonly isOfficer = computed(() => this.auth.session()?.officer === true);
+  protected readonly publishing = signal(false);
+  protected readonly publishMessage = signal<string | null>(null);
 
   protected readonly newItemSection = signal<OrderSection>('operazioni');
   protected readonly newItemType = signal<string>(ORDER_TYPES[0].key);
@@ -101,32 +105,57 @@ export class OrdersPageComponent {
   private lastSuggestionQuery: string | null = null;
   private suggestionGeneration = 0;
 
-  protected async unlock(): Promise<void> {
-    const value = this.passphraseControl.value.trim();
-    if (!value || this.unlocking()) {
+  async ngOnInit(): Promise<void> {
+    await this.auth.load();
+    const session = this.auth.session();
+    if (session?.officer) {
+      await this.store.load();
+    } else if (session?.member) {
+      // Members read the published orders; the editor isn't for them.
+      void this.router.navigate(['/ordini/pubblicati'], { replaceUrl: true });
+    }
+  }
+
+  /** "Salvato alle 21:40 da WiitifulSky", "Salvataggio…", or what went wrong. */
+  protected readonly syncLabel = computed(() => {
+    const saved = this.store.saved();
+    switch (this.store.sync()) {
+      case 'loading':
+        return 'Caricamento della bozza condivisa…';
+      case 'pending':
+      case 'saving':
+        return 'Salvataggio…';
+      case 'conflict':
+        return 'Un altro ufficiale ha cambiato la bozza mentre la modificavi.';
+      case 'error':
+        return 'Server dello squadrone non raggiungibile: le modifiche restano in questo browser, riprova fra poco.';
+      default:
+        return saved.at
+          ? `Bozza condivisa, salvata alle ${new Date(saved.at).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}${saved.by ? ` da ${saved.by}` : ''}.`
+          : 'Bozza condivisa con gli altri ufficiali.';
+    }
+  });
+
+  protected async publish(): Promise<void> {
+    if (this.publishing() || !confirm('Pubblicare questi Ordini per i membri? Sostituiscono quelli pubblicati finora.')) {
       return;
     }
-    this.unlocking.set(true);
-    this.unlockError.set(null);
+    this.publishing.set(true);
+    this.publishMessage.set(null);
     try {
-      const ok = await this.store.unlock(value);
-      if (!ok) {
-        this.unlockError.set('Passphrase sbagliata.');
-      }
+      await this.store.publish();
+      this.publishMessage.set('Pubblicati: i membri li vedono in Ordini.');
+    } catch {
+      this.publishMessage.set('Pubblicazione non riuscita: riprova fra poco.');
     } finally {
-      this.unlocking.set(false);
+      this.publishing.set(false);
     }
   }
 
-  protected lock(): void {
-    this.store.lock();
-    this.passphraseControl.setValue('');
-  }
-
-  /** The Ordini section of the guide only shows once the page is unlocked. */
+  /** The Ordini section of the guide, in full for officers. */
   protected openHelp(): void {
     this.dialog.open<HelpDialogComponent, HelpDialogData>(HelpDialogComponent, {
-      data: { orders: this.store.unlocked() },
+      data: { orders: this.isOfficer() },
       autoFocus: 'first-tabbable',
       restoreFocus: true,
       maxWidth: 'min(1168px, 90vw)',

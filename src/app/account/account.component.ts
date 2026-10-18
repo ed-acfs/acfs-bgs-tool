@@ -14,8 +14,8 @@ import { TallyKeyDialogComponent } from '../tally-key-dialog/tally-key-dialog.co
 /**
  * Nell'intestazione: "Accedi con Discord", oppure chi è collegato con un menu. Compare solo se il
  * server dello squadrone risponde e ha l'accesso configurato; altrimenti niente, e il tool resta
- * quello di sempre. Gli strumenti degli ufficiali (Ordini, Attività) stanno nel suo menu, solo in
- * italiano; finché gli Ordini hanno anche la loro passphrase, /ordini resta raggiungibile dall'indirizzo.
+ * quello di sempre. Gli strumenti dello squadrone stanno nel suo menu, solo in italiano: gli Ordini
+ * per membri (lettura) e ufficiali (editor), Attività e Chiavi dei piloti per gli ufficiali.
  */
 @Component({
   selector: 'app-account',
@@ -30,8 +30,11 @@ import { TallyKeyDialogComponent } from '../tally-key-dialog/tally-key-dialog.co
       </button>
       <mat-menu #accountMenu="matMenu">
         <p class="account-level">{{ i18n.t(session.officer ? 'account.officer' : session.member ? 'account.member' : 'account.connected') }}</p>
+        @if ((session.officer || session.member) && i18n.isItalian()) {
+          <!-- Gli ufficiali scrivono gli Ordini, i membri li leggono. -->
+          <a mat-menu-item [routerLink]="session.officer ? '/ordini' : '/ordini/pubblicati'"><fa-icon [icon]="faClipboardList" aria-hidden="true"></fa-icon> Ordini</a>
+        }
         @if (session.officer && i18n.isItalian()) {
-          <a mat-menu-item routerLink="/ordini"><fa-icon [icon]="faClipboardList" aria-hidden="true"></fa-icon> Ordini</a>
           <a mat-menu-item routerLink="/activity"><fa-icon [icon]="faChartColumn" aria-hidden="true"></fa-icon> Attività (beta)</a>
           <button mat-menu-item type="button" (click)="openPilotKeys()"><fa-icon [icon]="faUserLock" aria-hidden="true"></fa-icon> Chiavi dei piloti</button>
         }

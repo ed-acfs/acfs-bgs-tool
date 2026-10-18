@@ -99,8 +99,8 @@ describe('BgsService dataset loading', () => {
   });
 
   it('submits an assignment to the squadron form, as an opaque no-cors POST', async () => {
-    // The Form path, used whenever the Apps Script isn't configured.
-    service.assignScriptUrl = null;
+    // The Form path, used whenever the squadron server isn't configured.
+    service.assignUrl = null;
     fetchMock.mockImplementationOnce(() => Promise.resolve({ ok: false, status: 0, type: 'opaque' } as Response));
 
     await service.submitAssignment({ yourName: 'Cmdr', systemName: 'Wong Sher', architect: '', affiliation: '', preferredFaction: '' });
@@ -112,28 +112,31 @@ describe('BgsService dataset loading', () => {
     expect(String(init.body)).toContain('entry.2086138170=Wong+Sher');
   });
 
-  it('writes through the protected Apps Script, once configured, with the password in a text/plain JSON body', async () => {
-    service.assignScriptUrl = 'https://script.google.com/macros/s/test/exec';
+  it('writes through the squadron server with the Discord session, and no password', async () => {
+    service.assignUrl = 'https://api.example/auth/assign';
     fetchMock.mockImplementationOnce(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ ok: true }) } as Response));
 
-    await service.submitAssignment({ yourName: 'Cmdr', systemName: 'Wong Sher', architect: '', affiliation: "Don't know", preferredFaction: '' }, 'segreta');
+    await service.submitAssignment({ yourName: 'Cmdr', systemName: 'Wong Sher', architect: '', affiliation: "Don't know", preferredFaction: '' });
 
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-    expect(url).toBe('https://script.google.com/macros/s/test/exec');
-    expect(init.mode).toBeUndefined();
-    expect((init.headers as Record<string, string>)['Content-Type']).toContain('text/plain');
-    expect(JSON.parse(String(init.body))).toMatchObject({ password: 'segreta', systemName: 'Wong Sher' });
+    expect(url).toBe('https://api.example/auth/assign');
+    expect(init.credentials).toBe('include');
+    expect((init.headers as Record<string, string>)['X-Requested-With']).toBeTruthy();
+    const body = JSON.parse(String(init.body));
+    expect(body).toMatchObject({ systemName: 'Wong Sher' });
+    expect(body.password).toBeUndefined();
   });
 
-  it("rejects with the script's reason when it refuses the assignment", async () => {
-    service.assignScriptUrl = 'https://script.google.com/macros/s/test/exec';
+  it("rejects with the registry's reason, and as forbidden when the session isn't an officer's", async () => {
+    service.assignUrl = 'https://api.example/auth/assign';
+    const submission = { yourName: 'Cmdr', systemName: 'Wong Sher', architect: '', affiliation: "Don't know", preferredFaction: '' };
     fetchMock.mockImplementationOnce(() =>
-      Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ ok: false, error: 'password' }) } as Response),
+      Promise.resolve({ ok: false, status: 422, json: () => Promise.resolve({ ok: false, error: 'invalid', detail: 'x' }) } as Response),
     );
+    await expect(service.submitAssignment(submission)).rejects.toMatchObject({ name: 'AssignRejectedError', reason: 'invalid' });
 
-    await expect(
-      service.submitAssignment({ yourName: 'Cmdr', systemName: 'Wong Sher', architect: '', affiliation: "Don't know", preferredFaction: '' }, 'sbagliata'),
-    ).rejects.toMatchObject({ name: 'AssignRejectedError', reason: 'password' });
+    fetchMock.mockImplementationOnce(() => Promise.resolve({ ok: false, status: 403, json: () => Promise.resolve({}) } as Response));
+    await expect(service.submitAssignment(submission)).rejects.toMatchObject({ name: 'AssignRejectedError', reason: 'forbidden' });
   });
 });
 

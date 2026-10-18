@@ -70,6 +70,7 @@ import { version } from '../../../package.json';
 import { I18nService } from '../i18n.service';
 import { ConflictScoreCardComponent } from '../conflict-score-card/conflict-score-card.component';
 import { AccountComponent } from '../account/account.component';
+import { AuthService } from '../auth.service';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 import { PriorityReason } from '../../core/priority';
 import { isMessageKey } from '../../core/i18n';
@@ -229,6 +230,9 @@ export class BgsTableComponent implements OnDestroy {
   private readonly dialog = inject(MatDialog);
   private readonly ordersStore = inject(OrdersStore);
   protected readonly i18n = inject(I18nService);
+  private readonly auth = inject(AuthService);
+  /** Assegna and "add to the Ordini" are for officers (Discord role), checked again by the server. */
+  protected readonly isOfficer = computed(() => this.auth.session()?.officer === true);
   /** The message for a key in the current language; reading it in a template re-renders on a language switch. */
   protected readonly t = this.i18n.t;
 

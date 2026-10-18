@@ -3,24 +3,45 @@
     <h1>Ordini Ufficiali</h1>
     <div class="orders-title-actions">
       <a mat-stroked-button routerLink="/">&larr; Torna alla tabella</a>
-      <a mat-stroked-button routerLink="/activity">Lavoro (beta)</a>
+      @if (isOfficer()) {
+        <a mat-stroked-button routerLink="/ordini/pubblicati">Vista dei membri</a>
+        <a mat-stroked-button routerLink="/activity">Attività (beta)</a>
+      }
       <button mat-stroked-button type="button" (click)="openHelp()">Come funziona?</button>
     </div>
   </div>
 
-  @if (!store.unlocked()) {
+  @if (!isOfficer()) {
     <section class="orders-gate">
-      <p>Area riservata: inserisci la passphrase dello squadrone.</p>
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>Passphrase</mat-label>
-        <input matInput type="password" [formControl]="passphraseControl" (keyup.enter)="unlock()" />
-      </mat-form-field>
-      <button mat-flat-button type="button" [disabled]="unlocking()" (click)="unlock()">Entra</button>
-      @if (unlockError(); as err) {
-        <p class="orders-error" role="alert">{{ err }}</p>
+      @if (auth.session() === undefined) {
+        <p>Caricamento…</p>
+      } @else if (auth.session(); as session) {
+        @if (session.member) {
+          <p>Gli Ordini per i membri sono in <a routerLink="/ordini/pubblicati">questa pagina</a>.</p>
+        } @else {
+          <p>Sei collegato come {{ session.user.display_name }}: gli Ordini sono per i membri dello squadrone.</p>
+        }
+      } @else {
+        <p>Gli Ordini sono per i membri dello squadrone: accedi con Discord per leggerli.</p>
+        @if (auth.available()) {
+          <button mat-flat-button type="button" (click)="auth.login()">Accedi con Discord</button>
+        }
       }
     </section>
   } @else {
+    <p class="orders-sync" [class.orders-sync--warn]="store.sync() === 'conflict' || store.sync() === 'error'" role="status">
+      {{ syncLabel() }}
+    </p>
+    @if (store.conflict(); as theirs) {
+      <section class="orders-conflict" role="alert">
+        <p>
+          La bozza è stata salvata{{ theirs.updated_by ? ' da ' + theirs.updated_by : '' }} dopo che l'avevi aperta. Scegli quale
+          versione tenere:
+        </p>
+        <button mat-flat-button type="button" (click)="store.takeTheirs()">Prendi la sua (perdi le tue modifiche)</button>
+        <button mat-stroked-button type="button" (click)="store.keepMine()">Tieni la mia (sostituisce la sua)</button>
+      </section>
+    }
     <section class="orders-meta">
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Ordini del</mat-label>
@@ -39,7 +60,6 @@
         <mat-label>Firma</mat-label>
         <input matInput [value]="store.meta().signature" (change)="store.updateMeta({ signature: $any($event.target).value })" />
       </mat-form-field>
-      <button mat-stroked-button type="button" (click)="lock()">Blocca</button>
     </section>
 
     <section class="orders-add-bar">
@@ -195,7 +215,13 @@
       <textarea class="orders-preview-text" readonly rows="16">{{ store.markdown() }}</textarea>
       <div class="orders-preview-actions">
         <button mat-flat-button type="button" (click)="copyMarkdown()">{{ copyConfirmed() ? 'Copiato!' : 'Copia' }}</button>
+        <button mat-flat-button type="button" [disabled]="publishing() || store.sync() === 'conflict'" (click)="publish()">
+          Pubblica per i membri
+        </button>
         <button mat-stroked-button type="button" (click)="clearAll()">Svuota tutto</button>
+        @if (publishMessage(); as message) {
+          <span class="orders-section-message" role="status">{{ message }}</span>
+        }
       </div>
     </section>
   }

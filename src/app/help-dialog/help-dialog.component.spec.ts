@@ -13,9 +13,9 @@ describe('HelpDialogComponent', () => {
     return fixture.nativeElement as HTMLElement;
   }
 
-  it('from the table, only says the Ordini page is reserved', async () => {
+  it('from the table, only says who writes and who reads the Ordini', async () => {
     const text = (await open(null)).textContent ?? '';
-    expect(text).toContain('è riservata');
+    expect(text).toContain('li scrivono gli ufficiali e li leggono i membri');
     expect(text).not.toContain('Precompila con i pending');
     expect(text).toContain('Dettagli del sistema');
     expect(text).toContain('La Watchlist è');

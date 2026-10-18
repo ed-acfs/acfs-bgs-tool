@@ -6,6 +6,16 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
 Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon), la 1.5.0 (stati e influenze dal server, conflitti appena conclusi) la 1.5.1 (pagina del lavoro dello squadrone, in beta), la 1.5.2 (accesso con Discord) e la 1.5.3 (chiave BGS-Tally per ogni pilota). La pagina è una funzione nuova, ma per scelta dell'utente la versione resta bassa.
 
+### Ordini e "Assegna" secondo il ruolo Discord
+
+- **Ordini Ufficiali senza passphrase**: li scrivono gli ufficiali (ruolo Discord) e li leggono i membri dello squadrone (Membro Flotta, Cadetto). Il controllo lo fa il server dello squadrone, non più il browser con un'impronta pubblicata nel repo.
+- **Bozza condivisa**: la bozza degli Ordini sta sul server, si salva da sola mentre si scrive ed è la stessa per tutti gli ufficiali e su ogni computer (prima viveva nel browser di chi la scriveva). Se un altro ufficiale la cambia nel frattempo, la pagina lo dice e si sceglie quale versione tenere, invece di sovrascriversi a vicenda. La prima volta, una bozza rimasta nel browser diventa quella condivisa.
+- **Pubblica per i membri**: accanto a "Copia", rende la bozza visibile ai membri in una pagina nuova, **Ordini** (`/ordini/pubblicati`, dal menu con il nome): sezioni, priorità e schede con icone vere invece del Markdown di Discord, leggibile anche da telefono, con data in gioco e chi li ha pubblicati. "Vista dei membri" la mostra agli ufficiali.
+- **"Assegna" solo per gli ufficiali, senza password**: il pulsante (e la matita, e 📋 "aggiungi agli Ordini") compare solo a chi ha il ruolo da ufficiale; l'assegnazione passa dal server, che la manda al foglio con la password dello script, che ora conosce solo lui. Il nome registrato è quello Discord, non va più scritto a mano.
+- **Attività** (lavoro dello squadrone) senza la password di riserva: si entra solo con il ruolo da ufficiale. La password ricordata sul dispositivo viene cancellata.
+- Guida aggiornata (Ordini, "Assegnare un architetto").
+- La pagina del lavoro si chiama ovunque **Attività** (prima "Lavoro (beta)" nel pulsante degli Ordini e "Lavoro dello squadrone" nel titolo, "Attività (beta)" nel menu). Segnalato dall'utente.
+
 ### Esito dei conflitti conclusi
 
 - Un conflitto **concluso** (finito per la fonte del punteggio, o con 4 giorni vinti da una parte) non mostra più le etichette dello scarto: il tooltip della bandierina 🏁 dice "Conflitto concluso (Election): Vinto, 4-0" (prima "Total Victory 4-0") e la scheda del punteggio "Vinto" / "Perso" / "Pari", in italiano, tedesco e inglese. Le etichette (Draw, Close, Victory/Defeat, Total) descrivono lo scarto a conflitto **in corso** e arrivano a 3 giorni: chi arriva a 4 giorni vinti ha già vinto, quindi un quarto livello non esiste. La regola in `CLAUDE.md` diceva per errore "3 o più".

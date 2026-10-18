@@ -1,6 +1,8 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BgsRow } from '../../core/bgs';
+import { AuthService } from '../auth.service';
 import { BgsService } from '../bgs.service';
 import {
   AFFILIATION_SQUADRON_MEMBER,
@@ -252,12 +254,12 @@ describe('AssignArchitectDialogComponent changing an existing assignment', () =>
   });
 });
 
-describe('AssignArchitectDialogComponent with the protected Apps Script', () => {
+describe('AssignArchitectDialogComponent through the squadron server', () => {
   let fixture: ComponentFixture<AssignArchitectDialogComponent>;
   let component: AssignArchitectDialogComponent;
   let dialogRef: { close: ReturnType<typeof vi.fn>; disableClose: boolean };
   let service: {
-    assignNeedsPassword: boolean;
+    assignUrl: string;
     getArchitectRegistry: ReturnType<typeof vi.fn>;
     submitAssignment: ReturnType<typeof vi.fn>;
     recordAssignment: ReturnType<typeof vi.fn>;
@@ -270,6 +272,7 @@ describe('AssignArchitectDialogComponent with the protected Apps Script', () => 
         { provide: MatDialogRef, useValue: dialogRef },
         { provide: MAT_DIALOG_DATA, useValue: { row: ROW } },
         { provide: BgsService, useValue: service },
+        { provide: AuthService, useValue: { session: signal({ user: { display_name: 'WiitifulSky' }, officer: true, member: true }) } },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(AssignArchitectDialogComponent);
@@ -282,44 +285,38 @@ describe('AssignArchitectDialogComponent with the protected Apps Script', () => 
     localStorage.setItem('acfs-bgs:your-name:v1', 'LCU No Fool Like One');
     dialogRef = { close: vi.fn(), disableClose: false };
     service = {
-      assignNeedsPassword: true,
+      assignUrl: 'https://api.example/auth/assign',
       getArchitectRegistry: vi.fn().mockResolvedValue(REGISTRY),
       submitAssignment: vi.fn().mockResolvedValue(undefined),
       recordAssignment: vi.fn(),
     };
   });
 
-  it('asks for the password and will not send without it', async () => {
+  it('asks for no password and no name: it signs with the Discord name', async () => {
     await create();
-    expect(fixture.nativeElement.querySelector('input[type="password"]')).not.toBeNull();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('input[type="password"]')).toBeNull();
+    expect(fixture.nativeElement.textContent).toContain('a nome di WiitifulSky');
 
+    component['form'].controls.affiliation.setValue(AFFILIATION_NOT_A_COLONY);
+    await fixture.whenStable();
     await component['send']();
 
-    expect(service.submitAssignment).not.toHaveBeenCalled();
-  });
-
-  it('sends the password and remembers it on this device after a confirmed write', async () => {
-    await create();
-    component['form'].controls.password.setValue('segreta');
-
-    await component['send']();
-
-    expect(service.submitAssignment.mock.calls[0][1]).toBe('segreta');
-    expect(localStorage.getItem('acfs-bgs:assign-password:v1')).toBe('segreta');
+    expect(service.submitAssignment).toHaveBeenCalledTimes(1);
+    expect(service.submitAssignment.mock.calls[0]).toHaveLength(1);
+    expect(service.submitAssignment.mock.calls[0][0].yourName).toBe('WiitifulSky');
     expect(dialogRef.close).toHaveBeenCalled();
   });
 
-  it('pre-fills a remembered password, and forgets it when the script says it is wrong', async () => {
-    localStorage.setItem('acfs-bgs:assign-password:v1', 'vecchia');
-    service.submitAssignment.mockRejectedValue(new AssignRejectedError('password'));
+  it("says so when the server refuses because the session is not an officer's", async () => {
+    service.submitAssignment.mockRejectedValue(new AssignRejectedError('forbidden'));
     await create();
-    expect(component['form'].controls.password.value).toBe('vecchia');
+    component['form'].controls.affiliation.setValue(AFFILIATION_NOT_A_COLONY);
+    await fixture.whenStable();
 
     await component['send']();
 
-    expect(component['sendError']()).toContain('Password errata');
-    expect(component['form'].controls.password.value).toBe('');
-    expect(localStorage.getItem('acfs-bgs:assign-password:v1')).toBeNull();
+    expect(component['sendError']()).toContain('riservato agli ufficiali');
     expect(service.recordAssignment).not.toHaveBeenCalled();
     expect(dialogRef.close).not.toHaveBeenCalled();
   });

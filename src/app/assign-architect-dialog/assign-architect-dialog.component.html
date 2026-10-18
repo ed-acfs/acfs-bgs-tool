@@ -7,24 +7,16 @@
       <span class="assign-system-name">{{ systemName }}</span>
     </div>
 
-    <mat-form-field appearance="outline" subscriptSizing="dynamic">
-      <mat-label>Il tuo nome</mat-label>
-      <input matInput formControlName="yourName" maxlength="120" autocomplete="off" />
-      @if (form.controls.yourName.hasError('required') && form.controls.yourName.touched) {
-        <mat-error>Indica chi sta facendo la segnalazione.</mat-error>
-      }
-    </mat-form-field>
-
-    @if (needsPassword) {
+    @if (asksName) {
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>Password ufficiali</mat-label>
-        <input matInput type="password" formControlName="password" autocomplete="current-password" />
-        @if (form.controls.password.hasError('required') && form.controls.password.touched) {
-          <mat-error>Serve la password degli ufficiali per scrivere nel registro.</mat-error>
-        } @else {
-          <mat-hint>Dopo il primo invio riuscito questo dispositivo la ricorda</mat-hint>
+        <mat-label>Il tuo nome</mat-label>
+        <input matInput formControlName="yourName" maxlength="120" autocomplete="off" />
+        @if (form.controls.yourName.hasError('required') && form.controls.yourName.touched) {
+          <mat-error>Indica chi sta facendo la segnalazione.</mat-error>
         }
       </mat-form-field>
+    } @else {
+      <p class="assign-signed">Registrato a nome di <strong>{{ form.controls.yourName.value }}</strong> (il tuo nome Discord).</p>
     }
 
     <mat-form-field appearance="outline" subscriptSizing="dynamic">

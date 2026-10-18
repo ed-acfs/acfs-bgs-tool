@@ -1,7 +1,7 @@
 /**
  * Il lavoro dello squadrone ricevuto da BGS-Tally, come lo dà il server agli ufficiali
  * (`/v1/work` di acfs-server, dietro password; roadmap, fase 10). Solo per la pagina
- * "Lavoro (beta)", in italiano come gli Ordini.
+ * "Attività (beta)", in italiano come gli Ordini.
  */
 
 /** Totali di una voce di lavoro, come li somma il server (`work.mjs`): solo le voci diverse da zero. */

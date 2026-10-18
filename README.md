@@ -11,7 +11,7 @@ Risponde a una domanda: **dove dobbiamo lavorare oggi?** Mostra in una tabella t
 - nei dettagli del sistema, una "N" accanto alle fazioni native (ricavate dal nome: Spansh non lo dice) e un ⚠️ sulle fazioni non native in Retreat o al 2,5% o meno;
 - età del dato, cioè quanto tempo fa il sistema è stato aggiornato;
 - priorità di intervento, da P1 (massima) a P5; nei sistemi che controlliamo tiene conto anche dei semafori di influenza e margine;
-- architetto e fazione preferita dei sistemi colonizzati, registrabili dal pulsante "Assegna" (con la password degli ufficiali, una volta installato lo script del foglio);
+- architetto e fazione preferita dei sistemi colonizzati, registrabili dagli ufficiali dal pulsante "Assegna" (accesso con Discord; il server dello squadrone scrive nel foglio con lo script, la password la conosce solo lui);
 - distanza da un sistema a scelta: di default Wong Sher, la capitale;
 - all'apertura i sistemi sono ordinati per **priorità**, dalla P1; i sistemi della **Watchlist** stanno sempre in cima, con qualunque ordinamento;
 - stazioni con **Material Trader** o **Technology Broker**, con il loro tipo, e un filtro per trovarle;
@@ -29,9 +29,11 @@ Il progetto è in sviluppo. Le fasi, le decisioni prese e le domande aperte sono
 
 Il tool si consulta senza accesso. Il pulsante **Accedi con Discord** (nella riga con le bandiere delle lingue) serve ad abilitare gli strumenti riservati: il server dello squadrone ([`acfs-server`](https://github.com/ed-acfs/acfs-server), servizio `auth`) legge i ruoli nel server Discord ACFS e tiene la sessione in un suo cookie. Livelli: **collegato** (chiunque sia nel server Discord), **membro** (Membro Flotta, Cadetto), **ufficiale** (Ammiraglio, Vice Ammiraglio, Contrammiraglio: Ordini e Attività nel menu dell'account, solo in italiano). Chiunque sia collegato trova nel menu anche **Chiave BGS-Tally** (`src/app/tally-key-dialog/`): si genera, rigenera, rinomina o revoca la chiave per il plugin BGS-Tally (`/auth/tally-key` del server, che ne salva solo l'impronta); il nome della chiave, ricavato dal nome Discord, ne è anche l'inizio. Gli ufficiali hanno anche **Chiavi dei piloti** (`src/app/pilot-keys-dialog/`, solo in italiano), con l'elenco di tutte le chiavi e la revoca (`/auth/tally-keys`). Il servizio che chiede chi è collegato è `src/app/auth.service.ts`; il pulsante e il menu sono `src/app/account/`.
 
-## Lavoro dello squadrone (beta)
+## Attività dello squadrone (beta)
 
-La pagina `/activity` (nel menu dell'account per gli ufficiali e dal pulsante **Lavoro (beta)** negli Ordini, solo in italiano) mostra il lavoro BGS per Flotta Stellare che i piloti mandano con BGS-Tally al server dello squadrone, per tick, sistema e pilota. È riservata agli ufficiali: si entra con Discord (ruolo da ufficiale) o, finché serve, con la password, e il controllo lo fa il server (`/v1/work` di [`acfs-server`](https://github.com/ed-acfs/acfs-server)), che la tiene nel suo `.env` (`OFFICERS_PASSWORD`); il tool la ricorda sul dispositivo finché non si clicca "Esci".
+La pagina `/activity` (nel menu dell'account per gli ufficiali e dal pulsante **Attività (beta)** negli Ordini, solo in italiano) mostra il lavoro BGS per Flotta Stellare che i piloti mandano con BGS-Tally al server dello squadrone, per tick, sistema e pilota. È riservata agli ufficiali: si entra con Discord (ruolo da ufficiale) e il controllo lo fa il server (`/v1/work` di [`acfs-server`](https://github.com/ed-acfs/acfs-server)).
+
+**Ordini Ufficiali** (`/ordini`, solo in italiano): li scrivono gli ufficiali e li leggono i membri (Membro Flotta, Cadetto), secondo il ruolo Discord, senza passphrase. La bozza è condivisa sul server (`/auth/orders/draft`, `src/app/orders/orders.store.ts`): si salva da sola ed è la stessa per tutti gli ufficiali e su ogni computer; se un altro ufficiale l'ha cambiata nel frattempo, la pagina chiede quale versione tenere. **Pubblica per i membri** la rende visibile in `/ordini/pubblicati` (`src/app/orders-reader/`, impaginazione in `src/core/orders-view.ts`), che è dove arriva un membro dal menu.
 
 ## Dati
 
@@ -106,7 +108,7 @@ Il tool usa il service worker di Angular (`@angular/service-worker`), configurat
 | `src/core/i18n/` | I testi della parte di consultazione in italiano (`it.ts`, il riferimento), tedesco e inglese. Una chiave mancante in una lingua blocca la compilazione |
 | `src/app/` | L'app Angular: tabella, dialog, caricamento e cache dei dati |
 | `scripts/` | Script Node: scaricamento dei dati da Spansh e informazioni di build |
-| `apps-script/` | Script Google collegato al foglio, con cui "Assegna" scrive nel Registro Architetti dietro la password degli ufficiali. Si installa a mano nel foglio: istruzioni in `apps-script/README.md` |
+| `apps-script/` | Script Google collegato al foglio, con cui "Assegna" scrive nel Registro Architetti dietro una password che conosce solo il server dello squadrone (`ASSIGN_PASSWORD` nel suo `.env`). Si installa a mano nel foglio: istruzioni in `apps-script/README.md` |
 
 ## Crediti e licenza
 
