@@ -1,5 +1,5 @@
 /**
- * Il lavoro dello squadrone ricevuto da BGS-Tally, come lo dà il server agli ufficiali
+ * Il lavoro dello Squadrone ricevuto da BGS-Tally, come lo dà il server agli ufficiali
  * (`/v1/work` di acfs-server, dietro password; roadmap, fase 10). Solo per la pagina
  * "Attività (beta)", in italiano come gli Ordini.
  */
@@ -60,7 +60,7 @@ const millions = (value: number) =>
 const credits = (value: number) => `${String(Math.round(value)).replace(/\B(?=(\d{3})+(?!\d))/g, '.')} cr`;
 
 /**
- * Il lavoro in poche parole, con le sigle che lo squadrone usa nel canale ("BVs 8,04 M · CBs
+ * Il lavoro in poche parole, con le sigle che lo Squadrone usa nel canale ("BVs 8,04 M · CBs
  * 13,08 M · Inf +5 · CZ spaziali M×1 H×3"). Le voci contro di noi (omicidi, missioni fallite) vanno in fondo.
  */
 export function describeWork(t: WorkTotals): string[] {

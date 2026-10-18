@@ -63,7 +63,7 @@ export class WorkPageComponent implements OnInit {
       this.ticks.set(body.ticks ?? []);
       this.state.set('ready');
     } catch {
-      this.error.set('Server dello squadrone non raggiungibile. Riprova fra poco.');
+      this.error.set('Server dello Squadrone non raggiungibile. Riprova fra poco.');
       this.state.set(this.ticks().length ? 'ready' : 'locked');
     }
   }

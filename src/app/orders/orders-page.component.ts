@@ -128,7 +128,7 @@ export class OrdersPageComponent implements OnInit {
       case 'conflict':
         return 'Un altro ufficiale ha cambiato la bozza mentre la modificavi.';
       case 'error':
-        return 'Server dello squadrone non raggiungibile: le modifiche restano in questo browser, riprova fra poco.';
+        return 'Server dello Squadrone non raggiungibile: le modifiche restano in questo browser, riprova fra poco.';
       default:
         return saved.at
           ? `Bozza condivisa, salvata alle ${new Date(saved.at).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}${saved.by ? ` da ${saved.by}` : ''}.`

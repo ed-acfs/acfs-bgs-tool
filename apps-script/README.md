@@ -1,6 +1,6 @@
 # Script del Registro Architetti
 
-`assegna.gs` è lo script Google (Apps Script) con cui il pulsante **Assegna** del tool scrive nel Registro Architetti, protetto da una password (roadmap, fase 8a). **Dal 18 ottobre 2026 la password la conosce solo il server dello squadrone** (`ASSIGN_PASSWORD` nel `.env` di `acfs-server`, uguale alla proprietà dello script): il tool manda l'assegnazione al server con la sessione Discord di un ufficiale, e il server la passa allo script (fase 8b, passo 5). Nessun ufficiale deve più conoscerla.
+`assegna.gs` è lo script Google (Apps Script) con cui il pulsante **Assegna** del tool scrive nel Registro Architetti, protetto da una password (roadmap, fase 8a). **Dal 18 ottobre 2026 la password la conosce solo il server dello Squadrone** (`ASSIGN_PASSWORD` nel `.env` di `acfs-server`, uguale alla proprietà dello script): il tool manda l'assegnazione al server con la sessione Discord di un ufficiale, e il server la passa allo script (fase 8b, passo 5). Nessun ufficiale deve più conoscerla.
 
 - La password si controlla nello script, dal lato di Google: chi salta il tool non può scrivere senza conoscerla. Sta nelle proprietà dello script, mai nel repo.
 - Ogni assegnazione aggiunge una riga alla scheda "Risposte del modulo 1", come una risposta del Google Form. Il tool legge l'ultima riga di ogni sistema; le righe vecchie restano come storia.

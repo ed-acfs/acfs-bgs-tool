@@ -15,9 +15,9 @@
     }
     @case ('forbidden') {
       @if (auth.session(); as session) {
-        <p class="reader-note">Sei collegato come {{ session.user.display_name }}: gli Ordini sono per i membri dello squadrone.</p>
+        <p class="reader-note">Sei collegato come {{ session.user.display_name }}: gli Ordini sono per i membri dello Squadrone.</p>
       } @else {
-        <p class="reader-note">Gli Ordini sono per i membri dello squadrone: accedi con Discord per leggerli.</p>
+        <p class="reader-note">Gli Ordini sono per i membri dello Squadrone: accedi con Discord per leggerli.</p>
         @if (auth.available()) {
           <button mat-flat-button type="button" (click)="auth.login()">Accedi con Discord</button>
         }
@@ -27,7 +27,7 @@
       <p class="reader-note">Gli ufficiali non hanno ancora pubblicato Ordini qui.</p>
     }
     @case ('error') {
-      <p class="reader-note reader-note--warn" role="alert">Il server dello squadrone non risponde. Riprova fra poco.</p>
+      <p class="reader-note reader-note--warn" role="alert">Il server dello Squadrone non risponde. Riprova fra poco.</p>
     }
     @case ('ready') {
       @if (view(); as v) {

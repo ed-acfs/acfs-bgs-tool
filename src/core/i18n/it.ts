@@ -18,7 +18,7 @@ export const it = {
   'account.logout': 'Esci',
   'account.tallyKey': 'Chiave BGS-Tally',
   'tallyKey.title': 'Chiave BGS-Tally',
-  'tallyKey.intro': 'Con il plugin BGS-Tally di EDMC il tuo lavoro per Flotta Stellare arriva da solo al server dello squadrone. Il server tiene solo il lavoro per Flotta Stellare; il resto non viene chiesto né salvato.',
+  'tallyKey.intro': 'Con il plugin BGS-Tally di EDMC il tuo lavoro per Flotta Stellare arriva da solo al server dello Squadrone. Il server tiene solo il lavoro per Flotta Stellare; il resto non viene chiesto né salvato.',
   'tallyKey.name': 'Nome della chiave',
   'tallyKey.rename': 'Rinomina',
   'tallyKey.save': 'Salva',
@@ -46,10 +46,10 @@ export const it = {
   'tallyKey.close': 'Chiudi',
   'tallyKey.confirmRegenerate': 'La chiave attuale smetterà subito di funzionare: dovrai inserire quella nuova nel plugin. Continuare?',
   'tallyKey.confirmRevoke': 'Il plugin non potrà più inviare dati finché non generi una chiave nuova. Revocare?',
-  'tallyKey.error': 'Il server dello squadrone non risponde. Riprova fra poco.',
+  'tallyKey.error': 'Il server dello Squadrone non risponde. Riprova fra poco.',
   'account.menuAria': 'Account di {name}',
   'account.officer': 'Ufficiale',
-  'account.member': 'Membro dello squadrone',
+  'account.member': 'Membro dello Squadrone',
   'account.connected': 'Collegato',
   'account.loginOk': 'Accesso eseguito.',
   'account.loginDenied': 'Accesso negato: non risulti nel server Discord ACFS.',
@@ -317,7 +317,7 @@ export const it = {
     "Il tooltip della Priorità spiega il perché. Un clic sulle icone dello Stato mostra punteggio e posta in palio di guerre ed elezioni. L'icona ⓘ apre i dettagli del sistema. Il pulsante Legenda spiega colori e icone della tabella.",
   'help.watchlistTitle': 'Watchlist',
   'help.watchlist':
-    "La Watchlist è l'elenco dei sistemi che lo squadrone tiene d'occhio: per ognuno indica una fazione, la posizione minima che deve mantenere fra le fazioni del sistema e il motivo. Questi sistemi stanno sempre in cima alla tabella e al posto della ⓘ hanno un occhio viola, che apre i dettagli con il motivo e la posizione da mantenere. Se la fazione scende sotto quella posizione, il sistema passa in P1.",
+    "La Watchlist è l'elenco dei sistemi che lo Squadrone tiene d'occhio: per ognuno indica una fazione, la posizione minima che deve mantenere fra le fazioni del sistema e il motivo. Questi sistemi stanno sempre in cima alla tabella e al posto della ⓘ hanno un occhio viola, che apre i dettagli con il motivo e la posizione da mantenere. Se la fazione scende sotto quella posizione, il sistema passa in P1.",
   'help.top': 'In alto',
   'help.top1':
     "Sotto il titolo: quando Spansh ha aggiornato i dati, l'ora dell'ultimo tick e quanti sistemi (e quanti P1-P2) sono aggiornati da allora. Spansh è indietro rispetto al gioco: un sistema si aggiorna quando qualcuno ci passa, quindi il dato di un sistema non aggiornato dall'ultimo tick potrebbe essere già cambiato. Il titolo riporta la tabella com'è all'apertura; Esporta scarica i dati in JSON o CSV; le bandierine cambiano lingua.",
@@ -331,9 +331,9 @@ export const it = {
     "Il tool si può installare come app: su telefono con \"Aggiungi a schermata Home\" dal menu del browser, su PC con l'icona \"Installa\" nella barra degli indirizzi. Si apre anche senza connessione, con gli ultimi dati scaricati: l'età del dato sotto il titolo dice quanto sono vecchi. La ricerca per distanza funziona solo online.",
   // Shown only in the other languages: in Italian the guide explains these tools in full.
   'help.login': 'Accesso con Discord',
-  'help.login1': 'Il tool si consulta senza accesso. «Accedi con Discord», nella riga con le bandiere, serve a chi è nel server Discord ACFS: dal menu con il tuo nome generi la tua chiave BGS-Tally, per mandare il tuo lavoro per Flotta Stellare al server dello squadrone; gli ufficiali vi trovano anche i loro strumenti. Il tool non vede la tua password di Discord: Discord gli dice solo chi sei e quali ruoli hai nel server ACFS.',
-  'footer.disclaimer': 'ACFS BGS Tool è uno strumento non ufficiale dello squadrone ACFS per il gioco Elite Dangerous e non è affiliato a Frontier Developments. I dati vengono da fonti pubbliche (Spansh, EDDN, EliteBGS) e dai piloti dello squadrone: possono essere in ritardo o non del tutto esatti.',
-  'help.internal': 'Strumenti dello squadrone',
+  'help.login1': 'Il tool si consulta senza accesso. «Accedi con Discord», nella riga con le bandiere, serve a chi è nel server Discord ACFS: dal menu con il tuo nome generi la tua chiave BGS-Tally, per mandare il tuo lavoro per Flotta Stellare al server dello Squadrone; gli ufficiali vi trovano anche i loro strumenti. Il tool non vede la tua password di Discord: Discord gli dice solo chi sei e quali ruoli hai nel server ACFS.',
+  'footer.disclaimer': 'ACFS BGS Tool è uno strumento non ufficiale dello Squadrone ACFS per il gioco Elite Dangerous e non è affiliato a Frontier Developments. I dati vengono da fonti pubbliche (Spansh, EDDN, EliteBGS) e dai piloti dello Squadrone: possono essere in ritardo o non del tutto esatti.',
+  'help.internal': 'Strumenti dello Squadrone',
   'help.internalNote':
-    "Lo squadrone ha anche strumenti interni, come l'assegnazione degli architetti: sono solo in italiano.",
+    "Lo Squadrone ha anche strumenti interni, come l'assegnazione degli architetti: sono solo in italiano.",
 } as const;

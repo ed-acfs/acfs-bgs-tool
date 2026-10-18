@@ -6,7 +6,7 @@ import { AuthService, PilotKey } from '../auth.service';
 
 /**
  * "Chiavi dei piloti", dal menu dell'account, solo per gli ufficiali e solo in italiano (come Ordini
- * e Attività): l'elenco delle chiavi BGS-Tally e la revoca di quella di chi lascia lo squadrone.
+ * e Attività): l'elenco delle chiavi BGS-Tally e la revoca di quella di chi lascia lo Squadrone.
  * Il server non sa da solo chi esce dal server Discord, quindi la revoca la fanno gli ufficiali.
  */
 @Component({

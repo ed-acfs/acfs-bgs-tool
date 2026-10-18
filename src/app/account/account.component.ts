@@ -13,8 +13,8 @@ import { TallyKeyDialogComponent } from '../tally-key-dialog/tally-key-dialog.co
 
 /**
  * Nell'intestazione: "Accedi con Discord", oppure chi è collegato con un menu. Compare solo se il
- * server dello squadrone risponde e ha l'accesso configurato; altrimenti niente, e il tool resta
- * quello di sempre. Gli strumenti dello squadrone stanno nel suo menu, solo in italiano: gli Ordini
+ * server dello Squadrone risponde e ha l'accesso configurato; altrimenti niente, e il tool resta
+ * quello di sempre. Gli strumenti dello Squadrone stanno nel suo menu, solo in italiano: gli Ordini
  * per membri (lettura) e ufficiali (editor), Attività e Chiavi dei piloti per gli ufficiali.
  */
 @Component({

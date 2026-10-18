@@ -19,10 +19,10 @@
         @if (session.member) {
           <p>Gli Ordini per i membri sono in <a routerLink="/ordini/pubblicati">questa pagina</a>.</p>
         } @else {
-          <p>Sei collegato come {{ session.user.display_name }}: gli Ordini sono per i membri dello squadrone.</p>
+          <p>Sei collegato come {{ session.user.display_name }}: gli Ordini sono per i membri dello Squadrone.</p>
         }
       } @else {
-        <p>Gli Ordini sono per i membri dello squadrone: accedi con Discord per leggerli.</p>
+        <p>Gli Ordini sono per i membri dello Squadrone: accedi con Discord per leggerli.</p>
         @if (auth.available()) {
           <button mat-flat-button type="button" (click)="auth.login()">Accedi con Discord</button>
         }

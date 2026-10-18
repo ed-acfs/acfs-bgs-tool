@@ -45,7 +45,7 @@ function rejectionMessage(error: AssignRejectedError): string {
     case 'forbidden':
       return 'Assegnare è riservato agli ufficiali: accedi con Discord con il tuo account da ufficiale. Non è stato registrato nulla.';
     case 'not-configured':
-      return 'Il server dello squadrone non riesce a scrivere nel registro: avvisa chi lo gestisce. Non è stato registrato nulla.';
+      return 'Il server dello Squadrone non riesce a scrivere nel registro: avvisa chi lo gestisce. Non è stato registrato nulla.';
     case 'invalid':
       return `Dati non accettati dal registro: ${error.detail ?? 'controlla i campi'}`;
     default:
@@ -156,7 +156,7 @@ export class AssignArchitectDialogComponent {
     // A squadron member's colony defaults to the squadron's faction, when it's present here.
     if (this.affiliationValue() === AFFILIATION_SQUADRON_MEMBER) {
       if (this.data.row.factions.some(faction => faction.name === FACTION_NAME)) {
-        return { value: FACTION_NAME, note: `La fazione dello squadrone, presente in ${this.systemName}.` };
+        return { value: FACTION_NAME, note: `La fazione dello Squadrone, presente in ${this.systemName}.` };
       }
       return { value: DONT_KNOW_FACTION, note: null };
     }
