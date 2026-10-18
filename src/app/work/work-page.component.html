@@ -9,11 +9,22 @@
 
   <p class="work-intro">
     Il lavoro BGS per Flotta Stellare mandato da BGS-Tally dai piloti collegati al server dello squadrone, per tick,
-    sistema e pilota. Riservato agli ufficiali: la password la controlla il server. Chi non usa BGS-Tally non compare,
+    sistema e pilota. Riservato agli ufficiali: si entra con Discord (ruolo da ufficiale) o con la password, e il
+    controllo lo fa il server. Chi non usa BGS-Tally non compare,
     quindi i totali non sono il lavoro completo dello squadrone.
   </p>
 
   @if (state() === 'locked') {
+    @if (auth.session(); as session) {
+      @if (!session.officer) {
+        <p class="work-note">Sei collegato come {{ session.user.display_name }}, ma la pagina è riservata agli ufficiali.</p>
+      }
+    } @else if (auth.available()) {
+      <p class="work-note">
+        <button mat-flat-button type="button" (click)="auth.login()">Accedi con Discord</button>
+        oppure usa la password degli ufficiali:
+      </p>
+    }
     <section class="work-gate">
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Password degli ufficiali</mat-label>
@@ -32,7 +43,9 @@
   @if (state() === 'ready') {
     <div class="work-toolbar">
       <button mat-stroked-button type="button" (click)="load()">Aggiorna</button>
-      <button mat-stroked-button type="button" (click)="lock()">Esci</button>
+      @if (usingPassword()) {
+        <button mat-stroked-button type="button" (click)="lock()">Esci</button>
+      }
     </div>
     @for (tick of ticks(); track tick.tickid) {
       <section class="work-tick">

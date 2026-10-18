@@ -69,6 +69,7 @@ import { readYourName } from '../your-name';
 import { version } from '../../../package.json';
 import { I18nService } from '../i18n.service';
 import { ConflictScoreCardComponent } from '../conflict-score-card/conflict-score-card.component';
+import { AccountComponent } from '../account/account.component';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 import { PriorityReason } from '../../core/priority';
 import { isMessageKey } from '../../core/i18n';
@@ -217,6 +218,7 @@ function toAnchorPoint(system: TypeaheadSystem): AnchorPoint {
     AcfsLogoComponent,
     LanguageSwitcherComponent,
     ConflictScoreCardComponent,
+    AccountComponent,
   ],
   templateUrl: './bgs-table.component.html',
   styleUrl: './bgs-table.component.scss',

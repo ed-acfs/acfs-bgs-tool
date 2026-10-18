@@ -28,13 +28,6 @@
         <fa-icon [icon]="faListUl" aria-hidden="true"></fa-icon>
         {{ t('header.legend') }}
       </button>
-      <!-- The Ordini Ufficiali are internal to the squadron and Italian only: not offered in the other languages. -->
-      @if (i18n.isItalian()) {
-        <a mat-stroked-button routerLink="/ordini" aria-label="Ordini Ufficiali">
-          <fa-icon [icon]="faClipboardList" aria-hidden="true"></fa-icon>
-          Ordini
-        </a>
-      }
       <button
         mat-stroked-button
         type="button"
@@ -49,7 +42,11 @@
         <button mat-menu-item type="button" (click)="exportJson()">{{ t('header.exportJson') }}</button>
         <button mat-menu-item type="button" (click)="exportCsv()">{{ t('header.exportCsv') }}</button>
       </mat-menu>
-      <app-language-switcher class="bgs-language"></app-language-switcher>
+      <!-- Second row: languages and the Discord account; the officers' tools (Ordini, Attività) are in its menu. -->
+      <div class="bgs-header-user">
+        <app-language-switcher class="bgs-language"></app-language-switcher>
+        <app-account></app-account>
+      </div>
       @if (exportError(); as err) {
         <span class="bgs-export-error" role="alert" aria-live="assertive" aria-atomic="true">{{ err }}</span>
       }
