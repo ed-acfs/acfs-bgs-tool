@@ -1,0 +1,91 @@
+// Like Inara's conflict card: us on the left (blue), them on the right (red), days won in the middle.
+.score-card {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  margin: 8px 0 0;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  padding: 6px 8px;
+  font-size: 0.75rem;
+  color: var(--color-text-2);
+}
+
+.side--ours {
+  background: color-mix(in srgb, var(--color-info) 18%, transparent);
+}
+
+.side--theirs {
+  text-align: right;
+  background: color-mix(in srgb, var(--color-danger) 18%, transparent);
+}
+
+.faction {
+  color: var(--color-accent);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.outcome {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+[data-outcome='ahead'] > .outcome {
+  color: var(--color-success);
+}
+
+[data-outcome='behind'] > .outcome {
+  color: var(--color-danger);
+}
+
+[data-outcome='level'] > .outcome {
+  color: var(--color-text-bright);
+}
+
+.stake-label {
+  margin-top: 4px;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.stake {
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.middle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+}
+
+.days {
+  color: var(--color-text-bright);
+  font-size: 1.35rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.vs {
+  margin: 0 5px;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.days-label {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}

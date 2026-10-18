@@ -55,6 +55,12 @@ export const STORAGE_PREFIX: string = config.storagePrefix;
 export const BGS_DATA_URL: string = config.dataUrl;
 
 /**
+ * The squadron's own server (`acfs-server`, roadmap phase 10): live conflict scores from EDDN,
+ * read at load time. Null turns it off; the app then shows only what the dataset carries.
+ */
+export const SERVER_API_URL: string | null = config.serverApiUrl || null;
+
+/**
  * Galaxy-wide system name and coordinate lookup, for the "sort by distance" search box:
  * Canonn's public proxy of Spansh's own typeahead, which sends no CORS headers itself.
  */

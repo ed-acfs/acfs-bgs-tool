@@ -93,17 +93,25 @@ export interface BgsSystemRecord {
   ebgs_conflicts?: EbgsConflicts | null;
 }
 
-/** EliteBGS's view of a system's conflicts, as `scripts/fetch-bgs.mjs` slims it. */
+/**
+ * A system's conflicts with their scores: EliteBGS's view, as `scripts/fetch-bgs.mjs` slims it,
+ * or the squadron server's (`acfs-server`, from EDDN), converted by `server-conflicts.ts`.
+ */
 export interface EbgsConflicts {
-  /** ISO 8601 time EliteBGS last updated the system. */
+  /** ISO 8601 time the source last saw the system. */
   updated_at: string | null;
+  /** Where the scores come from; absent means EliteBGS (the only source before the server). */
+  source?: ConflictScoreSource;
   conflicts: EbgsConflict[];
 }
+
+/** 'elitebgs': EliteBGS, via the dataset; 'server': the squadron's own server, read live by the app. */
+export type ConflictScoreSource = 'elitebgs' | 'server';
 
 export interface EbgsConflict {
   /** "war", "civilwar" or "election". */
   type: string | null;
-  /** "active" or "pending". */
+  /** "active" or "pending"; the server also sends "ended" for a finished conflict with its final score. */
   status: string | null;
   faction1: EbgsConflictSide;
   faction2: EbgsConflictSide;
@@ -299,7 +307,7 @@ export interface StateEntry {
   status: 'active' | 'pending';
   /** The factions sharing the state, the squadron's first. */
   factions: string[];
-  /** Days won so far, from EliteBGS; null when it has no score for this conflict (or for a retreat, which has none). */
+  /** Days won so far, from the squadron server or EliteBGS; null when neither has a score for this conflict (or for a retreat, which has none). */
   score: ConflictScore | null;
 }
 
@@ -311,8 +319,11 @@ export interface ConflictScore {
   /** What each side loses if it loses, e.g. a station; null if nothing. */
   ourStake: string | null;
   theirStake: string | null;
-  /** ISO 8601 time EliteBGS last updated the system. */
+  /** ISO 8601 time the source last saw the system. */
   updatedAt: string | null;
+  source: ConflictScoreSource;
+  /** The source saw the conflict already over: the score is final (Spansh may still call it active). */
+  ended: boolean;
 }
 
 /** One row of the rendered table. */
@@ -667,8 +678,24 @@ function summarizeFactionState(
   return { status: null, details: null, entries: [] };
 }
 
+/** How a conflict stands for one side, in the game's words (kept in English in every language, like the states). */
+export type ConflictOutcome = 'Total Victory' | 'Victory' | 'Close Victory' | 'Draw' | 'Close Defeat' | 'Defeat' | 'Total Defeat';
+
 /**
- * The score of one of our active conflicts, from the squadron's side, if EliteBGS has it: the
+ * The outcome for the side that won `ours` days against `theirs`: only the gap counts (see
+ * CLAUDE.md) — level is a Draw, 1 day Close, 2 days plain, 3 or more Total. First to 4 days wins.
+ */
+export function conflictOutcome(ours: number, theirs: number): ConflictOutcome {
+  const gap = ours - theirs;
+  if (gap === 0) {
+    return 'Draw';
+  }
+  const size = Math.abs(gap) === 1 ? 'Close ' : Math.abs(gap) === 2 ? '' : 'Total ';
+  return `${size}${gap > 0 ? 'Victory' : 'Defeat'}` as ConflictOutcome;
+}
+
+/**
+ * The score of one of our active conflicts, from the squadron's side, if the source has it: the
  * conflict of the same type (war, civil war, election) with our faction on one side. Pending
  * conflicts haven't started, so they never get one ("Draw; 0-0" is implied).
  */
@@ -697,6 +724,8 @@ export function conflictScore(
         ourStake: us.stake,
         theirStake: them.stake,
         updatedAt: ebgs.updated_at,
+        source: ebgs.source ?? 'elitebgs',
+        ended: conflict.status === 'ended',
       };
     }
   }

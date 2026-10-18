@@ -2,6 +2,27 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
+## [1.4.0] - 2026-10-18 — Punteggio dei conflitti dal server dello squadrone
+
+### Punteggio dei conflitti
+
+- Il tool legge il **punteggio dei conflitti** (giorni vinti) dal **server dello squadrone**, `https://api.flottastellare.it`: un server nostro, attivo dal 18 ottobre 2026, che ascolta in tempo reale il flusso EDDN, lo stesso da cui si alimenta Spansh (vedi la fase 10 della roadmap). Il punteggio arriva pochi secondi dopo che un giocatore con EDMC o EDDiscovery passa nel sistema, senza aspettare Spansh né EliteBGS, che da settimane è quasi sempre irraggiungibile.
+- Sistema per sistema vale il punteggio **più recente** fra server ed EliteBGS. Se il server non risponde entro 6 secondi, la tabella si apre lo stesso con i dati di sempre.
+- Nel riquadro dello stato il punteggio è una **scheda come quella di Inara**: Flotta Stellare a sinistra su fondo blu, l'avversario a destra su fondo rosso, i giorni vinti in grande al centro ("2 vs 0"), sotto ogni fazione la stazione che cede se perde. Sotto il nome di ciascuna fazione, l'esito in corso secondo lo scarto: **Draw** se pari, **Close Victory / Close Defeat** con 1 giorno di scarto, **Victory / Defeat** con 2, **Total Victory / Total Defeat** con 3 o più; in verde chi è avanti, in rosso chi è indietro. Le etichette restano in inglese in tutte le lingue, come gli stati BGS.
+- Sotto la scheda si legge da dove viene il punteggio ("dal server ACFS (EDDN)" oppure "EliteBGS") e quanto è vecchio. Se il server vede il conflitto già finito mentre Spansh lo dà ancora in corso, una riga avverte che è il punteggio finale.
+- Su desktop il riquadro dello stato è più largo (da 420 a 480 px), così i nomi delle fazioni vanno meno a capo.
+- La scheda è un componente a sé (`app-conflict-score-card`), con stili propri: aggiunta agli stili della tabella li avrebbe portati oltre il limite di 16 kB per componente di `angular.json`, rimasto quello originale.
+- Testi nuovi in italiano, tedesco e inglese.
+
+### Documentazione
+
+- `CLAUDE.md`: la regola dell'etichetta del punteggio spiegata dall'utente (conta lo scarto; il conflitto si vince a 4 giorni su 7) e corretto l'esempio "Close Defeat; 0-2", che secondo quella regola è "Defeat".
+- README: da dove viene il punteggio e come spegnere la lettura dal server (`serverApiUrl` a `null`).
+
+### Test
+
+- Nuovi test per la lettura dal server (più recente fra le due fonti, server che non risponde), per le etichette dell'esito e per la scheda. Passano 276 test dell'app.
+
 ## [1.3.1] - 2026-10-13 — Interstellar Factors
 
 ### Tabella

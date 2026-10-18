@@ -541,6 +541,11 @@
   min-width: 240px;
   font-size: 0.85rem;
   color: var(--color-text);
+
+  // On desktop there's room: wider, so the score card's faction names wrap less.
+  @media (min-width: 721px) {
+    min-width: 420px;
+  }
 }
 
 .bgs-state-panel-system {
@@ -604,11 +609,6 @@
   margin: 6px 0 0;
   color: var(--color-text-2);
   font-size: 0.8rem;
-}
-
-.bgs-state-score-value {
-  color: var(--color-text-bright);
-  font-size: 0.95rem;
 }
 
 .bgs-state-score-note {
