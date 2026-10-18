@@ -1,24 +1,52 @@
 /**
- * Persists the Ordini Ufficiali draft in the browser (localStorage) and gates the page behind
- * a shared passphrase — see {@link ORDERS_PASSPHRASE_HASH} for why that's a deterrent, not real
- * access control. Everything here is browser-specific (storage, the unlock flag); the actual
- * rendering is `core/orders.ts`, which this just calls.
+ * The Ordini Ufficiali draft, shared by the officers on the squadron server (`/auth/orders/draft`):
+ * the same on every computer and for every officer, instead of one per browser. Every change is
+ * saved a moment later; if another officer saved in between, the server refuses (409) and the
+ * page says so instead of overwriting their work. "Pubblica" sends the current draft to the
+ * members' read-only page (`/auth/orders/published`). Access is the Discord role, checked by the
+ * server: there is no passphrase any more.
+ *
+ * The browser keeps a copy (localStorage) so a draft survives a reload while the server is
+ * unreachable; the first time an officer opens the shared draft and the server has none yet,
+ * their local draft becomes it. The rendering is `core/orders.ts`, which this just calls.
  */
 import { Injectable, computed, signal } from '@angular/core';
-import { STORAGE_PREFIX } from '../../core/config';
-import { checkOrdersPassphrase } from '../../core/orders-access';
+import { SERVER_API_URL, STORAGE_PREFIX } from '../../core/config';
 import { createOrderItem, OrderItem, OrdersDraft, parseIsoDay, renderOrdersMarkdown, resolveOrdersDay } from '../../core/orders';
 
 const ITEMS_KEY = `${STORAGE_PREFIX}orders-items:v1`;
 const META_KEY = `${STORAGE_PREFIX}orders-meta:v1`;
-const UNLOCKED_KEY = `${STORAGE_PREFIX}orders-unlocked:v1`;
 const DAY_KEY = `${STORAGE_PREFIX}orders-day:v1`;
+/** Wait after the last change before saving, so typing doesn't send a request per key. */
+const SAVE_DELAY_MS = 800;
+const TIMEOUT_MS = 8000;
 
-interface OrdersMeta {
+export interface OrdersMeta {
   mention: string;
   footerNote: string;
   signature: string;
 }
+
+/** What the server keeps: the tool's own JSON, which it stores without reading. */
+export interface OrdersData {
+  items: OrderItem[];
+  meta: OrdersMeta;
+  day: string;
+}
+
+/** A saved version on the server, with who saved it. */
+export interface OrdersDoc {
+  data: OrdersData | null;
+  version?: number;
+  updated_at?: string;
+  updated_by?: string | null;
+}
+
+/**
+ * Where the shared draft stands: loading it, saved, a change waiting or on its way, refused
+ * because another officer saved first (`conflict`), or the server unreachable (`error`).
+ */
+export type SyncState = 'loading' | 'saved' | 'pending' | 'saving' | 'conflict' | 'error';
 
 const DEFAULT_META: OrdersMeta = {
   mention: '@Membro Flotta',
@@ -39,22 +67,38 @@ function writeJson(key: string, value: unknown): void {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    // Storage unavailable (e.g. private browsing) — the draft just won't survive a reload.
+    // Storage unavailable (e.g. private browsing) — the server copy is what counts anyway.
   }
+}
+
+async function request(method: 'GET' | 'PUT' | 'POST', path: string, body?: unknown): Promise<Response> {
+  return fetch(`${SERVER_API_URL}${path}`, {
+    method,
+    credentials: 'include',
+    cache: 'no-store',
+    headers: method === 'GET' ? {} : { 'Content-Type': 'application/json', 'X-Requested-With': 'acfs-bgs-tool' },
+    body: body === undefined ? undefined : JSON.stringify(body),
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
 }
 
 @Injectable({ providedIn: 'root' })
 export class OrdersStore {
   private readonly itemsSignal = signal<OrderItem[]>(readJson(ITEMS_KEY, []));
   private readonly metaSignal = signal<OrdersMeta>(readJson(META_KEY, DEFAULT_META));
-  private readonly unlockedSignal = signal<boolean>(readJson(UNLOCKED_KEY, false));
-  /** `YYYY-MM-DD`: the day the orders are for — tomorrow unless the user picked another (see {@link resolveOrdersDay}). */
+  /** `YYYY-MM-DD`: the day the orders are for — tomorrow unless someone picked another (see {@link resolveOrdersDay}). */
   private readonly daySignal = signal<string>(resolveOrdersDay(readJson<string | null>(DAY_KEY, null), new Date()));
+  private readonly syncSignal = signal<SyncState>('loading');
+  private readonly savedSignal = signal<{ at: string | null; by: string | null }>({ at: null, by: null });
+  /** The other officer's version, when ours was refused: shown so they can choose. */
+  private readonly conflictSignal = signal<OrdersDoc | null>(null);
 
   readonly items = this.itemsSignal.asReadonly();
   readonly meta = this.metaSignal.asReadonly();
-  readonly unlocked = this.unlockedSignal.asReadonly();
   readonly day = this.daySignal.asReadonly();
+  readonly sync = this.syncSignal.asReadonly();
+  readonly saved = this.savedSignal.asReadonly();
+  readonly conflict = this.conflictSignal.asReadonly();
 
   /** The full report, ready to copy — see `core/orders.ts`. */
   readonly markdown = computed(() => {
@@ -63,18 +107,65 @@ export class OrdersStore {
     return renderOrdersMarkdown(draft);
   });
 
-  async unlock(passphrase: string): Promise<boolean> {
-    const ok = await checkOrdersPassphrase(passphrase);
-    if (ok) {
-      this.unlockedSignal.set(true);
-      writeJson(UNLOCKED_KEY, true);
+  private version = 0;
+  private loaded = false;
+  private saveTimer: ReturnType<typeof setTimeout> | null = null;
+
+  /** Loads the shared draft (once per session; again after a conflict). Officers only: the server checks. */
+  async load(force = false): Promise<void> {
+    if (this.loaded && !force) {
+      return;
     }
-    return ok;
+    this.syncSignal.set('loading');
+    try {
+      const response = await request('GET', '/auth/orders/draft');
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      const doc = (await response.json()) as OrdersDoc;
+      this.loaded = true;
+      this.version = doc.version ?? 0;
+      if (doc.data) {
+        this.adopt(doc);
+        this.syncSignal.set('saved');
+      } else if (this.itemsSignal().length > 0) {
+        // No shared draft yet: this browser's becomes it.
+        this.syncSignal.set('pending');
+        await this.save();
+      } else {
+        this.syncSignal.set('saved');
+      }
+    } catch {
+      this.syncSignal.set('error');
+    }
   }
 
-  lock(): void {
-    this.unlockedSignal.set(false);
-    writeJson(UNLOCKED_KEY, false);
+  /** After a conflict: take the other officer's version, dropping this page's unsaved changes. */
+  takeTheirs(): void {
+    const theirs = this.conflictSignal();
+    if (theirs?.data) {
+      this.adopt(theirs);
+    }
+    this.version = theirs?.version ?? this.version;
+    this.conflictSignal.set(null);
+    this.syncSignal.set('saved');
+  }
+
+  /** After a conflict: save this page's version over the other officer's. */
+  async keepMine(): Promise<void> {
+    this.version = this.conflictSignal()?.version ?? this.version;
+    this.conflictSignal.set(null);
+    await this.save();
+  }
+
+  /** Publishes the current draft for the members (after saving it). Throws if the server refuses. */
+  async publish(): Promise<OrdersDoc> {
+    await this.save();
+    const response = await request('POST', '/auth/orders/publish', { data: this.data() });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    return (await response.json()) as OrdersDoc;
   }
 
   addItem(section: OrderItem['section'], typeKey: string): OrderItem {
@@ -83,9 +174,17 @@ export class OrdersStore {
     return item;
   }
 
-  /** Adds an already-built item — the "Aggiungi agli ordini" table action uses this. */
+  /**
+   * Adds an already-built item — the "Aggiungi agli ordini" table action uses this. From the
+   * table the shared draft may not be loaded yet: it's loaded first, so the item joins it
+   * instead of a stale local copy.
+   */
   addDraftItem(draft: OrderItem): void {
-    this.pushItem(draft);
+    if (this.loaded) {
+      this.pushItem(draft);
+    } else {
+      void this.load().then(() => this.pushItem(draft));
+    }
   }
 
   addDraftItems(drafts: readonly OrderItem[]): void {
@@ -114,12 +213,29 @@ export class OrdersStore {
     const day = parseIsoDay(value) ? value : resolveOrdersDay(null, new Date());
     this.daySignal.set(day);
     writeJson(DAY_KEY, day);
+    this.changed();
   }
 
   updateMeta(patch: Partial<OrdersMeta>): void {
     const next = { ...this.metaSignal(), ...patch };
     this.metaSignal.set(next);
     writeJson(META_KEY, next);
+    this.changed();
+  }
+
+  private data(): OrdersData {
+    return { items: this.itemsSignal(), meta: this.metaSignal(), day: this.daySignal() };
+  }
+
+  private adopt(doc: OrdersDoc): void {
+    const data = doc.data!;
+    this.itemsSignal.set(data.items ?? []);
+    this.metaSignal.set({ ...DEFAULT_META, ...data.meta });
+    this.daySignal.set(resolveOrdersDay(data.day ?? null, new Date()));
+    this.savedSignal.set({ at: doc.updated_at ?? null, by: doc.updated_by ?? null });
+    writeJson(ITEMS_KEY, this.itemsSignal());
+    writeJson(META_KEY, this.metaSignal());
+    writeJson(DAY_KEY, this.daySignal());
   }
 
   private pushItem(item: OrderItem): void {
@@ -129,5 +245,49 @@ export class OrdersStore {
   private setItems(items: OrderItem[]): void {
     this.itemsSignal.set(items);
     writeJson(ITEMS_KEY, items);
+    this.changed();
+  }
+
+  /** A change to save shortly — unless a conflict is waiting for the officer's choice. */
+  private changed(): void {
+    if (this.syncSignal() === 'conflict') {
+      return;
+    }
+    this.syncSignal.set('pending');
+    if (this.saveTimer) {
+      clearTimeout(this.saveTimer);
+    }
+    this.saveTimer = setTimeout(() => void this.save(), SAVE_DELAY_MS);
+  }
+
+  private async save(): Promise<void> {
+    if (this.saveTimer) {
+      clearTimeout(this.saveTimer);
+      this.saveTimer = null;
+    }
+    if (!SERVER_API_URL || this.syncSignal() === 'conflict' || (this.syncSignal() === 'saved' && this.loaded)) {
+      return;
+    }
+    this.syncSignal.set('saving');
+    try {
+      const response = await request('PUT', '/auth/orders/draft', { data: this.data(), version: this.version });
+      if (response.status === 409) {
+        const body = (await response.json()) as { current: OrdersDoc | null };
+        this.conflictSignal.set(body.current ?? { data: null, version: 0 });
+        this.syncSignal.set('conflict');
+        return;
+      }
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      const saved = (await response.json()) as { version: number; updated_at: string; updated_by: string };
+      this.version = saved.version;
+      this.loaded = true;
+      this.savedSignal.set({ at: saved.updated_at, by: saved.updated_by });
+      // Another change may have come in while this one was on its way.
+      this.syncSignal.set(this.saveTimer ? 'pending' : 'saved');
+    } catch {
+      this.syncSignal.set('error');
+    }
   }
 }

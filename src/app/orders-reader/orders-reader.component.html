@@ -1,0 +1,95 @@
+<div class="reader">
+  <div class="reader-title-row">
+    <h1>Ordini{{ view()?.date ? ' del ' + view()?.date : '' }}</h1>
+    <div class="reader-actions">
+      @if (auth.session()?.officer) {
+        <a mat-stroked-button routerLink="/ordini">Modifica (ufficiali)</a>
+      }
+      <a mat-stroked-button routerLink="/">&larr; Torna alla tabella</a>
+    </div>
+  </div>
+
+  @switch (state()) {
+    @case ('loading') {
+      <p class="reader-note">Caricamento…</p>
+    }
+    @case ('forbidden') {
+      @if (auth.session(); as session) {
+        <p class="reader-note">Sei collegato come {{ session.user.display_name }}: gli Ordini sono per i membri dello Squadrone.</p>
+      } @else {
+        <p class="reader-note">Gli Ordini sono per i membri dello Squadrone: accedi con Discord per leggerli.</p>
+        @if (auth.available()) {
+          <button mat-flat-button type="button" (click)="auth.login()">Accedi con Discord</button>
+        }
+      }
+    }
+    @case ('empty') {
+      <p class="reader-note">Gli ufficiali non hanno ancora pubblicato Ordini qui.</p>
+    }
+    @case ('error') {
+      <p class="reader-note reader-note--warn" role="alert">Il server dello Squadrone non risponde. Riprova fra poco.</p>
+    }
+    @case ('ready') {
+      @if (view(); as v) {
+        <p class="reader-note">{{ publishedLabel() }} Data in gioco.</p>
+        @for (section of v.sections; track section.key) {
+          <section class="reader-section" [class]="'reader-section reader-section--' + section.key">
+            <h2>{{ section.title }}</h2>
+            @for (group of section.groups; track $index) {
+              @if (group.priority !== null) {
+                <h3 class="reader-priority">
+                  <span class="reader-pill" [class]="'reader-pill reader-pill--' + pillClass(group.priority)">P{{ group.priority }}</span>
+                  {{ group.title }}
+                </h3>
+              }
+              @for (item of group.items; track item.id) {
+                <article class="reader-item" [class]="group.priority !== null ? 'reader-item reader-item--' + pillClass(group.priority) : 'reader-item'">
+                  @if (item.system) {
+                    <p class="reader-lead">
+                      @if (item.icon) {
+                        <span class="reader-icon" aria-hidden="true">{{ item.icon }}</span>
+                      }
+                      <strong>{{ item.system }}</strong>
+                      @if (item.score) {
+                        <span class="reader-score">({{ item.score }})</span>
+                      }
+                      @if (item.trend) {
+                        <span aria-hidden="true">{{ item.trend }}</span>
+                      }
+                      @for (s of item.statuses; track s.emoji) {
+                        <span [title]="s.label" [attr.aria-label]="s.label">{{ s.emoji }}</span>
+                      }
+                    </p>
+                  }
+                  <p class="reader-detail">
+                    @if (!item.system && item.icon) {
+                      <span class="reader-icon" aria-hidden="true">{{ item.icon }}</span>
+                    }
+                    @if (item.action) {
+                      <span class="reader-action"
+                        >{{ item.action }}
+                        @if (item.beneficiary) {
+                          <strong class="reader-beneficiary">👉 {{ item.beneficiary }} 👈</strong>
+                        }
+                        &rsaquo;</span
+                      >
+                    }
+                    <span [innerHTML]="html(item.detail)"></span>
+                    @if (!item.system) {
+                      @for (s of item.statuses; track s.emoji) {
+                        <span [title]="s.label" [attr.aria-label]="s.label">{{ s.emoji }}</span>
+                      }
+                    }
+                  </p>
+                </article>
+              }
+            }
+          </section>
+        }
+        @if (v.footerNote) {
+          <p class="reader-footer">{{ v.footerNote }} Buon gioco!</p>
+        }
+      }
+    }
+  }
+</div>

@@ -1,12 +1,12 @@
 <h2 mat-dialog-title>Chiavi dei piloti</h2>
 <mat-dialog-content class="pilot-keys">
   <p>
-    Le chiavi BGS-Tally dello squadrone. Quando qualcuno lascia lo squadrone, revoca la sua chiave: il server non sa da
+    Le chiavi BGS-Tally dello Squadrone. Quando qualcuno lascia lo Squadrone, revoca la sua chiave: il server non sa da
     solo chi esce dal server Discord. Le chiavi non si vedono qui, solo il loro nome.
   </p>
 
   @if (error()) {
-    <p class="pilot-keys-error" role="alert">Il server dello squadrone non risponde. Riprova fra poco.</p>
+    <p class="pilot-keys-error" role="alert">Il server dello Squadrone non risponde. Riprova fra poco.</p>
   }
 
   @if (pilots(); as list) {

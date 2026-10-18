@@ -2,9 +2,23 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
-## [1.5.3] - 2026-10-18 — Punteggio, stati e influenze dal server dello squadrone; lavoro dello squadrone; accesso con Discord e chiavi BGS-Tally
+## [1.5.3] - 2026-10-18 — Punteggio, stati e influenze dal server dello Squadrone; lavoro dello Squadrone; accesso con Discord e chiavi BGS-Tally
 
-Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon), la 1.5.0 (stati e influenze dal server, conflitti appena conclusi) la 1.5.1 (pagina del lavoro dello squadrone, in beta), la 1.5.2 (accesso con Discord) e la 1.5.3 (chiave BGS-Tally per ogni pilota). La pagina è una funzione nuova, ma per scelta dell'utente la versione resta bassa.
+Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon), la 1.5.0 (stati e influenze dal server, conflitti appena conclusi) la 1.5.1 (pagina del lavoro dello Squadrone, in beta), la 1.5.2 (accesso con Discord) e la 1.5.3 (chiave BGS-Tally per ogni pilota). La pagina è una funzione nuova, ma per scelta dell'utente la versione resta bassa.
+
+### Ordini e "Assegna" secondo il ruolo Discord
+
+- **Ordini Ufficiali senza passphrase**: li scrivono gli ufficiali (ruolo Discord) e li leggono i membri dello Squadrone (Membro Flotta, Cadetto). Il controllo lo fa il server dello Squadrone, non più il browser con un'impronta pubblicata nel repo.
+- **Bozza condivisa**: la bozza degli Ordini sta sul server, si salva da sola mentre si scrive ed è la stessa per tutti gli ufficiali e su ogni computer (prima viveva nel browser di chi la scriveva). Se un altro ufficiale la cambia nel frattempo, la pagina lo dice e si sceglie quale versione tenere, invece di sovrascriversi a vicenda. La prima volta, una bozza rimasta nel browser diventa quella condivisa.
+- **Pubblica per i membri**: accanto a "Copia", rende la bozza visibile ai membri in una pagina nuova, **Ordini** (`/ordini/pubblicati`, dal menu con il nome): sezioni, priorità e schede con icone vere invece del Markdown di Discord, leggibile anche da telefono, con data in gioco e chi li ha pubblicati. "Vista dei membri" la mostra agli ufficiali.
+- **"Assegna" solo per gli ufficiali, senza password**: il pulsante (e la matita, e 📋 "aggiungi agli Ordini") compare solo a chi ha il ruolo da ufficiale; l'assegnazione passa dal server, che la manda al foglio con la password dello script, che ora conosce solo lui. Il nome registrato è quello Discord, non va più scritto a mano.
+- **Attività** (lavoro dello Squadrone) senza la password di riserva: si entra solo con il ruolo da ufficiale. La password ricordata sul dispositivo viene cancellata.
+- Ordini, campo **A favore di** nelle righe di operazione: vuoto è "per ACFS" come sempre; per l'eccezione di un lavoro per un'altra fazione (es. una spinta di influenza negativa per riportare Crowfor in conflitto) la riga diventa "Inf per 👉 **LP 254-25 Free** 👈 > …", evidenziata anche nella pagina dei membri. Richiesta dell'utente.
+- Ordini: la priorità si scrive con le emoji dei numeri ("**Priorità** 1️⃣") invece dei codici di Discord (`:one:`). Richiesta dell'utente.
+- Guida aggiornata (Ordini, "Assegnare un architetto").
+- La pagina del lavoro si chiama ovunque **Attività** (prima "Lavoro (beta)" nel pulsante degli Ordini e "Lavoro dello Squadrone" nel titolo, "Attività (beta)" nel menu). Segnalato dall'utente.
+- **Attività come il riepilogo di BGS-Tally** (indicazione dell'utente, ripreso dal codice del plugin, `formatters/default.py`, e dalla sua traduzione italiana): per sistema e per pilota, nello stesso ordine e con gli stessi colori, valori in verde e numeri abbreviati come nel plugin (13,5M, 850K). **INF**, **INF Elezione** o **INF War** secondo lo stato della fazione, con le missioni per livello (3️⃣ x 1 5️⃣ x 3, ricavate dalle missioni completate, perché il riepilogo del plugin dà solo il totale); BVs, CBs, ComAcq, ComProfit, ComBMProfit, Expl, Exo, Uccisioni, Scenari, Fallite, **CZ Spaziali** e **CZ a terra** per intensità (H x 2), con gli insediamenti delle CZ a terra su righe proprie (⚔️ Gutierrez Engineering Silo x 2) e gli **obiettivi delle CZ spaziali** con le icone del plugin (👑 Cap Ship, 🔠 Spec Ops, 👨‍✈️ Capitano, ✒️ Propagandista: il riepilogo del plugin non li manda, il server li conta dagli eventi sintetici che ora chiede), SAR. Come in Tally, sono verdi solo i numeri. "Nessuna attività registrata al momento" quando non c'è niente.
+- Il server dello Squadrone ora riceve davvero il riepilogo del tick di BGS-Tally: il plugin lo manda con PUT e il server accettava solo POST, quindi finora la pagina restava vuota; anche i nomi delle CZ (`czspace`, `czground`) erano sbagliati. Sistemi senza nessun valore diverso da zero non compaiono più.
 
 ### Esito dei conflitti conclusi
 
@@ -12,34 +26,34 @@ Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitt
 
 ### Chiave BGS-Tally per ogni pilota
 
-- Nel menu dell'account, per **chiunque sia collegato** con Discord (anche senza ruoli dello squadrone) e in tutte e tre le lingue, la voce **🔑 Chiave BGS-Tally**: il pilota si genera da solo la chiave con cui il plugin BGS-Tally manda il suo lavoro per Flotta Stellare al server dello squadrone, senza chiederla a un ufficiale (passo 4 della fase 8b). La finestra mostra **Url Server** e **Chiave API** con il pulsante Copia e i quattro passi da fare in EDMC.
+- Nel menu dell'account, per **chiunque sia collegato** con Discord (anche senza ruoli dello Squadrone) e in tutte e tre le lingue, la voce **🔑 Chiave BGS-Tally**: il pilota si genera da solo la chiave con cui il plugin BGS-Tally manda il suo lavoro per Flotta Stellare al server dello Squadrone, senza chiederla a un ufficiale (passo 4 della fase 8b). La finestra mostra **Url Server** e **Chiave API** con il pulsante Copia e i quattro passi da fare in EDMC.
 - La chiave si vede **solo appena generata**: il server ne tiene l'impronta, non la chiave. Dopo, la finestra dice quando è stata creata e quando il plugin ha inviato l'ultima volta. **Rigenera** (con conferma: la vecchia smette subito di valere) e **Revoca**.
 - Ogni chiave ha un **nome** di lettere minuscole e cifre, ricavato dal nome Discord (es. `wiitifulsky`, con una cifra in fondo se è già preso), che è anche l'**inizio della chiave**: nelle impostazioni di BGS-Tally e nei registri del server si riconosce a chi appartiene. Si cambia con **Rinomina** nella finestra (la chiave prende il nome nuovo alla rigenerazione successiva) ed è il nome del pilota nella pagina del lavoro.
 - Una chiave per account Discord. Le chiavi date a mano finora restano valide; quelle di Gabolander e Marziano Inside sono state collegate ai loro account Discord (comando `link` sul server), così le vedono e le gestiscono dal tool.
-- **Chiavi dei piloti**, nel menu dell'account solo per gli ufficiali e solo in italiano: l'elenco delle chiavi (nome, nome Discord o "data a mano", creata, ultimo invio, stato) e **Revoca**, con conferma, per chi lascia lo squadrone. Serve perché il server non sa da solo chi esce dal server Discord. Le chiavi non si vedono, solo il loro nome.
+- **Chiavi dei piloti**, nel menu dell'account solo per gli ufficiali e solo in italiano: l'elenco delle chiavi (nome, nome Discord o "data a mano", creata, ultimo invio, stato) e **Revoca**, con conferma, per chi lascia lo Squadrone. Serve perché il server non sa da solo chi esce dal server Discord. Le chiavi non si vedono, solo il loro nome.
 - La **Guida** ha una sezione nuova, "Accesso con Discord", in italiano, tedesco e inglese; la nota sugli Ordini riservati dice che gli ufficiali li trovano nel menu con il loro nome. Ogni sezione della Guida ha ora un'icona davanti al titolo (📊 tabella, 👁️ Watchlist, il logo di Discord per l'accesso, 📜 Ordini…), per trovarla più in fretta. Il pulsante **Accedi con Discord** ha il logo di Discord al posto della freccia.
 
 ### Nota in fondo alla pagina
 
-- In fondo a ogni pagina una breve nota, sul modello di Inara: il tool è uno strumento non ufficiale dello squadrone per Elite Dangerous, non affiliato a Frontier Developments (i due nomi portano ai siti ufficiali), con dati da fonti pubbliche e dai piloti che possono essere in ritardo o non esatti (in italiano, tedesco e inglese); sotto, la nota sui marchi di Frontier, in inglese come testo legale. Nell'app installata (PWA) non compare.
+- In fondo a ogni pagina una breve nota, sul modello di Inara: il tool è uno strumento non ufficiale dello Squadrone per Elite Dangerous, non affiliato a Frontier Developments (i due nomi portano ai siti ufficiali), con dati da fonti pubbliche e dai piloti che possono essere in ritardo o non esatti (in italiano, tedesco e inglese); sotto, la nota sui marchi di Frontier, in inglese come testo legale. Nell'app installata (PWA) non compare.
 
 ### Accedi con Discord
 
-- Nell'intestazione, nella riga sotto con le bandiere delle lingue, il pulsante **Accedi con Discord**: Discord chiede di autorizzare l'applicazione "ACFS BGS Tool" e il server dello squadrone legge identità e ruoli nel server Discord ACFS (fase 8b della roadmap). Dopo l'accesso al suo posto c'è l'**avatar con il nome**; il menu dice il livello (Ufficiale, Membro dello squadrone o Collegato) e ha **Esci**. Al ritorno da Discord un breve messaggio sotto il pulsante ("Accesso eseguito.", "Accesso negato: non risulti nel server Discord ACFS."…), che non sposta l'intestazione.
-- Il tool resta **aperto a tutti senza accesso**: il login serve solo ad abilitare gli strumenti riservati. Se il server dello squadrone non risponde, il pulsante non compare e il resto funziona come sempre.
-- **Ordini** esce dalla riga dei pulsanti e va nel **menu dell'account**, insieme ad **Attività (beta)**: solo per chi ha un ruolo da ufficiale (oggi Ammiraglio, Vice Ammiraglio, Contrammiraglio) e solo in italiano. Chi entra senza ruoli dello squadrone non vede altre sezioni riservate. Finché gli Ordini hanno anche la loro passphrase, `/ordini` resta raggiungibile dall'indirizzo.
+- Nell'intestazione, nella riga sotto con le bandiere delle lingue, il pulsante **Accedi con Discord**: Discord chiede di autorizzare l'applicazione "ACFS BGS Tool" e il server dello Squadrone legge identità e ruoli nel server Discord ACFS (fase 8b della roadmap). Dopo l'accesso al suo posto c'è l'**avatar con il nome**; il menu dice il livello (Ufficiale, Membro dello Squadrone o Collegato) e ha **Esci**. Al ritorno da Discord un breve messaggio sotto il pulsante ("Accesso eseguito.", "Accesso negato: non risulti nel server Discord ACFS."…), che non sposta l'intestazione.
+- Il tool resta **aperto a tutti senza accesso**: il login serve solo ad abilitare gli strumenti riservati. Se il server dello Squadrone non risponde, il pulsante non compare e il resto funziona come sempre.
+- **Ordini** esce dalla riga dei pulsanti e va nel **menu dell'account**, insieme ad **Attività (beta)**: solo per chi ha un ruolo da ufficiale (oggi Ammiraglio, Vice Ammiraglio, Contrammiraglio) e solo in italiano. Chi entra senza ruoli dello Squadrone non vede altre sezioni riservate. Finché gli Ordini hanno anche la loro passphrase, `/ordini` resta raggiungibile dall'indirizzo.
 - La pagina **Attività** si apre direttamente a un ufficiale collegato, senza password; a chi è collegato senza esserlo dice che è riservata; a chi non è collegato propone "Accedi con Discord" e, finché serve, la password degli ufficiali.
 - Testi dell'accesso in italiano, tedesco e inglese.
 
-### Lavoro dello squadrone (beta, solo ufficiali)
+### Lavoro dello Squadrone (beta, solo ufficiali)
 
-- Nuova pagina **`/activity`**, "Lavoro dello squadrone", raggiungibile dal pulsante **Lavoro (beta)** nella pagina Ordini: il lavoro BGS per Flotta Stellare che i piloti collegati mandano con **BGS-Tally** al server dello squadrone, per tick, sistema e pilota, con i totali per sistema nelle sigle del canale ("BVs 8,04 M · CBs 13,08 M · Inf +5 · CZ spaziali M×1 H×3"; omicidi e missioni fallite in fondo, con ⚠️).
+- Nuova pagina **`/activity`**, "Lavoro dello Squadrone", raggiungibile dal pulsante **Lavoro (beta)** nella pagina Ordini: il lavoro BGS per Flotta Stellare che i piloti collegati mandano con **BGS-Tally** al server dello Squadrone, per tick, sistema e pilota, con i totali per sistema nelle sigle del canale ("BVs 8,04 M · CBs 13,08 M · Inf +5 · CZ spaziali M×1 H×3"; omicidi e missioni fallite in fondo, con ⚠️).
 - **Riservata agli ufficiali** (decisione dell'utente del 18 ottobre 2026, in beta): la password la controlla il **server** (`/v1/work` di acfs-server), non il browser come per gli Ordini, quindi senza password i dati non arrivano proprio; dopo 10 tentativi sbagliati il server blocca per qualche minuto. Il tool la ricorda sul dispositivo (`acfs-bgs:officers-password`) fino a "Esci".
-- Solo in italiano, come gli Ordini. Chi non usa BGS-Tally non compare: i totali non sono il lavoro completo dello squadrone, e la pagina lo dice.
+- Solo in italiano, come gli Ordini. Chi non usa BGS-Tally non compare: i totali non sono il lavoro completo dello Squadrone, e la pagina lo dice.
 
 ### Stati e influenze dal server
 
-- Il tool legge dal server dello squadrone, oltre ai punteggi, **fazioni, influenze, stati e fazione di controllo** (`/v1/systems`, una sola richiesta al posto di `/v1/conflicts`). Per ogni sistema, se il server l'ha visto **dopo** Spansh, valgono i suoi dati; stazioni, popolazione e servizi restano sempre quelli di Spansh. Così la tabella si aggiorna pochi secondi dopo il passaggio di un giocatore con EDMC o EDDiscovery, invece di aspettare Spansh e il ciclo di 30 minuti, e il contatore dei sistemi aggiornati dopo il tick ne tiene conto.
+- Il tool legge dal server dello Squadrone, oltre ai punteggi, **fazioni, influenze, stati e fazione di controllo** (`/v1/systems`, una sola richiesta al posto di `/v1/conflicts`). Per ogni sistema, se il server l'ha visto **dopo** Spansh, valgono i suoi dati; stazioni, popolazione e servizi restano sempre quelli di Spansh. Così la tabella si aggiorna pochi secondi dopo il passaggio di un giocatore con EDMC o EDDiscovery, invece di aspettare Spansh e il ciclo di 30 minuti, e il contatore dei sistemi aggiornati dopo il tick ne tiene conto.
 - Nella colonna **Aggiornato** il tooltip dice quando il dato viene dal server ("Dato dal server ACFS (EDDN), più recente di Spansh"); nel riquadro dello stato la riga in fondo diventa "Dato dal server ACFS (EDDN): …".
 - **Conflitti appena conclusi**: una guerra o un'elezione di Flotta Stellare che la fonte del punteggio vede già finita, mentre gli stati non ne mostrano più una dello stesso tipo, compare nella colonna Stato con una **bandierina a scacchi 🏁** (tooltip: "Conflitto concluso (Election): Total Victory 4-0"). Il riquadro la segna come "concluso" e mostra la scheda con il punteggio finale. Non conta per la priorità né per l'avviso sulle fazioni vicine, perché il conflitto è finito. Prima un caso come Crowfor (elezione vinta 4-0 il 18 ottobre) spariva dalla colonna appena Spansh smetteva di segnarla.
 - La Legenda spiega la bandierina; testi nuovi in italiano, tedesco e inglese.
@@ -54,7 +68,7 @@ Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitt
 
 ### Punteggio dei conflitti
 
-- Il tool legge il **punteggio dei conflitti** (giorni vinti) dal **server dello squadrone**, `https://api.flottastellare.it`: un server nostro, attivo dal 18 ottobre 2026, che ascolta in tempo reale il flusso EDDN, lo stesso da cui si alimenta Spansh (vedi la fase 10 della roadmap). Il punteggio arriva pochi secondi dopo che un giocatore con EDMC o EDDiscovery passa nel sistema, senza aspettare Spansh né EliteBGS, che da settimane è quasi sempre irraggiungibile.
+- Il tool legge il **punteggio dei conflitti** (giorni vinti) dal **server dello Squadrone**, `https://api.flottastellare.it`: un server nostro, attivo dal 18 ottobre 2026, che ascolta in tempo reale il flusso EDDN, lo stesso da cui si alimenta Spansh (vedi la fase 10 della roadmap). Il punteggio arriva pochi secondi dopo che un giocatore con EDMC o EDDiscovery passa nel sistema, senza aspettare Spansh né EliteBGS, che da settimane è quasi sempre irraggiungibile.
 - Sistema per sistema vale il punteggio **più recente** fra server ed EliteBGS. Se il server non risponde entro 6 secondi, la tabella si apre lo stesso con i dati di sempre.
 - Nel riquadro dello stato il punteggio è una **scheda come quella di Inara**: Flotta Stellare a sinistra su fondo blu, l'avversario a destra su fondo rosso, i giorni vinti in grande al centro ("2 vs 0"), sotto ogni fazione la stazione che cede se perde. Sotto il nome di ciascuna fazione, l'esito in corso secondo lo scarto: **Draw** se pari, **Close Victory / Close Defeat** con 1 giorno di scarto, **Victory / Defeat** con 2, **Total Victory / Total Defeat** con 3 o più; in verde chi è avanti, in rosso chi è indietro. Le etichette restano in inglese in tutte le lingue, come gli stati BGS.
 - Sotto la scheda si legge da dove viene il punteggio ("dal server ACFS (EDDN)" oppure "EliteBGS") e quanto è vecchio. Se il server vede il conflitto già finito mentre Spansh lo dà ancora in corso, una riga avverte che è il punteggio finale.
@@ -97,7 +111,7 @@ Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitt
 
 ### PWA
 
-- Il tool è una **PWA**: dal browser si può installare come app (su telefono "Aggiungi a schermata Home", su PC l'icona "Installa" nella barra degli indirizzi), con nome "ACFS BGS Tool", icone "Vanguards" del sito dello squadrone e colori del tool. Si installa come app separata da quella del sito flottastellare.it.
+- Il tool è una **PWA**: dal browser si può installare come app (su telefono "Aggiungi a schermata Home", su PC l'icona "Installa" nella barra degli indirizzi), con nome "ACFS BGS Tool", icone "Vanguards" del sito dello Squadrone e colori del tool. Si installa come app separata da quella del sito flottastellare.it.
 - **Funziona anche offline**: codice, icone e font restano in cache, quindi la pagina si apre senza connessione (anche `/ordini`) e mostra gli ultimi dati Spansh scaricati, con la loro età sotto il titolo come sempre. Anche Registro Architetti e Watchlist restano disponibili: offline la Watchlist resta in cima e gli architetti restano nella tabella.
 - Online i dati vengono **sempre dalla rete**: la copia in cache si usa solo se la rete manca o non risponde entro qualche secondo, così il tool non mostra mai dati più vecchi del necessario. Ricerca della distanza e "Assegna" restano solo online.
 - Il service worker (`@angular/service-worker`, configurazione in `ngsw-config.json`) ha ambito `/acfs-bgs-tool/`, più specifico di quello del sito (`/`): per le pagine del tool vale il suo. Prima, senza rete, il service worker del sito mostrava al posto del tool la home di flottastellare.it. Attivo solo nel build di produzione, non con `npm start`.
@@ -117,7 +131,7 @@ Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitt
 
 ### Guida
 
-- Dalla tabella la Guida **non spiega più gli Ordini Ufficiali**: dice solo che la pagina è riservata e di chiedere agli Ufficiali sul Discord dello squadrone. La spiegazione completa resta nel "Come funziona?" della pagina Ordini, e solo dopo aver inserito la passphrase. Tolto anche il rimando all'icona 📋.
+- Dalla tabella la Guida **non spiega più gli Ordini Ufficiali**: dice solo che la pagina è riservata e di chiedere agli Ufficiali sul Discord dello Squadrone. La spiegazione completa resta nel "Come funziona?" della pagina Ordini, e solo dopo aver inserito la passphrase. Tolto anche il rimando all'icona 📋.
 - La Guida copre le novità delle ultime versioni: tutte le colonne (servizi accanto al nome, grafico delle fazioni, Retreat nello Stato, fazione preferita), il filtro Servizi e i filtri per architetto e fazione, il clic sulle icone dello Stato (punteggio e posta in palio) e il tooltip della Priorità.
 - La Guida ha una sezione **Watchlist** tutta sua, subito dopo la tabella e con il bordo viola come l'occhio della Watchlist in tabella. Spiega cos'è la Watchlist: una fazione, la posizione minima che deve mantenere nel sistema e il motivo; i sistemi stanno in cima e passano in P1 se la fazione scende sotto quella posizione. Prima la Guida diceva solo che stanno in cima.
 - Due sezioni nuove: **In alto** (età dei dati, ultimo tick, quanti sistemi sono aggiornati da allora, titolo che riporta la tabella all'apertura, Esporta, bandierine) e **Dettagli del sistema** (⚠️ di possibile conflitto, icona del Retreat, "N" delle fazioni native, stati in pending in grigio, Expansion letta come stato globale).
@@ -171,7 +185,7 @@ Il lavoro di tutta la giornata in una voce sola. In mattinata il sito ha pubblic
 - Il motivo "Controllo con 7-15 punti di vantaggio" (P4) non c'è più: sotto i 18 punti il semaforo del margine è sempre rosso, quindi lo copre la regola nuova.
 - Effetto con i dati del 7 ottobre: 32 sistemi salgono di fascia, nessuno scende. 5 passano da P5 a P3 (fra cui SPOCS 253), 5 da P4 a P3, 22 da P5 a P4.
 - **"Ultima su 4 o più fazioni" solo sotto il 5%**: la regola ereditata dai Canonn dava 90 punti (P1) a qualunque sistema in cui Flotta Stellare fosse l'ultima di 4 o più fazioni, anche a un'influenza tranquilla (HR 2251 al 13,9%, lontano dal 2,5% del Retreat). Il 7 ottobre portava in P1 10 sistemi su 16. Ora scatta solo sotto il 5%; sopra resta "Ultima fazione del sistema", pesata sul numero di fazioni e sotto il 10%, che porta in P3-P4.
-- **Sopra il 5%, se Flotta Stellare è la fazione preferita registrata** nel Registro Architetti (non quella ricavata dalle stazioni, in grigio), essere ultimi su 4 o più fazioni porta comunque in **P2**: registrare la preferita è il modo con cui lo squadrone dice "questo sistema ci interessa". Con i dati del 7 ottobre non cambia nessun sistema: i 10 in cui siamo ultimi non sono registrati.
+- **Sopra il 5%, se Flotta Stellare è la fazione preferita registrata** nel Registro Architetti (non quella ricavata dalle stazioni, in grigio), essere ultimi su 4 o più fazioni porta comunque in **P2**: registrare la preferita è il modo con cui lo Squadrone dice "questo sistema ci interessa". Con i dati del 7 ottobre non cambia nessun sistema: i 10 in cui siamo ultimi non sono registrati.
 - I conflitti di Flotta Stellare restano sempre P1, anche dove non controlliamo (decisione dell'utente).
 - Risultato con i dati del 7 ottobre: 6 P1 (5 conflitti e un sistema della Watchlist), 3 P2, 33 P3, 44 P4, 300 P5.
 
@@ -191,7 +205,7 @@ Il lavoro di tutta la giornata in una voce sola. In mattinata il sito ha pubblic
 - **Nuovo**: la parte di consultazione del tool è anche in **tedesco** e in **inglese**: intestazione, filtri, colonne, tooltip, Legenda, riquadro degli stati, motivazioni della priorità, dettagli del sistema e Guida. Il tool è stato linkato a un giocatore tedesco.
 - Alla prima visita la lingua segue quella del browser; se non è italiano né tedesco, inglese. Le bandierine in alto (🇮🇹 🇩🇪 🇬🇧, disegnate in SVG perché Windows mostra le bandiere emoji come lettere) cambiano lingua al volo, e la scelta resta salvata nel browser (`acfs-bgs:lang`).
 - Numeri e date seguono la lingua: virgola decimale in italiano e tedesco, punto in inglese.
-- Restano in italiano gli **Ordini Ufficiali** (compreso il testo per Discord) e il modulo **Assegna**: sono strumenti interni dello squadrone. Nelle altre lingue il pulsante Ordini, l'icona 📋 sulle righe e la sua voce in Legenda non compaiono; nella Guida una nota dice che lo squadrone ha strumenti interni solo in italiano. Restano com'erano anche i nomi degli stati BGS, dei Material Trader e dei Technology Broker, come in gioco, e le motivazioni della Watchlist scritte nel foglio.
+- Restano in italiano gli **Ordini Ufficiali** (compreso il testo per Discord) e il modulo **Assegna**: sono strumenti interni dello Squadrone. Nelle altre lingue il pulsante Ordini, l'icona 📋 sulle righe e la sua voce in Legenda non compaiono; nella Guida una nota dice che lo Squadrone ha strumenti interni solo in italiano. Restano com'erano anche i nomi degli stati BGS, dei Material Trader e dei Technology Broker, come in gioco, e le motivazioni della Watchlist scritte nel foglio.
 - In tedesco alcune intestazioni sono abbreviate perché la tabella stia nello schermo come in italiano (Distanz, Stand, Bevorzugt). La terminologia segue Inara in tedesco; la farà rivedere un giocatore tedesco.
 
 ### Tecnica
@@ -252,7 +266,7 @@ Il lavoro di tutta la giornata in una voce sola. In mattinata il sito ha pubblic
 
 ### Dati
 
-- Lo script dei dati tiene, per le stazioni che ne hanno uno, il Material Trader o il Technology Broker e la distanza dalla stella di arrivo. Il tipo (Raw, Manufactured, Encoded; Human, Guardian) lo chiede alla **ricerca per stazioni** di Spansh, l'unica che lo riporta, solo per i sistemi con un servizio: di solito una richiesta, a gruppi di 40 sistemi come fa la mappa del sito dello squadrone. Se la richiesta fallisce il download prosegue, con il tipo "non noto".
+- Lo script dei dati tiene, per le stazioni che ne hanno uno, il Material Trader o il Technology Broker e la distanza dalla stella di arrivo. Il tipo (Raw, Manufactured, Encoded; Human, Guardian) lo chiede alla **ricerca per stazioni** di Spansh, l'unica che lo riporta, solo per i sistemi con un servizio: di solito una richiesta, a gruppi di 40 sistemi come fa la mappa del sito dello Squadrone. Se la richiesta fallisce il download prosegue, con il tipo "non noto".
 - Al 6 ottobre 2026: 9 Material Trader e 16 Technology Broker nei sistemi di Flotta Stellare. Per 10 broker, in stazioni di colonie recenti, Spansh sa che il servizio c'è ma non il tipo.
 
 ### Test
@@ -365,7 +379,7 @@ Il lavoro di tutta la giornata in una voce sola. In mattinata il sito ha pubblic
 ### Interfaccia
 
 - Nella colonna Stato la guerra si indica con ⚔️, la stessa icona degli Ordini Ufficiali, invece che con 🔫.
-- **Semafori dello squadrone** sulle colonne ACFS e Margine, nei sistemi che controlliamo (`core/semaphore.ts`, soglie in `config.json`): influenza 🟢 dal 50%, 🟡 da 40,0 a 49,9%, 🔴 sotto il 40%; Margine 🟢 da 30 punti, 🟡 da 18 a 29,9, 🔴 sotto 18. Almeno un verde: sistema tranquillo; almeno un rosso: da seguire. Il vantaggio sotto i 5 punti (rischio di conflitto per il controllo) resta segnalato a parte, con ⚠️ e in grassetto. Dove non controlliamo l'influenza resta arancione e il Margine grigio.
+- **Semafori dello Squadrone** sulle colonne ACFS e Margine, nei sistemi che controlliamo (`core/semaphore.ts`, soglie in `config.json`): influenza 🟢 dal 50%, 🟡 da 40,0 a 49,9%, 🔴 sotto il 40%; Margine 🟢 da 30 punti, 🟡 da 18 a 29,9, 🔴 sotto 18. Almeno un verde: sistema tranquillo; almeno un rosso: da seguire. Il vantaggio sotto i 5 punti (rischio di conflitto per il controllo) resta segnalato a parte, con ⚠️ e in grassetto. Dove non controlliamo l'influenza resta arancione e il Margine grigio.
 - Nuovo pulsante **Legenda** nell'intestazione: apre sopra la tabella un pannello che spiega colori e icone (età del dato, stati, priorità, influenza e margine, icone del sistema e dell'architetto). Gli esempi usano gli stessi stili della tabella.
 
 ### Ordini Ufficiali
@@ -387,9 +401,9 @@ Il lavoro di tutta la giornata in una voce sola. In mattinata il sito ha pubblic
 
 ### Ordini Ufficiali
 
-- Nuova pagina **`/ordini`**, dietro passphrase condivisa (deterrente, non vera protezione, finché non arriva la fase 8): compone il report giornaliero delle operazioni, con le stesse sezioni e la stessa formattazione del messaggio che lo squadrone già posta su Discord (Operazioni per priorità, Cantieri Aperti, Note & Informazioni, Operazioni Concluse).
+- Nuova pagina **`/ordini`**, dietro passphrase condivisa (deterrente, non vera protezione, finché non arriva la fase 8): compone il report giornaliero delle operazioni, con le stesse sezioni e la stessa formattazione del messaggio che lo Squadrone già posta su Discord (Operazioni per priorità, Cantieri Aperti, Note & Informazioni, Operazioni Concluse).
 - Tipi di attività (Elezione, Guerra, Spinta influenza, Cantiere, Expansion da monitorare, Nota libera) definiti in `core/order-types.json`, non nel codice: per aggiungerne uno nuovo basta modificare il file.
-- La data del report è quella di gioco (anno reale + 1286, come fa già lo squadrone a mano), calcolata da sola.
+- La data del report è quella di gioco (anno reale + 1286, come fa già lo Squadrone a mano), calcolata da sola.
 - Nuovo flag **"Pending"** per un'elezione o una guerra non ancora attiva (dura 1 giorno fino al tick successivo) o un'expansion non ancora conclusa (fino a 3 giorni); nuova freccia di tendenza **stabile** (↔) per un cambiamento di 0-1%.
 - Pulsante **"Aggiungi agli ordini"** su ogni riga della tabella: precompila sistema e tipo dallo stato attuale (guerra, elezione, expansion, o l'influenza corrente se nessuno dei tre è in corso).
 - Il carrello resta solo nel browser (`localStorage`): non si sincronizza fra i due computer dell'utente (vedi `CLAUDE.md`).
@@ -479,7 +493,7 @@ Fase 6 di [ROADMAP.md](ROADMAP.md). Il tool va online su **https://flottastellar
 
 ## [0.5.0] - 2026-10-04 — Registro architetti e Watchlist ACFS
 
-Fase 5 di [ROADMAP.md](ROADMAP.md). Il tool legge e scrive il registro dello squadrone invece di non averne nessuno.
+Fase 5 di [ROADMAP.md](ROADMAP.md). Il tool legge e scrive il registro dello Squadrone invece di non averne nessuno.
 
 ### Registro
 
@@ -516,7 +530,7 @@ Fase 4 di [ROADMAP.md](ROADMAP.md). La colonna Priorità ora lavora per Flotta S
 - Guerre, elezioni, ritirate ed espansioni sono quelle di Flotta Stellare; il tooltip nomina prima noi e poi l'avversario ("Election: Flotta Stellare vs Canonn").
 - Tolte le icone "Canonn vs Canonn" e `public/assets/canonn.svg`. Le icone di guerra ed elezioni hanno un nome accessibile.
 - Fazione preferita ricavata: Flotta Stellare nei sistemi dove controlla almeno una stazione (289 su 389), mostrata in grigio.
-- Dialog "Assegna": per un membro dello squadrone la fazione preferita di default è Flotta Stellare, se presente nel sistema.
+- Dialog "Assegna": per un membro dello Squadrone la fazione preferita di default è Flotta Stellare, se presente nel sistema.
 
 ### Situazione al 4 ottobre 2026
 
@@ -524,7 +538,7 @@ Fase 4 di [ROADMAP.md](ROADMAP.md). La colonna Priorità ora lavora per Flotta S
 
 ### Test
 
-- `priority.spec.ts` riscritto per una sola fazione; i test della politica Canonn passano `"assumed"` esplicito. Nuovi test per la politica dello squadrone. `station-preference.spec.ts` al posto di `canonn-asset-preference.spec.ts`. Passano 142 test dell'app e 5 degli script.
+- `priority.spec.ts` riscritto per una sola fazione; i test della politica Canonn passano `"assumed"` esplicito. Nuovi test per la politica dello Squadrone. `station-preference.spec.ts` al posto di `canonn-asset-preference.spec.ts`. Passano 142 test dell'app e 5 degli script.
 
 ## [0.3.0] - 2026-10-04 — Identità ACFS, italiano, colonne ACFS e Margine
 
@@ -533,7 +547,7 @@ Fase 3 di [ROADMAP.md](ROADMAP.md). È la prima versione che si presenta come to
 ### Identità
 
 - Logo 2025 "Vanguards" di Alto Comando Flotta Stellare (`ed-acfs.github.io/extras/ACFS_Logo_2025_Vanguards/`, ridotto a 301×340 px) nell'intestazione e nella schermata di caricamento, al posto dell'SVG animato Canonn. Durante il caricamento pulsa leggermente (non se il sistema chiede animazioni ridotte).
-- Titolo "ACFS BGS", descrizione in italiano, `lang="it"`, favicon e icona Apple dello squadrone (dal set `icon-vanguards` del sito).
+- Titolo "ACFS BGS", descrizione in italiano, `lang="it"`, favicon e icona Apple dello Squadrone (dal set `icon-vanguards` del sito).
 
 ### Italiano
 
@@ -578,7 +592,7 @@ Fase 2 di [ROADMAP.md](ROADMAP.md). Riorganizzazione interna: per chi usa il too
 
 ### Configurazione
 
-- Nuovo `src/core/config.json`, con i tipi in `config.ts`: squadrone, fazione, capitale, seconda fazione da confrontare (vuota), soglia del margine (5 punti), prefisso delle chiavi nel browser, indirizzi di dati, typeahead, Sheet e Form.
+- Nuovo `src/core/config.json`, con i tipi in `config.ts`: Squadrone, fazione, capitale, seconda fazione da confrontare (vuota), soglia del margine (5 punti), prefisso delle chiavi nel browser, indirizzi di dati, typeahead, Sheet e Form.
 - `scripts/fetch-bgs.mjs` legge il nome della fazione dallo stesso file.
 - Le chiavi salvate nel browser usano il prefisso `acfs-bgs:` invece di `canonn-bgs:`. Il nome del comandante salvato con la versione precedente va reinserito.
 - Il sistema home usato per sopprimere l'avviso di ritirata è Wong Sher per Flotta Stellare, al posto di Varati e Canonnia.

@@ -22,7 +22,7 @@ import {
 } from '../../core/architect-form';
 import { ArchitectRegistryRow, architectNames, findArchitectProfile, suggestArchitects } from '../../core/architect-registry';
 import { readYourName, writeYourName } from '../your-name';
-import { forgetAssignPassword, readAssignPassword, writeAssignPassword } from '../assign-password';
+import { AuthService } from '../auth.service';
 
 /** What the registry currently says about the system, when the dialog is changing it. */
 export interface CurrentAssignment {
@@ -42,12 +42,10 @@ export interface AssignArchitectDialogData {
 /** What to tell the user when the Apps Script refused an assignment; nothing was written. */
 function rejectionMessage(error: AssignRejectedError): string {
   switch (error.reason) {
-    case 'password':
-      return 'Password errata: non è stato registrato nulla. Chiedi la password a un ufficiale.';
-    case 'locked':
-      return 'Troppi tentativi con password errata: le assegnazioni sono bloccate per 10 minuti. Riprova più tardi.';
+    case 'forbidden':
+      return 'Assegnare è riservato agli ufficiali: accedi con Discord con il tuo account da ufficiale. Non è stato registrato nulla.';
     case 'not-configured':
-      return 'Lo script del registro non ha ancora una password impostata: avvisa chi lo gestisce.';
+      return 'Il server dello Squadrone non riesce a scrivere nel registro: avvisa chi lo gestisce. Non è stato registrato nulla.';
     case 'invalid':
       return `Dati non accettati dal registro: ${error.detail ?? 'controlla i campi'}`;
     default:
@@ -104,17 +102,17 @@ export class AssignArchitectDialogComponent {
   protected readonly dontKnowFaction = DONT_KNOW_FACTION;
   protected readonly notAColony = AFFILIATION_NOT_A_COLONY;
 
-  /** Assign writes through the protected Apps Script, so the officers' password is needed. */
-  protected readonly needsPassword = this.bgsService.assignNeedsPassword;
+  /**
+   * Through the squadron server the name recorded is the officer's Discord name, so the dialog
+   * doesn't ask for it; only the Google Form fallback (no server) does.
+   */
+  private readonly auth = inject(AuthService);
+  protected readonly asksName = !this.bgsService.assignUrl;
 
   protected readonly form = new FormGroup({
     yourName: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.maxLength(120)],
-    }),
-    password: new FormControl('', {
-      nonNullable: true,
-      validators: this.needsPassword ? [Validators.required] : [],
     }),
     affiliation: new FormControl(AFFILIATION_UNKNOWN, { nonNullable: true, validators: [Validators.required] }),
     architect: new FormControl('', { nonNullable: true, validators: [Validators.maxLength(120)] }),
@@ -158,7 +156,7 @@ export class AssignArchitectDialogComponent {
     // A squadron member's colony defaults to the squadron's faction, when it's present here.
     if (this.affiliationValue() === AFFILIATION_SQUADRON_MEMBER) {
       if (this.data.row.factions.some(faction => faction.name === FACTION_NAME)) {
-        return { value: FACTION_NAME, note: `La fazione dello squadrone, presente in ${this.systemName}.` };
+        return { value: FACTION_NAME, note: `La fazione dello Squadrone, presente in ${this.systemName}.` };
       }
       return { value: DONT_KNOW_FACTION, note: null };
     }
@@ -205,10 +203,7 @@ export class AssignArchitectDialogComponent {
   });
 
   constructor() {
-    this.form.controls.yourName.setValue(readYourName());
-    if (this.needsPassword) {
-      this.form.controls.password.setValue(readAssignPassword());
-    }
+    this.form.controls.yourName.setValue(this.asksName ? readYourName() : (this.auth.session()?.user.display_name ?? readYourName()));
 
     const controls = this.form.controls;
     controls.architect.valueChanges.pipe(takeUntilDestroyed()).subscribe(value => this.architectValue.set(value));
@@ -307,29 +302,22 @@ export class AssignArchitectDialogComponent {
     this.sendError.set(null);
     // Don't let an Escape/backdrop click discard a submission that's already on the wire.
     this.dialogRef.disableClose = true;
-    const password = this.form.controls.password.value;
     try {
-      await this.bgsService.submitAssignment(submission, password);
+      await this.bgsService.submitAssignment(submission);
       this.bgsService.recordAssignment(submission);
-      writeYourName(submission.yourName);
-      if (this.needsPassword) {
-        writeAssignPassword(password);
+      if (this.asksName) {
+        writeYourName(submission.yourName);
       }
       this.dialogRef.close(submission);
     } catch (error) {
       if (error instanceof AssignRejectedError) {
         this.sendError.set(rejectionMessage(error));
-        if (error.reason === 'password') {
-          forgetAssignPassword();
-          this.form.controls.password.setValue('');
-          this.form.controls.password.markAsTouched();
-        }
       } else {
         const timedOut = error instanceof Error && error.name === 'AbortError';
         this.sendError.set(
           !timedOut
             ? 'Invio al registro architetti non riuscito. Controlla la connessione e riprova.'
-            : this.needsPassword
+            : !this.asksName
               ? // The script may have written the row before the reply was lost.
                 'Google non ha risposto in tempo. Controlla nel foglio prima di riprovare: la riga potrebbe essere già stata scritta.'
               : 'Google non ha risposto in tempo. Non è stato registrato nulla: puoi riprovare.',

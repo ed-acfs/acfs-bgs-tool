@@ -89,6 +89,24 @@ describe('renderOrderItem', () => {
     );
   });
 
+  it('works for another faction only when one is named, highlighted (a rare exception)', () => {
+    const line = renderOrderItem(
+      item({
+        section: 'operazioni',
+        typeKey: 'influence',
+        system: 'Crowfor',
+        score: '33.3%',
+        statusKeys: ['new'],
+        beneficiary: 'LP 254-25 Free',
+        detail: '38% :arrow_forward: _Elastico_ 👈 **ATTENZIONE!**',
+      }),
+    );
+    expect(line).toBe(
+      ':bar_chart: **Crowfor** (33.3%) :new:\n' + 'Inf per 👉 **LP 254-25 Free** 👈 > 38% :arrow_forward: _Elastico_ 👈 **ATTENZIONE!**',
+    );
+    expect(renderOrderItem(item({ section: 'operazioni', typeKey: 'influence', system: 'X', beneficiary: '  ', detail: 'd' }))).toContain('Inf per ACFS > d');
+  });
+
   it('renders a war with no score or trend, just a status', () => {
     const line = renderOrderItem(
       item({
@@ -274,19 +292,19 @@ describe('renderOrdersMarkdown', () => {
         [
           ':Missions: **__OPERAZIONI__** :Missions:',
           '',
-          '**Priorità** :one:',
+          '**Priorità** 1️⃣',
           '',
           ':ballot_box: **Lyncis Sector NY-R b4-2** (Close Defeat; 0-1) :arrow_down: :RedAlert:\nElection per ACFS > **CONQUISTA del sistema**',
           '------',
           '',
-          '**Priorità** :two:',
+          '**Priorità** 2️⃣',
           '',
           ':ballot_box: **Crowfor** (Victory; 2-0) :arrow_up: :green_circle:\nElection per ACFS > **conquista** di _Apgar City_',
           '',
           ':bar_chart: **Lyncis Sector CL-Y d68** (43.6%) :new:\nInf per ACFS > 49% :arrow_forward: _Ri-Conquista_',
           '------',
           '',
-          '**Priorità** :three:',
+          '**Priorità** 3️⃣',
           '',
           ':ballot_box: **Elohim** (Victory; 3-1) :arrow_down: :green_circle:\nElection per ACFS > **conquista** di _Disraeli Beacon_',
           '------',

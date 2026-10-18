@@ -1,0 +1,159 @@
+.reader {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 16px;
+  color: var(--color-text);
+}
+
+.reader-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  justify-content: space-between;
+
+  h1 {
+    margin: 0;
+    color: var(--color-accent, var(--color-text-bright));
+    font-size: 1.5rem;
+  }
+}
+
+.reader-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.reader-note {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+
+  &--warn {
+    color: var(--color-warning);
+  }
+}
+
+.reader-section {
+  margin: 20px 0;
+
+  h2 {
+    margin: 0 0 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--color-border-muted);
+    font-size: 1.1rem;
+    color: var(--color-text-bright);
+  }
+}
+
+.reader-priority {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-bright);
+}
+
+/* Le pillole della colonna Priorità della tabella (bgs-table.component.scss), un po' più grandi. */
+.reader-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background-color: var(--priority-bg);
+  color: var(--priority-fg);
+}
+
+.reader-pill--P1,
+.reader-item--P1 {
+  --priority-bg: #f8d7da;
+  --priority-fg: #7a1420;
+}
+
+.reader-pill--P2,
+.reader-item--P2 {
+  --priority-bg: #faeeda;
+  --priority-fg: #633806;
+}
+
+.reader-pill--P3,
+.reader-item--P3 {
+  --priority-bg: #faece7;
+  --priority-fg: #712b13;
+}
+
+.reader-pill--P4,
+.reader-item--P4 {
+  --priority-bg: #eceef0;
+  --priority-fg: #5f6368;
+}
+
+/* La striscia a sinistra delle schede ripete il colore della priorità. */
+.reader-item[class*='reader-item--'] {
+  border-left: 5px solid var(--priority-bg);
+}
+
+.reader-item {
+  margin: 0 0 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border-muted);
+  border-radius: 6px;
+  background: var(--color-surface);
+
+  p {
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+.reader-lead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  align-items: baseline;
+
+  strong {
+    color: var(--color-text-bright);
+  }
+}
+
+.reader-detail {
+  margin-top: 4px;
+}
+
+.reader-lead + .reader-detail {
+  margin-top: 4px;
+}
+
+.reader-icon {
+  margin-right: 4px;
+}
+
+.reader-score {
+  color: var(--color-text-muted);
+}
+
+.reader-action {
+  margin-right: 4px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.reader-section--concluse .reader-item {
+  opacity: 0.8;
+}
+
+.reader-footer {
+  margin-top: 24px;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* Lavoro per un'altra fazione: un'eccezione, va notata. */
+.reader-beneficiary {
+  color: var(--color-warning);
+}

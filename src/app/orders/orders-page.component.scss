@@ -249,3 +249,29 @@ h2 {
     padding: 10px;
   }
 }
+
+.orders-sync {
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+
+  &--warn {
+    color: var(--color-warning);
+  }
+}
+
+.orders-conflict {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 16px;
+  padding: 12px;
+  border: 1px solid var(--color-warning);
+  border-radius: 6px;
+
+  p {
+    flex: 1 1 100%;
+    margin: 0;
+  }
+}

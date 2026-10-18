@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BUILD_ID } from './build-info';
-import { ArchitectSubmission, buildArchitectFormBody, buildAssignScriptBody, checkAssignScriptReply } from '../core/architect-form';
+import { ArchitectSubmission, AssignRejectedError, buildArchitectFormBody, buildAssignBody, checkAssignScriptReply } from '../core/architect-form';
 import { ArchitectInfo, ArchitectRegistryRow, buildArchitectInfoMap } from '../core/architect-registry';
 import { BgsDataset, BgsRow, parseArchitectsTsv, rowWithAssignment, toBgsRow } from '../core/bgs';
 import {
   ARCHITECT_FORM_ACTION,
   ARCHITECTS_SHEET_URL,
-  ASSIGN_SCRIPT_URL,
   BGS_DATA_URL,
   SERVER_API_URL,
   STORAGE_PREFIX,
@@ -122,15 +121,11 @@ interface WatchlistCachePayload {
 @Injectable({ providedIn: 'root' })
 export class BgsService {
   /**
-   * Where Assign writes when the protected Apps Script is set up ({@link ASSIGN_SCRIPT_URL});
-   * null means the Form. A field rather than the bare constant so tests can switch paths.
+   * Where Assign writes: the squadron server (`/auth/assign`), which checks the officer's Discord
+   * session and passes the assignment to the registry's Apps Script with the password only it
+   * knows. Null (no server configured) means the Google Form. A field so tests can switch paths.
    */
-  assignScriptUrl: string | null = ASSIGN_SCRIPT_URL;
-
-  /** Whether Assign must ask for the officers' password (true once the Apps Script is in use). */
-  get assignNeedsPassword(): boolean {
-    return this.assignScriptUrl !== null;
-  }
+  assignUrl: string | null = SERVER_API_URL ? `${SERVER_API_URL}/auth/assign` : null;
 
   private datasetPromise?: Promise<BgsDataset>;
   /** Whether the squadron server answered this session. */
@@ -202,9 +197,9 @@ export class BgsService {
    * tell". It's deliberately not retried automatically: a retried POST that actually succeeded
    * the first time would add a duplicate row to the registry.
    */
-  async submitAssignment(submission: ArchitectSubmission, password = ''): Promise<void> {
-    if (this.assignScriptUrl) {
-      return this.submitThroughScript(this.assignScriptUrl, submission, password);
+  async submitAssignment(submission: ArchitectSubmission): Promise<void> {
+    if (this.assignUrl) {
+      return this.submitThroughServer(this.assignUrl, submission);
     }
     if (!ARCHITECT_FORM_ACTION) {
       throw new Error('The Architect Registry form is not configured yet.');
@@ -226,26 +221,30 @@ export class BgsService {
   }
 
   /**
-   * Submits through the password-protected Apps Script ({@link ASSIGN_SCRIPT_URL}). Unlike the
-   * Form, its reply is readable: it resolves only once the script confirms the row is written,
-   * and throws {@link AssignRejectedError} when the script refuses (wrong password, lockout…).
-   * The body goes as text/plain, a CORS-safelisted type, so there's no preflight (which Apps
-   * Script doesn't answer). Not retried automatically, for the same reason as the Form.
+   * Submits through the squadron server with the Discord session cookie. Unlike the Form, the
+   * reply is readable: it resolves only once the registry confirms the row is written, and throws
+   * {@link AssignRejectedError} when it's refused (not an officer, invalid data…). Not retried
+   * automatically, for the same reason as the Form.
    */
-  private async submitThroughScript(url: string, submission: ArchitectSubmission, password: string): Promise<void> {
+  private async submitThroughServer(url: string, submission: ArchitectSubmission): Promise<void> {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), FORM_SUBMIT_TIMEOUT_MS);
     try {
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-        body: buildAssignScriptBody(submission, password),
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'acfs-bgs-tool' },
+        body: buildAssignBody(submission),
         signal: controller.signal,
       });
-      if (!response.ok) {
-        throw new HttpError(response.status, `Assign script: HTTP ${response.status}`);
+      if (response.status === 401 || response.status === 403) {
+        throw new AssignRejectedError('forbidden');
       }
-      checkAssignScriptReply(await response.json());
+      const reply = await response.json().catch(() => null);
+      if (!response.ok && !reply) {
+        throw new HttpError(response.status, `Assign: HTTP ${response.status}`);
+      }
+      checkAssignScriptReply(reply);
     } finally {
       clearTimeout(timer);
     }

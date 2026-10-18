@@ -7,7 +7,7 @@ import { I18nService } from '../i18n.service';
 
 /**
  * "Chiave BGS-Tally" dal menu dell'account: chiunque sia collegato con Discord si genera, rigenera o
- * revoca la chiave con cui il plugin BGS-Tally manda il suo lavoro al server dello squadrone
+ * revoca la chiave con cui il plugin BGS-Tally manda il suo lavoro al server dello Squadrone
  * (fase 8b, passo 4). La chiave si vede solo appena generata. In tre lingue: la usano tutti i piloti.
  */
 @Component({

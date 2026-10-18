@@ -43,24 +43,26 @@
 
   <section class="info-card">
     <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">🏗️</span> Assegnare un architetto</h3>
-    <p>Il pulsante <strong>Assegna</strong> (o la matita, se già registrato) apre il modulo per registrare chi segue il sistema e la fazione preferita. La risposta finisce nel foglio dello squadrone e compare in tabella entro 15 minuti.</p>
+    <p>Il pulsante <strong>Assegna</strong> (o la matita, se già registrato) apre il modulo per registrare chi segue il sistema e la fazione preferita. È riservato agli ufficiali, che lo vedono dopo l'accesso con Discord: niente password, la registrazione porta il loro nome Discord. La risposta finisce nel foglio dello Squadrone e compare in tabella entro 15 minuti.</p>
   </section>
 
   @if (!showOrders) {
     <section class="info-card">
       <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">📜</span> Ordini Ufficiali</h3>
-      <p>La pagina <strong>Ordini</strong> è riservata agli ufficiali: la trovano nel menu con il loro nome, dopo l'accesso con Discord. Per maggiori informazioni chiedi ai tuoi Ufficiali sul Discord dello squadrone.</p>
+      <p>Gli <strong>Ordini</strong> li scrivono gli ufficiali e li leggono i membri dello Squadrone (Membro Flotta, Cadetto): dopo l'accesso con Discord li trovi nel menu con il tuo nome. Per maggiori informazioni chiedi ai tuoi Ufficiali sul Discord dello Squadrone.</p>
     </section>
   } @else {
   <section class="info-card">
     <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">📜</span> Ordini Ufficiali</h3>
-    <p>La pagina <strong>Ordini</strong> compone il report giornaliero da incollare su Discord — area riservata, passphrase dello squadrone.</p>
+    <p>La pagina <strong>Ordini</strong> compone il report giornaliero da incollare su Discord. È riservata agli ufficiali (accesso con Discord, nessuna passphrase) e la <strong>bozza è condivisa</strong>: sta sul server dello Squadrone, si salva da sola mentre scrivi ed è la stessa per tutti gli ufficiali e su ogni computer. Se un altro ufficiale la cambia mentre la stai modificando, la pagina te lo dice e scegli quale versione tenere.</p>
     <p><strong>Aggiungere una riga:</strong> dal pulsante 📋 su una riga della tabella (precompila sistema e tipo dallo stato attuale), oppure dalla barra in alto nella pagina Ordini, cercando un sistema anche se non è fra quelli di Flotta Stellare.</p>
     <p><strong>Sezione:</strong> in quale blocco del report finisce la riga — Operazioni in corso (raggruppate per priorità), Cantieri aperti, Note & informazioni, Operazioni concluse. Si può cambiare in qualsiasi momento. Alcuni spostamenti sono automatici: con ✅ o ❌ la riga passa nelle Operazioni concluse (e torna indietro se si toglie la spunta); un'elezione o una guerra in Pending va in Note & informazioni, con punteggio "Draw; 0-0" e 🆕, e torna fra le Operazioni quando si toglie la spunta Pending. Il pulsante "Precompila con i pending" aggiunge a Note & informazioni tutte le guerre e le elezioni in pending dei dati. Le Expansion si aggiungono con "+ Expansion" e vanno completate a mano: Spansh mostra l'Expansion in pending in quasi tutti i nostri sistemi, quindi dai dati non si capisce da dove parte. Il resto della sezione è testo libero ("+ Nota libera").</p>
     <p><strong>Tipo:</strong> decide l'icona e la frase — Elezione, Guerra, Spinta influenza, Cantiere, Expansion da monitorare, Nota libera.</p>
     <p><strong>Punteggio, Tendenza, Pending, Stato:</strong> campi opzionali mostrati accanto al nome del sistema — rispettivamente il testo fra parentesi (es. "43.6%" o "Victory; 2-0", con i giorni vinti da noi sempre per primi), la freccia di andamento (↑ ↓ ↔ per un cambio di 0-1%), la spunta "Pending" per un'elezione o guerra non ancora attiva (o un'expansion non ancora conclusa), e le emoji di stato (🆕 🟢 🟡 🔴 🚨 ✅ ❌ — se ne può scegliere più di una).</p>
+    <p><strong>A favore di:</strong> vuoto per quasi tutte le righe ("per ACFS"). Solo per eccezione, quando si lavora per un'altra fazione (per esempio una spinta di influenza per riportare un sistema in conflitto), si scrive il suo nome: la riga diventa "Inf per 👉 <strong>nome</strong> 👈 &gt; …", evidenziata anche nella pagina dei membri.</p>
     <p><strong>Dettaglio:</strong> il testo libero dopo "per ACFS &gt;" (o l'intera riga per una nota) — grassetto e corsivo si scrivono a mano in Markdown, come <code>**conquista**</code> o <code>di _Apgar City_</code>, perché la formulazione cambia troppo da caso a caso per automatizzarla del tutto.</p>
     <p><strong>Anteprima:</strong> il testo è pronto per Discord in basso — <strong>Copia</strong> lo mette negli appunti. La data si genera da sola nel calendario di gioco (l'anno reale più 1286).</p>
+    <p><strong>Pubblica per i membri:</strong> rende la bozza attuale visibile ai membri nella loro pagina Ordini (menu con il nome), impaginata per essere letta anche da telefono; sostituisce gli Ordini pubblicati prima. "Vista dei membri" mostra come la vedono.</p>
   </section>
   }
   }

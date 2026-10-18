@@ -6,7 +6,7 @@ import { logger } from '../core/logger';
 /** Chi è collegato, come lo dice `/auth/me` del server (acfs-server, auth.mjs). */
 export interface AuthSession {
   user: { id: string; username: string; display_name: string; avatar_url: string | null };
-  /** Membro dello squadrone (Membro Flotta, Cadetto) o ufficiale. */
+  /** Membro dello Squadrone (Membro Flotta, Cadetto) o ufficiale. */
   member: boolean;
   /** Ammiraglio, Vice Ammiraglio, Contrammiraglio: Attività, e poi Ordini e Assegna. */
   officer: boolean;
@@ -163,7 +163,7 @@ export class AuthService {
       this.available.set(Boolean(body.logged_in || body.configured));
       this.session.set(body.logged_in && body.user ? { user: body.user, member: Boolean(body.member), officer: Boolean(body.officer) } : null);
     } catch (error) {
-      logger.warn('Server dello squadrone non raggiungibile: accesso con Discord non disponibile.', error);
+      logger.warn('Server dello Squadrone non raggiungibile: accesso con Discord non disponibile.', error);
       this.available.set(false);
       this.session.set(null);
     }
