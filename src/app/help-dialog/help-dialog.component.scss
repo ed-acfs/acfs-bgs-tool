@@ -65,3 +65,14 @@ mat-dialog-content {
     min-width: 0;
   }
 }
+
+.info-emoji {
+  margin-right: 4px;
+  font-size: 0.95rem;
+  letter-spacing: 0;
+}
+
+/* Il marchio di Discord nel Blurple di prima del 2021, lo stesso del sito dello squadrone: quello attuale (#5865f2) sullo sfondo scuro risulta cupo. */
+.info-discord {
+  color: #7289da;
+}

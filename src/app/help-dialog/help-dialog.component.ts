@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { CONFLICT_MARGIN_POINTS, FACTION_NAME, RETREAT_INFLUENCE_PERCENT } from '../../core/config';
@@ -17,7 +19,7 @@ export interface HelpDialogData {
  */
 @Component({
   selector: 'app-help-dialog',
-  imports: [MatButtonModule, MatDialogModule],
+  imports: [FaIconComponent, MatButtonModule, MatDialogModule],
   templateUrl: './help-dialog.component.html',
   styleUrl: './help-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,6 +27,7 @@ export interface HelpDialogData {
 export class HelpDialogComponent {
   protected readonly i18n = inject(I18nService);
   protected readonly t = this.i18n.t;
+  protected readonly faDiscord = faDiscord;
   protected readonly factionName = FACTION_NAME;
   protected readonly conflictMarginPoints = CONFLICT_MARGIN_POINTS;
   protected readonly retreatInfluencePercent = RETREAT_INFLUENCE_PERCENT;

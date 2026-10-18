@@ -23,6 +23,8 @@ const RECALL_URL = 'https://spansh.co.uk/api/systems/search/recall';
 const PAGE_SIZE = 500;
 /** EDCD Tick Detector: the time of the last BGS tick, as a JSON string. */
 const TICK_URL = 'https://tick.edcd.io/api/tick';
+/** The data the site is publishing now: its tick stands in when the Tick Detector is down. */
+const PUBLISHED_URL = 'https://flottastellare.it/acfs-bgs-tool/data/bgs.json';
 const USER_AGENT = 'acfs-bgs-tool (+https://github.com/ed-acfs/acfs-bgs-tool)';
 const TIMEOUT_MS = 60_000;
 /** EliteBGS systems API: conflict scores, which Spansh doesn't have. */
@@ -286,16 +288,32 @@ export async function fetchConflictScores(systemNames) {
   }
 }
 
+const isoOrNull = tick => (typeof tick === 'string' && !Number.isNaN(Date.parse(tick)) ? new Date(tick).toISOString() : null);
+
 /**
- * The last BGS tick as an ISO 8601 string, or null if the Tick Detector can't be reached —
- * it only labels the data, so it must never stop the download.
+ * The last BGS tick as an ISO 8601 string. When the Tick Detector can't be reached it falls back
+ * to the tick of the data already published (a tick happens once a day, so it's rarely stale),
+ * and to null only if that is missing too — the tick only labels the data, so it must never
+ * stop the download.
  */
 export async function fetchLastTick() {
   try {
-    const tick = await request(TICK_URL);
-    return typeof tick === 'string' && !Number.isNaN(Date.parse(tick)) ? new Date(tick).toISOString() : null;
+    const tick = isoOrNull(await request(TICK_URL));
+    if (tick) {
+      return tick;
+    }
+    console.warn('Tick Detector answered without a valid tick.');
   } catch (error) {
     console.warn(`Tick Detector unavailable: ${error.message}`);
+  }
+  try {
+    const tick = isoOrNull((await request(PUBLISHED_URL))?.tick_at);
+    if (tick) {
+      console.warn(`Keeping the tick of the published data: ${tick}`);
+    }
+    return tick;
+  } catch (error) {
+    console.warn(`Published data unavailable too: ${error.message}`);
     return null;
   }
 }

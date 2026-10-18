@@ -2,53 +2,58 @@
 
 <mat-dialog-content>
   <section class="info-card">
-    <h3 class="info-heading">{{ t('help.table') }}</h3>
+    <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">📊</span> {{ t('help.table') }}</h3>
     <p>{{ t('help.table1', { faction: factionName }) }}</p>
     <p>{{ t('help.table2') }}</p>
     <p>{{ t('help.table3') }}</p>
   </section>
 
   <section class="info-card info-card--watchlist">
-    <h3 class="info-heading">{{ t('help.watchlistTitle') }}</h3>
+    <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">👁️</span> {{ t('help.watchlistTitle') }}</h3>
     <p>{{ t('help.watchlist') }}</p>
   </section>
 
   <section class="info-card">
-    <h3 class="info-heading">{{ t('help.top') }}</h3>
+    <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">🧭</span> {{ t('help.top') }}</h3>
     <p>{{ t('help.top1') }}</p>
   </section>
 
   <section class="info-card">
-    <h3 class="info-heading">{{ t('help.details') }}</h3>
+    <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">🔍</span> {{ t('help.details') }}</h3>
     <p>{{ t('help.details1', { points: conflictMarginPoints, faction: factionName, threshold: i18n.percent(retreatInfluencePercent) }) }}</p>
     <p>{{ t('help.details2') }}</p>
   </section>
 
   <section class="info-card">
-    <h3 class="info-heading">{{ t('help.app') }}</h3>
+    <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">📱</span> {{ t('help.app') }}</h3>
     <p>{{ t('help.app1') }}</p>
+  </section>
+
+  <section class="info-card">
+    <h3 class="info-heading"><fa-icon class="info-emoji info-discord" [icon]="faDiscord" aria-hidden="true"></fa-icon> {{ t('help.login') }}</h3>
+    <p>{{ t('help.login1') }}</p>
   </section>
 
   @if (!i18n.isItalian()) {
     <section class="info-card">
-      <h3 class="info-heading">{{ t('help.internal') }}</h3>
+      <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">🔒</span> {{ t('help.internal') }}</h3>
       <p>{{ t('help.internalNote') }}</p>
     </section>
   } @else {
 
   <section class="info-card">
-    <h3 class="info-heading">Assegnare un architetto</h3>
+    <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">🏗️</span> Assegnare un architetto</h3>
     <p>Il pulsante <strong>Assegna</strong> (o la matita, se già registrato) apre il modulo per registrare chi segue il sistema e la fazione preferita. La risposta finisce nel foglio dello squadrone e compare in tabella entro 15 minuti.</p>
   </section>
 
   @if (!showOrders) {
     <section class="info-card">
-      <h3 class="info-heading">Ordini Ufficiali</h3>
-      <p>La pagina <strong>Ordini</strong> è riservata: per maggiori informazioni chiedi ai tuoi Ufficiali sul Discord dello squadrone.</p>
+      <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">📜</span> Ordini Ufficiali</h3>
+      <p>La pagina <strong>Ordini</strong> è riservata agli ufficiali: la trovano nel menu con il loro nome, dopo l'accesso con Discord. Per maggiori informazioni chiedi ai tuoi Ufficiali sul Discord dello squadrone.</p>
     </section>
   } @else {
   <section class="info-card">
-    <h3 class="info-heading">Ordini Ufficiali</h3>
+    <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">📜</span> Ordini Ufficiali</h3>
     <p>La pagina <strong>Ordini</strong> compone il report giornaliero da incollare su Discord — area riservata, passphrase dello squadrone.</p>
     <p><strong>Aggiungere una riga:</strong> dal pulsante 📋 su una riga della tabella (precompila sistema e tipo dallo stato attuale), oppure dalla barra in alto nella pagina Ordini, cercando un sistema anche se non è fra quelli di Flotta Stellare.</p>
     <p><strong>Sezione:</strong> in quale blocco del report finisce la riga — Operazioni in corso (raggruppate per priorità), Cantieri aperti, Note & informazioni, Operazioni concluse. Si può cambiare in qualsiasi momento. Alcuni spostamenti sono automatici: con ✅ o ❌ la riga passa nelle Operazioni concluse (e torna indietro se si toglie la spunta); un'elezione o una guerra in Pending va in Note & informazioni, con punteggio "Draw; 0-0" e 🆕, e torna fra le Operazioni quando si toglie la spunta Pending. Il pulsante "Precompila con i pending" aggiunge a Note & informazioni tutte le guerre e le elezioni in pending dei dati. Le Expansion si aggiungono con "+ Expansion" e vanno completate a mano: Spansh mostra l'Expansion in pending in quasi tutti i nostri sistemi, quindi dai dati non si capisce da dove parte. Il resto della sezione è testo libero ("+ Nota libera").</p>

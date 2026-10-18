@@ -2,9 +2,22 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
-## [1.5.2] - 2026-10-18 — Punteggio, stati e influenze dal server dello squadrone; lavoro dello squadrone; accesso con Discord
+## [1.5.3] - 2026-10-18 — Punteggio, stati e influenze dal server dello squadrone; lavoro dello squadrone; accesso con Discord e chiavi BGS-Tally
 
-Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon), la 1.5.0 (stati e influenze dal server, conflitti appena conclusi) la 1.5.1 (pagina del lavoro dello squadrone, in beta) e la 1.5.2 (accesso con Discord). La pagina è una funzione nuova, ma per scelta dell'utente la versione resta bassa.
+Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon), la 1.5.0 (stati e influenze dal server, conflitti appena conclusi) la 1.5.1 (pagina del lavoro dello squadrone, in beta), la 1.5.2 (accesso con Discord) e la 1.5.3 (chiave BGS-Tally per ogni pilota). La pagina è una funzione nuova, ma per scelta dell'utente la versione resta bassa.
+
+### Chiave BGS-Tally per ogni pilota
+
+- Nel menu dell'account, per **chiunque sia collegato** con Discord (anche senza ruoli dello squadrone) e in tutte e tre le lingue, la voce **🔑 Chiave BGS-Tally**: il pilota si genera da solo la chiave con cui il plugin BGS-Tally manda il suo lavoro per Flotta Stellare al server dello squadrone, senza chiederla a un ufficiale (passo 4 della fase 8b). La finestra mostra **Url Server** e **Chiave API** con il pulsante Copia e i quattro passi da fare in EDMC.
+- La chiave si vede **solo appena generata**: il server ne tiene l'impronta, non la chiave. Dopo, la finestra dice quando è stata creata e quando il plugin ha inviato l'ultima volta. **Rigenera** (con conferma: la vecchia smette subito di valere) e **Revoca**.
+- Ogni chiave ha un **nome** di lettere minuscole e cifre, ricavato dal nome Discord (es. `wiitifulsky`, con una cifra in fondo se è già preso), che è anche l'**inizio della chiave**: nelle impostazioni di BGS-Tally e nei registri del server si riconosce a chi appartiene. Si cambia con **Rinomina** nella finestra (la chiave prende il nome nuovo alla rigenerazione successiva) ed è il nome del pilota nella pagina del lavoro.
+- Una chiave per account Discord. Le chiavi date a mano finora restano valide; quelle di Gabolander e Marziano Inside sono state collegate ai loro account Discord (comando `link` sul server), così le vedono e le gestiscono dal tool.
+- **Chiavi dei piloti**, nel menu dell'account solo per gli ufficiali e solo in italiano: l'elenco delle chiavi (nome, nome Discord o "data a mano", creata, ultimo invio, stato) e **Revoca**, con conferma, per chi lascia lo squadrone. Serve perché il server non sa da solo chi esce dal server Discord. Le chiavi non si vedono, solo il loro nome.
+- La **Guida** ha una sezione nuova, "Accesso con Discord", in italiano, tedesco e inglese; la nota sugli Ordini riservati dice che gli ufficiali li trovano nel menu con il loro nome. Ogni sezione della Guida ha ora un'icona davanti al titolo (📊 tabella, 👁️ Watchlist, il logo di Discord per l'accesso, 📜 Ordini…), per trovarla più in fretta. Il pulsante **Accedi con Discord** ha il logo di Discord al posto della freccia.
+
+### Nota in fondo alla pagina
+
+- In fondo a ogni pagina una breve nota, sul modello di Inara: il tool è uno strumento non ufficiale dello squadrone per Elite Dangerous, non affiliato a Frontier Developments (i due nomi portano ai siti ufficiali), con dati da fonti pubbliche e dai piloti che possono essere in ritardo o non esatti (in italiano, tedesco e inglese); sotto, la nota sui marchi di Frontier, in inglese come testo legale. Nell'app installata (PWA) non compare.
 
 ### Accedi con Discord
 

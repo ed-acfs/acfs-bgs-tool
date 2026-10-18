@@ -1,6 +1,6 @@
 {
   "name": "acfs-bgs-tool",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "scripts": {
     "ng": "ng",
     "fetch-data": "node scripts/fetch-bgs.mjs",
@@ -32,6 +32,7 @@
     "@fontsource/roboto": "^5.3.0",
     "@fortawesome/angular-fontawesome": "^5.1.0",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
