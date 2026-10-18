@@ -165,6 +165,18 @@
                     <mat-label>Punteggio (es. 43.6% o Victory; 2-0)</mat-label>
                     <input matInput [value]="item.score" (change)="updateItem(item.id, { score: $any($event.target).value })" />
                   </mat-form-field>
+                  @if (findOrderType(item.typeKey)?.style === 'operation') {
+                    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                      <mat-label>A favore di</mat-label>
+                      <input
+                        matInput
+                        placeholder="ACFS"
+                        [value]="item.beneficiary ?? ''"
+                        (change)="updateItem(item.id, { beneficiary: $any($event.target).value })"
+                      />
+                      <mat-hint>Vuoto: ACFS. Un'altra fazione solo per eccezione</mat-hint>
+                    </mat-form-field>
+                  }
                   <mat-form-field appearance="outline" subscriptSizing="dynamic">
                     <mat-label>Tendenza</mat-label>
                     <mat-select [value]="item.trend" (selectionChange)="updateItem(item.id, { trend: $event.value })">

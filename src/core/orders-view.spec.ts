@@ -41,6 +41,13 @@ describe('ordersView', () => {
   });
 });
 
+describe('ordersView, work for another faction', () => {
+  it('names the other faction apart, so the page can highlight it', () => {
+    const view = ordersView({ items: [item({ typeKey: 'influence', beneficiary: 'LP 254-25 Free', detail: '38%' })] });
+    expect(view.sections[0].groups[0].items[0]).toMatchObject({ action: 'Inf per', beneficiary: 'LP 254-25 Free' });
+  });
+});
+
 describe('discordInlineToHtml', () => {
   it('turns the Discord Markdown of a detail into HTML', () => {
     expect(discordInlineToHtml('**conquista** di _Apgar City_ e *altro*\nriga')).toBe(

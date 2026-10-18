@@ -89,6 +89,24 @@ describe('renderOrderItem', () => {
     );
   });
 
+  it('works for another faction only when one is named, highlighted (a rare exception)', () => {
+    const line = renderOrderItem(
+      item({
+        section: 'operazioni',
+        typeKey: 'influence',
+        system: 'Crowfor',
+        score: '33.3%',
+        statusKeys: ['new'],
+        beneficiary: 'LP 254-25 Free',
+        detail: '38% :arrow_forward: _Elastico_ 👈 **ATTENZIONE!**',
+      }),
+    );
+    expect(line).toBe(
+      ':bar_chart: **Crowfor** (33.3%) :new:\n' + 'Inf per 👉 **LP 254-25 Free** 👈 > 38% :arrow_forward: _Elastico_ 👈 **ATTENZIONE!**',
+    );
+    expect(renderOrderItem(item({ section: 'operazioni', typeKey: 'influence', system: 'X', beneficiary: '  ', detail: 'd' }))).toContain('Inf per ACFS > d');
+  });
+
   it('renders a war with no score or trend, just a status', () => {
     const line = renderOrderItem(
       item({

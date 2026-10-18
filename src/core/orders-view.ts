@@ -19,6 +19,8 @@ export interface OrdersViewItem {
   statuses: { emoji: string; label: string }[];
   /** "Election per ACFS", "Pending War per ACFS": what's asked; null for constructions and notes. */
   action: string | null;
+  /** Set when the work is for another faction (rare): shown highlighted, "Inf per 👉 X 👈". */
+  beneficiary: string | null;
   detail: string;
 }
 
@@ -61,7 +63,8 @@ function viewItem(item: OrderItem): OrdersViewItem {
       .map(key => ORDER_STATUSES.find(s => s.key === key))
       .filter(s => s !== undefined)
       .map(s => ({ emoji: s.display, label: s.label })),
-    action: style === 'operation' && type?.verb ? `${item.pending ? 'Pending ' : ''}${type.verb} per ${SQUADRON_TAG}` : null,
+    action: style === 'operation' && type?.verb ? `${item.pending ? 'Pending ' : ''}${type.verb} per${item.beneficiary?.trim() ? '' : ` ${SQUADRON_TAG}`}` : null,
+    beneficiary: style === 'operation' && item.beneficiary?.trim() ? item.beneficiary.trim() : null,
     detail: item.detail,
   };
 }

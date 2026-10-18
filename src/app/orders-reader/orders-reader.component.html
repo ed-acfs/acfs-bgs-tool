@@ -63,7 +63,13 @@
                       <span class="reader-icon" aria-hidden="true">{{ item.icon }}</span>
                     }
                     @if (item.action) {
-                      <span class="reader-action">{{ item.action }} &rsaquo;</span>
+                      <span class="reader-action"
+                        >{{ item.action }}
+                        @if (item.beneficiary) {
+                          <strong class="reader-beneficiary">👉 {{ item.beneficiary }} 👈</strong>
+                        }
+                        &rsaquo;</span
+                      >
                     }
                     <span [innerHTML]="html(item.detail)"></span>
                     @if (!item.system) {

@@ -42,6 +42,12 @@ export interface OrderItem {
   pending: boolean;
   /** The rest of the line(s): the bold/italic outcome text, or the whole sentence for a 'note'. */
   detail: string;
+  /**
+   * Per chi si lavora, quando non è ACFS: un'eccezione rara (2-3 volte l'anno), per esempio una
+   * spinta di influenza per un'altra fazione per riportare un sistema in conflitto. Vuoto o assente:
+   * "per ACFS"; altrimenti "per 👉 **fazione** 👈", evidenziato apposta.
+   */
+  beneficiary?: string;
 }
 
 /** Everything about one day's report besides the operation lines themselves. */
@@ -144,6 +150,12 @@ function renderLeadLine(item: OrderItem, icon: string): string {
   return `${prefix}**${item.system}**${scorePart}${trendPart}${renderStatusSuffix(item.statusKeys)}`;
 }
 
+/** "ACFS", o per un'altra fazione "👉 **LP 254-25 Free** 👈" (vedi {@link OrderItem.beneficiary}). */
+export function beneficiaryLabel(item: Pick<OrderItem, 'beneficiary'>): string {
+  const other = item.beneficiary?.trim();
+  return other ? `👉 **${other}** 👈` : SQUADRON_TAG;
+}
+
 /** Renders one item as it appears in the report; empty string for an item of an unknown type. */
 export function renderOrderItem(item: OrderItem): string {
   const type = findOrderType(item.typeKey);
@@ -153,7 +165,7 @@ export function renderOrderItem(item: OrderItem): string {
   switch (type.style) {
     case 'operation': {
       const verb = item.pending ? `Pending ${type.verb}` : type.verb;
-      return `${renderLeadLine(item, type.icon)}\n${verb} per ${SQUADRON_TAG} > ${item.detail}`;
+      return `${renderLeadLine(item, type.icon)}\n${verb} per ${beneficiaryLabel(item)} > ${item.detail}`;
     }
     case 'plain':
       return `${renderLeadLine(item, type.icon)}\n${item.detail}`;
