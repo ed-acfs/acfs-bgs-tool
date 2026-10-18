@@ -227,8 +227,11 @@ export const en: Dictionary = {
   // State details panel
   'state.active': 'under way',
   'state.ended': 'over',
-  'state.endedTitle': 'Conflict over ({state}): {outcome} {score}',
+  'state.endedTitle': 'Conflict over ({state}): {outcome}, {score}',
   'state.endedTitleNoScore': 'Conflict over ({state})',
+  'state.result.won': 'Won',
+  'state.result.lost': 'Lost',
+  'state.result.drawn': 'Drawn',
   'state.serverAge': 'Data from the ACFS server (EDDN): {age}',
   'state.pending': 'pending',
   'state.scorePending': 'Score: Draw; 0-0, the conflict has not started yet.',

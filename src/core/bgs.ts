@@ -696,8 +696,10 @@ function summarizeFactionState(
 export type ConflictOutcome = 'Total Victory' | 'Victory' | 'Close Victory' | 'Draw' | 'Close Defeat' | 'Defeat' | 'Total Defeat';
 
 /**
- * The outcome for the side that won `ours` days against `theirs`: only the gap counts (see
- * CLAUDE.md) — level is a Draw, 1 day Close, 2 days plain, 3 or more Total. First to 4 days wins.
+ * How a conflict in progress stands for the side that won `ours` days against `theirs`: only the
+ * gap counts (see CLAUDE.md) — level is a Draw, 1 day Close, 2 days plain, 3 Total. It says who is
+ * ahead, not who won: a Total Victory can still be overturned. There is no fourth step, because
+ * the first side to 4 days won has won the conflict: an ended one gets `conflictResult` instead.
  */
 export function conflictOutcome(ours: number, theirs: number): ConflictOutcome {
   const gap = ours - theirs;
@@ -706,6 +708,18 @@ export function conflictOutcome(ours: number, theirs: number): ConflictOutcome {
   }
   const size = Math.abs(gap) === 1 ? 'Close ' : Math.abs(gap) === 2 ? '' : 'Total ';
   return `${size}${gap > 0 ? 'Victory' : 'Defeat'}` as ConflictOutcome;
+}
+
+/** How an ended conflict went for the side that won `ours` days against `theirs`. */
+export type ConflictResult = 'won' | 'lost' | 'drawn';
+
+export function conflictResult(ours: number, theirs: number): ConflictResult {
+  return ours > theirs ? 'won' : ours < theirs ? 'lost' : 'drawn';
+}
+
+/** Over when the source says so, or as soon as a side has 4 days won (first to 4 wins). */
+export function conflictIsOver(score: { ours: number; theirs: number; ended?: boolean }): boolean {
+  return Boolean(score.ended) || score.ours >= 4 || score.theirs >= 4;
 }
 
 /**
