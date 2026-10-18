@@ -42,7 +42,7 @@
         @for (system of tick.systems; track system.system_address) {
           <article class="work-system">
             <h3>{{ system.system_name }}</h3>
-            <p class="work-total">{{ describe(system.totals).join(' · ') || 'nessun lavoro registrato' }}</p>
+            <p class="work-total">{{ describe(system.totals).join(' · ') || 'Nessuna attività registrata al momento' }}</p>
             @if (system.pilots.length > 0) {
               <ul class="work-pilots">
                 @for (pilot of system.pilots; track pilot.pilot) {
@@ -57,7 +57,7 @@
         }
       </section>
     } @empty {
-      <p class="work-note">Nessun lavoro ricevuto finora da BGS-Tally.</p>
+      <p class="work-note">Nessuna attività ricevuta finora da BGS-Tally.</p>
     }
   }
 </div>
