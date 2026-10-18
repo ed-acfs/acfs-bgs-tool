@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faChartColumn, faClipboardList, faKey, faRightFromBracket, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
+import { faDiscord } from '@fortawesome/free-brands-svg-icons';
+import { faChartColumn, faClipboardList, faKey, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
@@ -42,7 +43,7 @@ import { TallyKeyDialogComponent } from '../tally-key-dialog/tally-key-dialog.co
       </mat-menu>
     } @else if (auth.available()) {
       <button mat-stroked-button type="button" (click)="auth.login()">
-        <fa-icon [icon]="faRightToBracket" aria-hidden="true"></fa-icon>
+        <fa-icon class="account-discord" [icon]="faDiscord" aria-hidden="true"></fa-icon>
         {{ i18n.t('account.login') }}
       </button>
     }
@@ -62,6 +63,7 @@ import { TallyKeyDialogComponent } from '../tally-key-dialog/tally-key-dialog.co
       padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;
       color: var(--color-text-2); background: var(--color-surface); box-shadow: 0 1px 4px rgb(0 0 0 / 40%);
     }
+    .account-discord { color: #5865f2; }
     .account-separator { margin: 4px 0; border: 0; border-top: 1px solid var(--color-border-muted); }
     fa-icon { margin-right: 8px; }
   `,
@@ -70,7 +72,7 @@ import { TallyKeyDialogComponent } from '../tally-key-dialog/tally-key-dialog.co
 export class AccountComponent implements OnInit {
   protected readonly auth = inject(AuthService);
   protected readonly i18n = inject(I18nService);
-  protected readonly faRightToBracket = faRightToBracket;
+  protected readonly faDiscord = faDiscord;
   protected readonly faRightFromBracket = faRightFromBracket;
   protected readonly faClipboardList = faClipboardList;
   protected readonly faChartColumn = faChartColumn;
