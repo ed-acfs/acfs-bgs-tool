@@ -63,7 +63,7 @@ import { TallyKeyDialogComponent } from '../tally-key-dialog/tally-key-dialog.co
       padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;
       color: var(--color-text-2); background: var(--color-surface); box-shadow: 0 1px 4px rgb(0 0 0 / 40%);
     }
-    .account-discord { color: #5865f2; }
+    .account-discord { color: #7289da; }
     .account-separator { margin: 4px 0; border: 0; border-top: 1px solid var(--color-border-muted); }
     fa-icon { margin-right: 8px; }
   `,
