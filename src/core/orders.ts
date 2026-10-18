@@ -69,22 +69,11 @@ const SECTION_TITLES: Record<OrderSection, string> = {
 };
 
 /**
- * Discord's number emoji, "Priorità 1" through "Priorità 10" — the range the squadron's own
- * reports use. A priority outside this range falls back to the plain number.
+ * Number emoji for "Priorità 1" through "Priorità 10" — the range the squadron's own reports use —
+ * written as the emoji themselves (1️⃣ 2️⃣ 3️⃣), not Discord shortcodes like `:one:`: the user's
+ * preference (18 October 2026). A priority outside this range falls back to the plain number.
  */
-const PRIORITY_EMOJI: readonly string[] = [
-  ':zero:',
-  ':one:',
-  ':two:',
-  ':three:',
-  ':four:',
-  ':five:',
-  ':six:',
-  ':seven:',
-  ':eight:',
-  ':nine:',
-  ':keycap_ten:',
-];
+const PRIORITY_EMOJI: readonly string[] = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
 
 function priorityLabel(priority: number): string {
   const emoji = PRIORITY_EMOJI[priority];
