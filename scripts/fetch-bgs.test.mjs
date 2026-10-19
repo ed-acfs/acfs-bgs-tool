@@ -63,16 +63,37 @@ test('handles a system Spansh returns without stations', () => {
   assert.deepEqual(slim.assets, []);
 });
 
+/** Fake answers for the two tick detectors and the published data; a missing one is down. */
+const tickSources = ({ edcd, infomancer, published }) => async url => {
+  const body = String(url).includes('tick.edcd.io') ? edcd
+    : String(url).includes('infomancer') ? infomancer
+    : published;
+  return body === undefined ? new Response('Service Unavailable', { status: 503 }) : new Response(JSON.stringify(body));
+};
+
 test('reads the last tick from the Tick Detector as an ISO timestamp', async t => {
-  t.mock.method(globalThis, 'fetch', async () => new Response(JSON.stringify('2026-10-04T16:06:50+00:00')));
+  t.mock.method(globalThis, 'fetch', tickSources({ edcd: '2026-10-04T16:06:50+00:00' }));
+  t.mock.method(console, 'warn', () => {});
   assert.equal(await fetchLastTick(), '2026-10-04T16:06:50.000Z');
 });
 
-test('keeps the tick of the published data when the Tick Detector is down', async t => {
-  t.mock.method(globalThis, 'fetch', async url =>
-    String(url).includes('tick.edcd.io')
-      ? new Response('Service Unavailable', { status: 503 })
-      : new Response(JSON.stringify({ tick_at: '2026-10-17T14:40:00.000Z', results: [] })));
+test('takes the most recent tick when one detector is stuck', async t => {
+  t.mock.method(globalThis, 'fetch', tickSources({
+    edcd: '2026-10-17T16:25:36+00:00',
+    infomancer: { lastGalaxyTick: '2026-10-19T16:41:53.000Z' },
+    published: { tick_at: '2026-10-17T16:25:36.000Z', results: [] },
+  }));
+  assert.equal(await fetchLastTick(), '2026-10-19T16:41:53.000Z');
+});
+
+test('ignores a tick in the future', async t => {
+  t.mock.method(globalThis, 'fetch', tickSources({ edcd: '2099-01-01T00:00:00+00:00', infomancer: { lastGalaxyTick: '2026-10-19T16:41:53.000Z' } }));
+  t.mock.method(console, 'warn', () => {});
+  assert.equal(await fetchLastTick(), '2026-10-19T16:41:53.000Z');
+});
+
+test('keeps the tick of the published data when both detectors are down', async t => {
+  t.mock.method(globalThis, 'fetch', tickSources({ published: { tick_at: '2026-10-17T14:40:00.000Z', results: [] } }));
   t.mock.method(console, 'warn', () => {});
   assert.equal(await fetchLastTick(), '2026-10-17T14:40:00.000Z');
 });

@@ -2,6 +2,12 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
+## [1.5.5] - 2026-10-20 — Ora del tick da due rilevatori
+
+### Correzioni
+
+- **L'ultimo tick sotto il titolo era fermo al 17 ottobre**, anche se i tick del 18 e del 19 c'erano stati: EDCD Tick Detector, l'unica fonte del tool, si era bloccato. Ora il tool legge anche il rilevatore di Infomancer (lo stesso di BGS-Tally) e tiene il tick più recente fra i due e quello dei dati già pubblicati, scartando ore nel futuro. Con il tick giusto torna giusto anche il contatore dei sistemi aggiornati dopo il tick. Segnalato dall'utente.
+
 ## [1.5.4] - 2026-10-18 — Punteggio, stati e influenze dal server dello Squadrone; lavoro dello Squadrone; accesso con Discord e chiavi BGS-Tally
 
 Pubblicata in più passi nella stessa giornata: la 1.4.0 (punteggio dei conflitti), la 1.4.1 (difesa nei sistemi con architetto senza fazione preferita, favicon), la 1.5.0 (stati e influenze dal server, conflitti appena conclusi) la 1.5.1 (pagina del lavoro dello Squadrone, in beta), la 1.5.2 (accesso con Discord), la 1.5.3 (chiave BGS-Tally per ogni pilota) e la 1.5.4 (nome Discord nelle Chiavi dei piloti). La pagina è una funzione nuova, ma per scelta dell'utente la versione resta bassa.

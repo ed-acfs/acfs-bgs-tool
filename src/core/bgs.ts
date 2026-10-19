@@ -157,7 +157,7 @@ export interface BgsDataset {
   faction: string;
   /** ISO 8601 time the dataset was downloaded from Spansh. */
   generated_at: string;
-  /** ISO 8601 time of the last BGS tick when it was downloaded (EDCD Tick Detector); null if unknown. */
+  /** ISO 8601 time of the last BGS tick when it was downloaded (the most recent of the EDCD and Infomancer tick detectors); null if unknown. */
   tick_at?: string | null;
   /** False when EliteBGS couldn't be reached at download time, so no conflict has a score. Absent in older files. */
   conflict_scores_available?: boolean;
