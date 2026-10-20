@@ -9,14 +9,14 @@
 
   <p class="work-intro">
     Le attività BGS per Flotta Stellare che i piloti mandano con BGS-Tally al server dello Squadrone, per tick, sistema
-    e pilota. Riservata agli ufficiali (ruolo Discord). Chi non usa BGS-Tally non compare, quindi i totali non sono
+    e pilota. Riservata ai membri dello Squadrone (ruolo Discord). Chi non usa BGS-Tally non compare, quindi i totali non sono
     tutte le attività dello Squadrone.
   </p>
 
   @if (state() === 'locked') {
     @if (auth.session(); as session) {
-      @if (!session.officer) {
-        <p class="work-note">Sei collegato come {{ session.user.display_name }}, ma la pagina è riservata agli ufficiali.</p>
+      @if (!session.member) {
+        <p class="work-note">Sei collegato come {{ session.user.display_name }}, ma la pagina è riservata ai membri dello Squadrone.</p>
       }
     } @else if (auth.available()) {
       <p class="work-note">

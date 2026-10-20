@@ -16,7 +16,7 @@ export const routes: Routes = [
     component: OrdersReaderComponent,
   },
   {
-    // Lavoro BGS-Tally per pilota, solo ufficiali (password controllata dal server), in beta.
+    // Lavoro BGS-Tally per pilota, per membri e ufficiali (ruolo controllato dal server), in beta.
     path: 'activity',
     component: WorkPageComponent,
   },

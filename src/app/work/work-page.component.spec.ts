@@ -36,8 +36,8 @@ describe('WorkPageComponent', () => {
       if (url === `${SERVER_API_URL}/auth/me`) {
         return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(me) } as Response);
       }
-      const officerSession = (me as { officer?: boolean }).officer === true && init.credentials === 'include';
-      const ok = url.startsWith(`${SERVER_API_URL}/v1/work`) && officerSession;
+      const memberSession = (me as { member?: boolean }).member === true && init.credentials === 'include';
+      const ok = url.startsWith(`${SERVER_API_URL}/v1/work`) && memberSession;
       return Promise.resolve({ ok, status: ok ? 200 : 401, json: () => Promise.resolve(WORK) } as Response);
     });
     vi.stubGlobal('fetch', fetchMock);
@@ -77,14 +77,25 @@ describe('WorkPageComponent', () => {
     expect([...host.querySelectorAll('.work-pilot')].map(e => e.textContent)).toEqual(['Gabolander', 'Marziano Inside']);
   });
 
-  it('tells a signed-in member who is not an officer that the page is reserved', async () => {
+  it('shows the work to a member who is not an officer', async () => {
     me = { logged_in: true, user, member: true, officer: false };
     fixture.detectChanges();
 
     const host: HTMLElement = fixture.nativeElement;
     await vi.waitFor(() => {
       fixture.detectChanges();
-      expect(host.textContent).toContain('Sei collegato come WiitifulSky, ma la pagina è riservata agli ufficiali.');
+      expect(host.querySelector('.work-system h3')?.textContent).toBe('LP 254-26');
+    });
+  });
+
+  it('tells someone signed in without a squadron role that the page is reserved', async () => {
+    me = { logged_in: true, user, member: false, officer: false };
+    fixture.detectChanges();
+
+    const host: HTMLElement = fixture.nativeElement;
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(host.textContent).toContain('Sei collegato come WiitifulSky, ma la pagina è riservata ai membri dello Squadrone.');
     });
     expect(host.querySelector('.work-system')).toBeNull();
   });
