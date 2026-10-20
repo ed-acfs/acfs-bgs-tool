@@ -1,6 +1,7 @@
 <h2 mat-dialog-title>{{ t('tallyKey.title') }}</h2>
 <mat-dialog-content class="tally-key">
   <p>{{ t('tallyKey.intro') }}</p>
+  <p class="tally-key-warning">{{ t('tallyKey.version') }}</p>
 
   @if (error()) {
     <p class="tally-key-error" role="alert">{{ t('tallyKey.error') }}</p>
@@ -74,6 +75,7 @@
   } @else if (!error()) {
     <p>{{ t('tallyKey.loading') }}</p>
   }
+  <p class="tally-key-hint tally-key-eddn">{{ t('tallyKey.eddn') }}</p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   @if (status(); as s) {

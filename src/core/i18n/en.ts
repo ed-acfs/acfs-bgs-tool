@@ -14,6 +14,8 @@ export const en: Dictionary = {
   'account.tallyKey': 'BGS-Tally key',
   'tallyKey.title': 'BGS-Tally key',
   'tallyKey.intro': 'With the EDMC plugin BGS-Tally, your work for Flotta Stellare reaches the squadron server on its own. The server keeps only the work for Flotta Stellare; nothing else is requested or stored.',
+  'tallyKey.version': 'You need BGS-Tally 5.6.1 or later: in 5.6 an interface bug stops the connection to the server from completing. The version is shown in EDMC → File → Settings → BGS-Tally.',
+  'tallyKey.eddn': 'While you are there, in EDMC → File → Settings → EDDN tick “Send system and scan data to the Elite Dangerous Data Network”: every jump you make into a Flotta Stellare system updates the tool within seconds, even where nobody else flies. This works without BGS-Tally too.',
   'tallyKey.name': 'Key name',
   'tallyKey.rename': 'Rename',
   'tallyKey.save': 'Save',
@@ -315,7 +317,7 @@ export const en: Dictionary = {
     'The Watchlist is the list of systems the squadron keeps an eye on: for each one it names a faction, the lowest position it must hold among the system\'s factions, and the reason. These systems always stay at the top of the table and have a purple eye instead of the ⓘ, which opens the details with the reason and the position to hold. If the faction drops below that position, the system moves to P1.',
   'help.top': 'At the top',
   'help.top1':
-    'Below the title: when Spansh updated the data, the time of the last tick and how many systems (and how many P1-P2) have been updated since. Spansh lags behind the game: a system is updated when someone flies through it, so the data of a system not updated since the last tick may already have changed. The title resets the table to how it opens; Export downloads the data as JSON or CSV; the flags switch language.',
+    'Below the title: when Spansh updated the data, the time of the last tick and how many systems (and how many P1-P2) have been updated since. Spansh lags behind the game: a system is updated when someone flies through it, so the data of a system not updated since the last tick may already have changed. The title resets the table to how it opens; Export downloads the data as JSON or CSV; the flags switch language. You can help: in EDMC → File → Settings → EDDN tick “Send system and scan data to the Elite Dangerous Data Network”, so every jump you make into a {faction} system updates the tool within seconds. Data sent only to Inara reaches Inara, not the tool.',
   'help.details': 'System details',
   'help.details1':
     'Summary, stations with their services, any Watchlist reason and the factions table. Next to the influence: ⚠️ for factions within {points} points of {faction} (a conflict is possible), the Retreat icon (solid if already in Retreat, dashed at {threshold} or less) and an N for native factions, which cannot go into Retreat.',
@@ -325,7 +327,7 @@ export const en: Dictionary = {
   'help.app1':
     "The tool can be installed as an app: on a phone with \"Add to Home screen\" from the browser menu, on a PC with the \"Install\" icon in the address bar. It also opens without a connection, with the last downloaded data: the timestamp under the title says how old it is. Search by distance only works online.",
   'help.login': 'Signing in with Discord',
-  'help.login1': 'You can use the tool without signing in. “Sign in with Discord”, in the row with the flags, is for anyone in the ACFS Discord server: from the menu with your name you generate your BGS-Tally key, to send your work for Flotta Stellare to the squadron server; officers also find their tools there. The tool never sees your Discord password: Discord only tells it who you are and which roles you have in the ACFS server.',
+  'help.login1': 'You can use the tool without signing in. “Sign in with Discord”, in the row with the flags, is for anyone in the ACFS Discord server: from the menu with your name you generate your BGS-Tally key, to send your work for Flotta Stellare to the squadron server; officers also find their tools there. The tool never sees your Discord password: Discord only tells it who you are and which roles you have in the ACFS server. You need BGS-Tally 5.6.1 or later: with 5.6 the connection to the server does not complete.',
   'footer.disclaimer': 'ACFS BGS Tool is an unofficial tool of the ACFS squadron for the game Elite Dangerous and is not affiliated with Frontier Developments. The data comes from public sources (Spansh, EDDN, EliteBGS) and from the squadron pilots: it may be late or not entirely accurate.',
   'help.internal': 'Squadron tools',
   'help.internalNote': 'The squadron also has internal tools, such as architect assignment: they are only available in Italian.',
