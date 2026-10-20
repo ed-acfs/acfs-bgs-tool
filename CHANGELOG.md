@@ -2,7 +2,12 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
-## [1.5.5] - 2026-10-20 — Ora del tick da due rilevatori
+## [1.5.5] - 2026-10-20 — Ora del tick da due rilevatori; Attività per i membri
+
+### Attività per i membri dello Squadrone
+
+- **Attività (beta)** non è più solo per gli ufficiali: la vedono anche i membri dello Squadrone (Membro Flotta, Cadetto), nel menu con il nome, sempre solo in italiano. Chi è collegato senza un ruolo dello Squadrone legge che la pagina è riservata ai membri. Il controllo resta sul server (`/v1/work` di `acfs-server`). Editor degli Ordini, "Assegna" e Chiavi dei piloti restano agli ufficiali. Decisione dell'utente; per scelta sua la versione non cambia.
+- Guida: nuova scheda "Attività (beta)" (solo in italiano, come la pagina).
 
 ### Correzioni
 

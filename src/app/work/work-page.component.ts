@@ -11,8 +11,8 @@ const TICKS = 5;
 const TIMEOUT_MS = 10_000;
 
 /**
- * "Attività (beta)": il lavoro BGS ricevuto da BGS-Tally, per tick, sistema e pilota. Riservato agli
- * ufficiali: si entra con l'accesso con Discord (ruolo da ufficiale), e il controllo lo fa il server
+ * "Attività (beta)": il lavoro BGS ricevuto da BGS-Tally, per tick, sistema e pilota. Riservato ai
+ * membri dello Squadrone: si entra con l'accesso con Discord (ruolo da membro o da ufficiale), e il controllo lo fa il server
  * (acfs-server, /v1/work), quindi senza permesso i dati non arrivano proprio. Solo in italiano.
  */
 @Component({
@@ -36,13 +36,13 @@ export class WorkPageComponent implements OnInit {
       // Niente da cancellare.
     }
     await this.auth.load();
-    if (this.auth.session()?.officer) {
+    if (this.auth.session()?.member) {
       void this.load();
     }
   }
 
   protected async load(): Promise<void> {
-    if (this.auth.session()?.officer !== true || !SERVER_API_URL) {
+    if (this.auth.session()?.member !== true || !SERVER_API_URL) {
       this.state.set('locked');
       return;
     }
@@ -82,7 +82,7 @@ export class WorkPageComponent implements OnInit {
       case 401:
         return 'Sessione scaduta: accedi di nuovo con Discord.';
       case 403:
-        return 'Riservato agli ufficiali.';
+        return 'Riservato ai membri dello Squadrone.';
       default:
         return `Errore del server (${status}).`;
     }
