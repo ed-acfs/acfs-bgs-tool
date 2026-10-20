@@ -44,6 +44,12 @@ describe('TallyKeyDialogComponent', () => {
     expect(buttons(el)).toEqual(['Genera la chiave', 'Chiudi']);
   });
 
+  it('warns about the BGS-Tally version and invites to send data to EDDN', async () => {
+    const el = await open({ exists: false, server_url: SERVER_URL });
+    expect(el.querySelector('.tally-key-warning')!.textContent).toContain('5.6.1');
+    expect(el.querySelector('.tally-key-eddn')!.textContent).toContain('EDDN');
+  });
+
   it('shows the new key once, with the server URL and the steps for the plugin', async () => {
     const el = await open({ exists: false, server_url: SERVER_URL });
     auth.tallyKey.mockResolvedValue({ exists: true, created_at: '2026-10-18T10:00:00Z', server_url: SERVER_URL, key: 'abc123' });

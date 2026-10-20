@@ -2,12 +2,17 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
-## [1.5.5] - 2026-10-20 — Ora del tick da due rilevatori; Attività per i membri
+## [1.5.5] - 2026-10-20 — Ora del tick da due rilevatori; Attività per i membri; avvisi per BGS-Tally ed EDDN
 
 ### Attività per i membri dello Squadrone
 
 - **Attività (beta)** non è più solo per gli ufficiali: la vedono anche i membri dello Squadrone (Membro Flotta, Cadetto), nel menu con il nome, sempre solo in italiano. Chi è collegato senza un ruolo dello Squadrone legge che la pagina è riservata ai membri. Il controllo resta sul server (`/v1/work` di `acfs-server`). Editor degli Ordini, "Assegna" e Chiavi dei piloti restano agli ufficiali. Decisione dell'utente; per scelta sua la versione non cambia.
 - Guida: nuova scheda "Attività (beta)" (solo in italiano, come la pagina).
+
+### Chiave BGS-Tally e invio a EDDN
+
+- Nella finestra **Chiave BGS-Tally**, in evidenza: serve **BGS-Tally 5.6.1 o successiva**, perché con la 5.6 un difetto dell'interfaccia impedisce di completare la connessione al server (era il motivo per cui la chiave di un pilota risultava "mai" usata). In fondo alla finestra, l'invito a spuntare in EDMC l'invio dei dati di sistema a **EDDN**: ogni salto in un nostro sistema aggiorna il tool in pochi secondi, anche senza BGS-Tally. Il 20 ottobre Inara mostrava una pending election a Crowfor che né Spansh né il server conoscevano: chi era passato inviava i dati solo a Inara.
+- Guida, nelle tre lingue: lo stesso invito a EDDN in "In alto", dove si spiega il ritardo di Spansh, e la versione minima di BGS-Tally in "Accesso con Discord". Richiesta dell'utente.
 
 ### Correzioni
 
