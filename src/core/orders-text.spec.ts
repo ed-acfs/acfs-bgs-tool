@@ -92,8 +92,12 @@ describe('renderDiscordPreview', () => {
     expect(html).toContain('<span class="dc-mention">@Membro Flotta</span>');
     expect(html).toContain('<div class="dc-h2">TITOLO</div>');
     expect(html).toContain('<strong><u>OPERAZIONI</u></strong>');
-    expect(html).toContain('title=":Missions:">🎯</span>');
+    expect(html).toContain(':Missions: <strong><u>OPERAZIONI</u></strong>');
     expect(html).toContain('di <em>Apgar City</em> &lt;b&gt;');
     expect(html).toContain('<div class="dc-li">punto</div>');
+  });
+
+  it('keeps the squadron logo :acfs: as written, with no stand-in', () => {
+    expect(renderDiscordPreview('Buon gioco! \n:acfs:')).toBe('<div>Buon gioco! </div><div>:acfs:</div>');
   });
 });

@@ -26,13 +26,6 @@ const STANDARD_EMOJI: Readonly<Record<string, string>> = {
   dart: '🎯', globe_with_meridians: '🌐', pushpin: '📌', calendar: '📅', clipboard: '📋', rocket: '🚀',
 };
 
-/** Server emoji, shown in the preview as their closest Unicode lookalike (the text keeps the shortcode). */
-const SERVER_EMOJI_PREVIEW: Readonly<Record<string, string>> = {
-  RedAlert: '🚨',
-  Expansion: '🌐',
-  Missions: '🎯',
-  acfs: '⭐',
-};
 
 /** `:green_circle:` → 🟢 for every standard shortcode; server emoji and unknown names are left alone. */
 export function shortcodesToEmoji(text: string): string {
@@ -144,12 +137,9 @@ function escapeHtml(text: string): string {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-/** Bold, underline, italic and server emoji inside one line, after escaping. */
+/** Bold, underline and italic inside one line, after escaping. */
 function renderInline(line: string): string {
   return escapeHtml(line)
-    .replace(/:([A-Za-z0-9_]+):/g, (match, name: string) =>
-      SERVER_EMOJI_PREVIEW[name] ? `<span class="dc-emoji" title=":${name}:">${SERVER_EMOJI_PREVIEW[name]}</span>` : match,
-    )
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/__(.+?)__/g, '<u>$1</u>')
     .replace(/(^|[^*\w])\*([^*\s][^*]*?)\*(?!\*)/g, '$1<em>$2</em>')
@@ -158,9 +148,10 @@ function renderInline(line: string): string {
 
 /**
  * The text as Discord would show it, as HTML for the preview: headings (`#`, `##`, `###`),
- * bullet lines (`- `), bold, underline, italic, a line starting with a mention highlighted and server emoji as
- * their lookalike. Not a full Markdown parser: only what the Ordini use. Everything is escaped
- * first, so the text can't inject markup.
+ * bullet lines (`- `), bold, underline, italic, a line starting with a mention highlighted. Server
+ * emoji stay as their shortcode (`:acfs:` is the squadron's logo: no stand-in, Discord renders it).
+ * Not a full Markdown parser: only what the Ordini use. Everything is escaped first, so the text
+ * can't inject markup.
  */
 export function renderDiscordPreview(text: string): string {
   return text
