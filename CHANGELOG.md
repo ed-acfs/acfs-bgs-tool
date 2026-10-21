@@ -2,6 +2,25 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
+## [1.5.6-beta] - 2026-10-22 — Ordini: editor a testo in prova; pagina dei membri sospesa
+
+Versione di prova (`-beta`): l'editor degli Ordini non è ancora definitivo.
+
+### Editor degli Ordini a testo
+
+- **`/ordini` diventa un editor di testo**: il report si scrive come in VS Code, con a destra l'anteprima come apparirà su Discord (titoli, grassetto, sottolineato, corsivo, elenchi, menzione). Richiesta dell'utente: l'editor a moduli aveva troppi campi e si scriveva più in fretta a mano.
+- **Emoji vere** nel testo al posto dei codici di Discord: un `:green_circle:` scritto a mano diventa 🟢 appena si chiudono i due punti (anche `:arrow_forward:` ▶️, `:x:` ❌, `:older_man:` 👴, i numeri delle priorità). Le emoji del server Discord (`:acfs:`, `:Missions:`, `:RedAlert:`, `:Expansion:`) restano scritte col nome, anche nell'anteprima: `:acfs:` è il logo dello Squadrone e lo disegna Discord.
+- **Barra delle emoji**: stato, tendenza, tipo, priorità, ▶️ e 👉👈 (per un'altra fazione, con il cursore già fra gli asterischi del nome), inseriti dove si trova il cursore.
+- **Testo libero dai dati della tabella**: nulla viene preso dai dati, che possono essere indietro di giorni rispetto al gioco (Crowfor, fermo dal 19 ottobre mentre si combatteva l'elezione). "Aggiungi un sistema al testo" e il pulsante 📋 della tabella scrivono solo il nome in grassetto, con l'ortografia esatta; il pulsante lo mette in fondo alle Operazioni, prima dei Cantieri.
+- **Data**: scegliendo il giorno cambia anche la riga "AGGIORNAMENTO ORDINI DEL …" nel testo, in data di gioco. **Copia per Discord** copia il testo così com'è. "Riparti da un report vuoto" scrive lo scheletro con tutte le sezioni.
+- La bozza resta **condivisa sul server** fra gli ufficiali (il testo si aggiunge a quanto già salvato, senza cambiare il server); la prima volta il testo parte dagli Ordini composti con l'editor a moduli.
+- Il **vecchio editor a moduli** resta su `/ordini/moduli` ("Vecchio editor"), per confronto.
+
+### Pagina degli Ordini per i membri sospesa
+
+- `/ordini/pubblicati` mostra un avviso invece degli Ordini, la voce "Ordini" sparisce dal menu dei membri e "Pubblica per i membri" non c'è più: l'impaginazione della pagina si basava sui campi dell'editor a moduli. Scelta dell'utente, per provare il nuovo editor senza dover rifare subito anche quella pagina. Il server non cambia.
+- Guida (sezione Ordini, solo in italiano come gli Ordini): riscritta per l'editor a testo.
+
 ## [1.5.5] - 2026-10-20 — Ora del tick da due rilevatori; Attività per i membri; avvisi per BGS-Tally ed EDDN
 
 ### Attività per i membri dello Squadrone
