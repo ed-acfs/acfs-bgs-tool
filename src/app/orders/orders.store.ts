@@ -13,7 +13,7 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { SERVER_API_URL, STORAGE_PREFIX } from '../../core/config';
 import { createOrderItem, OrderItem, OrdersDraft, parseIsoDay, renderOrdersMarkdown, resolveOrdersDay } from '../../core/orders';
-import { insertBeforeFooter, ordersSkeleton, shortcodesToEmoji } from '../../core/orders-text';
+import { insertAfterOperations, ordersSkeleton, shortcodesToEmoji } from '../../core/orders-text';
 
 const ITEMS_KEY = `${STORAGE_PREFIX}orders-items:v1`;
 const TEXT_KEY = `${STORAGE_PREFIX}orders-text:v1`;
@@ -196,13 +196,13 @@ export class OrdersStore {
   }
 
   /**
-   * Adds a system's lines to the text, before the closing note — the table's "Aggiungi agli
+   * Adds a system's lines to the text, at the end of the operations — the table's "Aggiungi agli
    * ordini". Like {@link addDraftItem}, the shared draft is loaded first.
    */
   addTextBlock(block: string): void {
     const add = () => {
       this.ensureText();
-      this.setText(insertBeforeFooter(this.textSignal(), block));
+      this.setText(insertAfterOperations(this.textSignal(), block));
     };
     if (this.loaded) {
       add();

@@ -118,6 +118,11 @@ export class OrdersTextEditorComponent implements OnInit {
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     textarea.setRangeText(text, start, end, 'end');
+    // "👉 **** 👈": the cursor goes between the asterisks, where the faction's name is typed.
+    const slot = text.indexOf('****');
+    if (slot >= 0) {
+      textarea.setSelectionRange(start + slot + 2, start + slot + 2);
+    }
     this.store.setText(textarea.value);
     textarea.focus();
   }

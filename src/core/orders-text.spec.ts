@@ -1,7 +1,7 @@
 import { ConflictScore, StateEntry } from './bgs';
 import {
   conflictScoreText,
-  insertBeforeFooter,
+  insertAfterOperations,
   orderLineForRow,
   ordersSkeleton,
   refreshOrderNumbers,
@@ -111,15 +111,72 @@ describe('refreshOrderNumbers', () => {
   });
 });
 
-describe('insertBeforeFooter', () => {
-  it('puts the block before the closing NOTA', () => {
-    const text = 'Inizio\n\n------\n\nNOTA\nGrazie';
-    expect(insertBeforeFooter(text, '📊 **X** (1.0%)')).toBe('Inizio\n\n------\n\n📊 **X** (1.0%)\n\nNOTA\nGrazie');
+/** Part of the orders of 22 October 2026, as the user wrote them by hand. */
+const REPORT = [
+  '@Membro Flotta',
+  '## AGGIORNAMENTO ORDINI DEL 22/10/3312',
+  '',
+  ':Missions: **__OPERAZIONI__** :Missions:',
+  '',
+  '**Priorità** 1️⃣',
+  '',
+  '🗳️ **Crowfor** (Draw; 0-0) 🆕',
+  'Election per ACFS > **difesa del sistema** e **conquista** di _Szebehely Port_',
+  '------',
+  '',
+  ':older_man: **__CANTIERI APERTI__** :older_man:',
+  '',
+  '🏗️ **Col 285 Sector ZZ-Y d43** (26%) 🆕',
+  'Completare la costruzione del **Outpost Scientifico** > Ponte verso **Col 285 Sector UT-Z c13**',
+  '------',
+  '',
+  '- **__OPERAZIONI CONCLUSE__**',
+  '',
+  '📊 **HIP 30129** (61.0%) ✅',
+  'Inf per ACFS > 61% :arrow_forward: Stabilità & sicurezza',
+  '',
+  '🗳️ **LP 254-26** :x:',
+  'Election per ACFS > **conquista** di _Schirra Depot_',
+  '------',
+  '',
+  'NOTA',
+  'Qualunque contributo è ben accetto e mai obbligatorio.',
+].join('\n');
+
+describe('the orders of 22 October 2026', () => {
+  it('get real emoji where a standard shortcode was typed, server emoji stay', () => {
+    const text = shortcodesToEmoji(REPORT);
+    expect(text).toContain('61% ▶️ Stabilità');
+    expect(text).toContain('🗳️ **LP 254-26** ❌');
+    expect(text).toContain('👴 **__CANTIERI APERTI__** 👴');
+    expect(text).toContain(':Missions: **__OPERAZIONI__** :Missions:');
   });
 
-  it('appends when there is no NOTA', () => {
-    expect(insertBeforeFooter('Inizio\n', 'riga')).toBe('Inizio\n\nriga\n');
-    expect(insertBeforeFooter('', 'riga')).toBe('riga\n');
+  it('keep construction progress and concluded numbers when the numbers are refreshed', () => {
+    const rows = [
+      row('Col 285 Sector ZZ-Y d43', { factionInfluence: 33.3 }),
+      row('HIP 30129', { factionInfluence: 64.2 }),
+      row('Crowfor', { electionState: 'active', stateEntries: [entry('election', 'active', score(1, 0))] }),
+    ];
+    const result = refreshOrderNumbers(REPORT, rows);
+    expect(result.changes).toEqual([{ system: 'Crowfor', before: 'Draw; 0-0', after: 'Close Victory; 1-0' }]);
+    expect(result.text).toContain('(26%) 🆕');
+    expect(result.text).toContain('**HIP 30129** (61.0%) ✅');
+  });
+
+  it('get a new operation at the end of the operations, before the constructions', () => {
+    const text = insertAfterOperations(REPORT, '📊 **Wong Sher** (43.6%) 🟡\nInf per ACFS > ');
+    expect(text).toContain(
+      'di _Szebehely Port_\n------\n\n📊 **Wong Sher** (43.6%) 🟡\nInf per ACFS > \n------\n\n:older_man: **__CANTIERI APERTI__**',
+    );
+  });
+});
+
+describe('insertAfterOperations', () => {
+  it('falls back to the closing NOTA, then to the end of the text', () => {
+    expect(insertAfterOperations('Inizio\n\nNOTA\nGrazie', 'riga')).toBe('Inizio\n\nriga\n------\n\nNOTA\nGrazie');
+    expect(insertAfterOperations('Inizio\n', 'riga')).toBe('Inizio\n\nriga\n');
+    expect(insertAfterOperations('', 'riga')).toBe('riga\n');
   });
 });
 

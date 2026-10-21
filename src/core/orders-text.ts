@@ -21,7 +21,7 @@ const STANDARD_EMOJI: Readonly<Record<string, string>> = {
   new: '🆕', green_circle: '🟢', yellow_circle: '🟡', red_circle: '🔴', orange_circle: '🟠',
   white_check_mark: '✅', x: '❌', warning: '⚠️', rotating_light: '🚨', exclamation: '❗',
   arrow_up: '⬆️', arrow_down: '⬇️', left_right_arrow: '↔️', arrow_right: '➡️', arrow_left: '⬅️',
-  arrow_upper_right: '↗️', arrow_lower_right: '↘️',
+  arrow_upper_right: '↗️', arrow_lower_right: '↘️', arrow_forward: '▶️',
   ballot_box: '🗳️', crossed_swords: '⚔️', bar_chart: '📊', construction: '🏗️', building_construction: '🏗️',
   older_man: '👴', point_right: '👉', point_left: '👈', star: '⭐', fire: '🔥', shield: '🛡️',
   dart: '🎯', globe_with_meridians: '🌐', pushpin: '📌', calendar: '📅', clipboard: '📋', rocket: '🚀',
@@ -74,6 +74,13 @@ export const EMOJI_GROUPS: readonly EmojiGroup[] = [
       label: `Priorità ${index + 1}`,
     })),
   },
+  {
+    label: 'Altro',
+    buttons: [
+      toButton(':arrow_forward:', '▶️', 'Obiettivo (es. "61% ▶️ Stabilità & sicurezza")'),
+      { insert: '👉 **** 👈', display: '👉👈', label: 'Per un\'altra fazione (es. "Inf per 👉 LP 254-25 Free 👈")' },
+    ],
+  },
 ];
 
 /** What goes around the report: who is pinged, the closing note, the signature. */
@@ -94,6 +101,7 @@ export function ordersSkeleton(date: Date, meta: OrdersTextMeta): string {
       '**Priorità** :one:\n\n\n------',
       ':older_man: **__CANTIERI APERTI__** :older_man:\n\n\n------',
       '**__NOTE & INFORMAZIONI__**\n\n\n------',
+      '- **__OPERAZIONI CONCLUSE__**\n\n\n------',
       `NOTA\n${meta.footerNote}\n\nBuon gioco! \n${meta.signature}`,
     ].join('\n\n'),
   );
@@ -150,6 +158,9 @@ const ICON_KIND: ReadonlyArray<[string, StateEntry['kind']]> = [
   ['⚔️', 'war'],
 ];
 
+/** Lines "Aggiorna i numeri" leaves alone: concluded operations and constructions. */
+const SKIP_REFRESH: readonly string[] = ['✅', '❌', ':white_check_mark:', ':x:', '🏗️'];
+
 /** One change made by {@link refreshOrderNumbers}, to show the officer what moved. */
 export interface NumberChange {
   system: string;
@@ -161,14 +172,15 @@ export interface NumberChange {
  * Refreshes the numbers in parentheses after a bold system name, where the data has newer ones:
  * the influence ("43.6%", with the trend arrow recomputed from the old value) and a conflict's
  * days won ("Close Victory; 2-1"). Lines for systems the data doesn't know, and everything
- * else in the text, stay exactly as written.
+ * else in the text, stay exactly as written. So do concluded lines (✅ ❌: their numbers are the
+ * final ones) and constructions (🏗️: the percentage is the build's progress, not influence).
  */
 export function refreshOrderNumbers(text: string, rows: readonly LineRow[]): { text: string; changes: NumberChange[] } {
   const bySystem = new Map(rows.map(row => [row.systemName.toLowerCase(), row]));
   const changes: NumberChange[] = [];
   const lines = text.split('\n').map(line => {
     const match = /^(.*?\*\*)([^*]+)(\*\*\s*\()([^)]*)(\))(\s*)(⬆️|⬇️|↔️)?/u.exec(line);
-    if (!match) {
+    if (!match || SKIP_REFRESH.some(mark => line.includes(mark))) {
       return line;
     }
     const [whole, head, name, open, inside, close, space, trend] = match;
@@ -201,16 +213,23 @@ export function refreshOrderNumbers(text: string, rows: readonly LineRow[]): { t
 }
 
 /**
- * Puts a block (a system's lines) before the closing "NOTA", where the operations end; at the
- * end of the text when there's no such line. Used by the table's "Aggiungi agli ordini".
+ * Where the operations end: the first heading after them (Cantieri, Note, Operazioni concluse)
+ * or the closing "NOTA", whichever comes first.
  */
-export function insertBeforeFooter(text: string, block: string): string {
-  const footer = /\n(?=NOTA\n)/.exec(text);
-  if (!footer) {
+const AFTER_OPERATIONS = /\n(?=(?:👴|:older_man:) \*\*__CANTIERI|\*\*__NOTE|- \*\*__OPERAZIONI CONCLUSE|NOTA\n)/u;
+
+/**
+ * Puts a block (a system's lines) at the end of the operations, closed by "------" like the
+ * other groups; at the end of the text when there are no sections. Used by the table's
+ * "Aggiungi agli ordini".
+ */
+export function insertAfterOperations(text: string, block: string): string {
+  const at = AFTER_OPERATIONS.exec(text);
+  if (!at) {
     return text.trimEnd() ? `${text.trimEnd()}\n\n${block}\n` : `${block}\n`;
   }
-  const before = text.slice(0, footer.index).trimEnd();
-  return `${before}\n\n${block}\n\n${text.slice(footer.index + 1)}`;
+  const before = text.slice(0, at.index).trimEnd();
+  return `${before}\n\n${block}\n------\n\n${text.slice(at.index + 1)}`;
 }
 
 function escapeHtml(text: string): string {
