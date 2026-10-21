@@ -1,13 +1,12 @@
 /**
  * The Ordini as one text, written like the squadron writes them by hand (in VS Code, until
  * October 2026), with the tool helping where a plain editor can't: real emoji instead of
- * Discord shortcodes, a ready line for a system, the numbers refreshed from the data, a preview
- * that looks like Discord. Pure, so it's tested without a browser; the page is
- * `app/orders/orders-text-editor.component.ts`.
+ * Discord shortcodes, system names spelt right, a preview that looks like Discord. The text is
+ * free: nothing in it is taken from or tied to the table's data (the user's choice of 22 October
+ * 2026). Pure, so it's tested without a browser; the page is `app/orders/orders-text-editor.component.ts`.
  */
-import { BgsRow, conflictIsOver, conflictOutcome, conflictResult, StateEntry } from './bgs';
 import { ORDER_STATUSES, ORDER_TRENDS, ORDER_TYPES } from './order-types';
-import { draftItemFromRow, formatOrdersDate, renderOrderItem } from './orders';
+import { formatOrdersDate } from './orders';
 
 /**
  * Standard Discord shortcodes and their emoji. Discord shows a pasted emoji exactly like the one
@@ -112,104 +111,13 @@ export function setOrdersDate(text: string, date: Date): string {
   return text.replace(DATE_LINE, `$1${formatOrdersDate(date)}`);
 }
 
-type LineRow = Pick<BgsRow, 'systemName' | 'factionInfluence' | 'warState' | 'electionState' | 'stateEntries'>;
-
-/** "Close Victory; 2-1" for a conflict in progress, "vinto, 4-1" once it's over (see CLAUDE.md). */
-export function conflictScoreText(score: { ours: number; theirs: number; ended?: boolean }): string {
-  if (conflictIsOver(score)) {
-    const result = { won: 'vinto', lost: 'perso', drawn: 'pari' }[conflictResult(score.ours, score.theirs)];
-    return `${result}, ${score.ours}-${score.theirs}`;
-  }
-  return `${conflictOutcome(score.ours, score.theirs)}; ${score.ours}-${score.theirs}`;
-}
-
-function scoredEntry(row: Pick<LineRow, 'stateEntries'>, kind?: StateEntry['kind']): StateEntry | undefined {
-  return row.stateEntries.find(entry => entry.score && (kind === undefined || entry.kind === kind));
-}
-
 /**
- * The line(s) for a system, ready to drop into the text: the same as the structured editor's
- * "Aggiungi agli ordini" (type from the row's war or election, influence and traffic light
- * otherwise), with the conflict's score when the data has one. The outcome after "per ACFS >"
- * is left to write.
+ * A system for the text: its name in bold, spelt as the galaxy search spells it. Nothing else
+ * comes from the data — icon, numbers and outcome are written by hand, because the data can be
+ * days behind the game (Crowfor, 22 October 2026: an election underway, the data two days old).
  */
-export function orderLineForRow(row: LineRow): string {
-  const item = draftItemFromRow(row);
-  const kind = item.typeKey === 'war' ? 'war' : item.typeKey === 'election' ? 'election' : null;
-  const entry = kind ? scoredEntry(row, kind) : undefined;
-  const score = entry?.score && !item.pending ? conflictScoreText(entry.score) : item.score;
-  return shortcodesToEmoji(renderOrderItem({ ...item, score }));
-}
-
-/** A line for a system the data doesn't follow: just the bold name, the rest to write. */
 export function orderLineForName(name: string): string {
   return `**${name}** `;
-}
-
-/** The squadron's trend arrows, by how the influence moved: 0-1 points is "stable" (as the legend says). */
-function trendFor(before: number, after: number): string {
-  const delta = after - before;
-  const key = Math.abs(delta) <= 1 ? 'stable' : delta > 0 ? 'up' : 'down';
-  return shortcodesToEmoji(ORDER_TRENDS.find(trend => trend.key === key)!.emoji);
-}
-
-const ICON_KIND: ReadonlyArray<[string, StateEntry['kind']]> = [
-  ['🗳️', 'election'],
-  ['⚔️', 'war'],
-];
-
-/** Lines "Aggiorna i numeri" leaves alone: concluded operations and constructions. */
-const SKIP_REFRESH: readonly string[] = ['✅', '❌', ':white_check_mark:', ':x:', '🏗️'];
-
-/** One change made by {@link refreshOrderNumbers}, to show the officer what moved. */
-export interface NumberChange {
-  system: string;
-  before: string;
-  after: string;
-}
-
-/**
- * Refreshes the numbers in parentheses after a bold system name, where the data has newer ones:
- * the influence ("43.6%", with the trend arrow recomputed from the old value) and a conflict's
- * days won ("Close Victory; 2-1"). Lines for systems the data doesn't know, and everything
- * else in the text, stay exactly as written. So do concluded lines (✅ ❌: their numbers are the
- * final ones) and constructions (🏗️: the percentage is the build's progress, not influence).
- */
-export function refreshOrderNumbers(text: string, rows: readonly LineRow[]): { text: string; changes: NumberChange[] } {
-  const bySystem = new Map(rows.map(row => [row.systemName.toLowerCase(), row]));
-  const changes: NumberChange[] = [];
-  const lines = text.split('\n').map(line => {
-    const match = /^(.*?\*\*)([^*]+)(\*\*\s*\()([^)]*)(\))(\s*)(⬆️|⬇️|↔️)?/u.exec(line);
-    if (!match || SKIP_REFRESH.some(mark => line.includes(mark))) {
-      return line;
-    }
-    const [whole, head, name, open, inside, close, space, trend] = match;
-    const row = bySystem.get(name.trim().toLowerCase());
-    if (!row) {
-      return line;
-    }
-    const percent = /^(\d+(?:[.,]\d+)?)\s*%$/.exec(inside.trim());
-    let next = inside;
-    let nextTrend = trend;
-    if (percent && row.factionInfluence !== null) {
-      next = `${row.factionInfluence.toFixed(1)}%`;
-      if (trend) {
-        nextTrend = trendFor(Number(percent[1].replace(',', '.')), row.factionInfluence);
-      }
-    } else if (/\d+\s*-\s*\d+/.test(inside)) {
-      const kind = ICON_KIND.find(([icon]) => head.includes(icon))?.[1];
-      const entry = scoredEntry(row, kind);
-      if (entry?.score) {
-        next = conflictScoreText(entry.score);
-      }
-    }
-    if (next === inside && nextTrend === trend) {
-      return line;
-    }
-    changes.push({ system: name.trim(), before: inside, after: next });
-    return `${head}${name}${open}${next}${close}${space}${nextTrend ?? ''}${line.slice(whole.length)}`;
-  });
-  return { text: lines.join('\n'), changes };
 }
 
 /**
@@ -219,7 +127,7 @@ export function refreshOrderNumbers(text: string, rows: readonly LineRow[]): { t
 const AFTER_OPERATIONS = /\n(?=(?:👴|:older_man:) \*\*__CANTIERI|\*\*__NOTE|- \*\*__OPERAZIONI CONCLUSE|NOTA\n)/u;
 
 /**
- * Puts a block (a system's lines) at the end of the operations, closed by "------" like the
+ * Puts a block (a system's name) at the end of the operations, closed by "------" like the
  * other groups; at the end of the text when there are no sections. Used by the table's
  * "Aggiungi agli ordini".
  */

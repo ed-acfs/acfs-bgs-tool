@@ -42,7 +42,7 @@ import {
 } from '../../core/bgs';
 import { CONFLICT_MARGIN_POINTS, FACTION_NAME, HOME_SYSTEM, RETREAT_INFLUENCE_PERCENT, SEMAPHORE_THRESHOLDS } from '../../core/config';
 import { influenceSemaphore, marginSemaphore, Semaphore } from '../../core/semaphore';
-import { orderLineForRow } from '../../core/orders-text';
+import { orderLineForName } from '../../core/orders-text';
 import { retreatExpected } from '../../core/retreat';
 import { CloseFaction, alreadyInConflict, closeFactions } from '../../core/close-factions';
 import { HelpDialogComponent } from '../help-dialog/help-dialog.component';
@@ -1193,11 +1193,11 @@ export class BgsTableComponent implements OnDestroy {
   }
 
   /**
-   * Adds this system's lines to the Ordini text, before the closing note — see
-   * {@link orderLineForRow} for how the type is guessed from the row's current state.
+   * Adds this system's name to the Ordini text, at the end of the operations. Only the name:
+   * the rest is written by hand, since the data can be behind the game (see {@link orderLineForName}).
    */
   protected addToOrders(row: BgsRow): void {
-    this.ordersStore.addTextBlock(orderLineForRow(row));
+    this.ordersStore.addTextBlock(orderLineForName(row.systemName).trimEnd());
   }
 
   protected toggleLegend(): void {

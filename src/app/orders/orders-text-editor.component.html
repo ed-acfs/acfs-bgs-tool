@@ -62,20 +62,9 @@
             <mat-option [value]="system">{{ system }}</mat-option>
           }
         </mat-autocomplete>
-        <mat-hint>Scrive la riga del sistema (icona, influenza o punteggio) nel punto del testo dove hai lasciato il cursore</mat-hint>
+        <mat-hint>Scrive il nome in grassetto, con l'ortografia esatta, dove hai lasciato il cursore nel testo</mat-hint>
       </mat-form-field>
-      <button mat-flat-button type="button" [disabled]="refreshing()" (click)="refreshNumbers()">Aggiorna i numeri</button>
     </section>
-
-    @if (refreshResult(); as result) {
-      <section class="orders-text-refresh" role="status">
-        <span>{{ result.message }}</span>
-        @for (change of result.changes; track $index) {
-          <span class="orders-text-change"><strong>{{ change.system }}</strong> {{ change.before }} → {{ change.after }}</span>
-        }
-        <button mat-button type="button" (click)="refreshResult.set(null)">Chiudi</button>
-      </section>
-    }
 
     <section class="orders-text-emoji" aria-label="Inserisci emoji">
       @for (group of emojiGroups; track group.label) {

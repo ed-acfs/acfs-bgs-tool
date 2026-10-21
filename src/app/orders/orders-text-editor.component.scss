@@ -95,22 +95,6 @@ h2 {
   flex: 1 1 320px;
 }
 
-.orders-text-refresh {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 14px;
-  margin: 0 0 12px;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  background: var(--color-surface-2);
-}
-
-.orders-text-change {
-  white-space: nowrap;
-}
-
 /* The emoji bar: big enough to hit, grouped so 🟢 and ⬆️ aren't hunted for. */
 .orders-text-emoji {
   display: flex;

@@ -10,17 +10,7 @@ import { AuthService } from '../auth.service';
 import { BgsService } from '../bgs.service';
 import { HelpDialogComponent, HelpDialogData } from '../help-dialog/help-dialog.component';
 import { formatOrdersDate, parseIsoDay } from '../../core/orders';
-import {
-  EMOJI_GROUPS,
-  NumberChange,
-  orderLineForName,
-  orderLineForRow,
-  ordersSkeleton,
-  refreshOrderNumbers,
-  renderDiscordPreview,
-  setOrdersDate,
-  shortcodesToEmoji,
-} from '../../core/orders-text';
+import { EMOJI_GROUPS, orderLineForName, ordersSkeleton, renderDiscordPreview, setOrdersDate, shortcodesToEmoji } from '../../core/orders-text';
 import { OrdersStore } from './orders.store';
 
 /** Same cadence as the main table's distance search — see `bgs-table.component.ts`. */
@@ -29,8 +19,9 @@ const SUGGESTION_MIN_LENGTH = 3;
 
 /**
  * The Ordini written as one text, like in VS Code, with the tool's help on top: real emoji (a
- * typed `:green_circle:` becomes 🟢), an emoji bar, a ready line for a system, the numbers
- * refreshed from the data and a Discord-like preview beside the text. For officers; the draft is
+ * typed `:green_circle:` becomes 🟢), an emoji bar, system names spelt right and a Discord-like
+ * preview beside the text. Nothing is taken from the table's data: the data can be days behind
+ * the game, the officer writing the orders isn't. For officers; the draft is
  * the one shared on the squadron server (see {@link OrdersStore}). The members' page is
  * suspended while this is being tried out, so there's no "Pubblica" here.
  */
@@ -61,9 +52,6 @@ export class OrdersTextEditorComponent implements OnInit {
   protected readonly systemSearchControl = new FormControl('', { nonNullable: true });
   protected readonly systemSuggestions = signal<string[]>([]);
   protected readonly copyConfirmed = signal(false);
-  protected readonly refreshing = signal(false);
-  /** What the last "Aggiorna i numeri" changed, or why it couldn't. */
-  protected readonly refreshResult = signal<{ changes: NumberChange[]; message: string } | null>(null);
 
   private searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
   private lastSuggestionQuery: string | null = null;
@@ -173,44 +161,11 @@ export class OrdersTextEditorComponent implements OnInit {
     }
   }
 
-  /** A system picked in the search: its ready line if the data follows it, else just the bold name. */
-  protected async insertSystem(event: MatAutocompleteSelectedEvent): Promise<void> {
-    const name = String(event.option.value);
-    let block = orderLineForName(name);
-    try {
-      const rows = await this.bgsService.getAllRows();
-      const row = rows.find(candidate => candidate.systemName.toLowerCase() === name.toLowerCase());
-      if (row) {
-        block = orderLineForRow(row);
-      }
-    } catch {
-      // No data: the bold name is still a start.
-    }
-    this.insertBlock(block);
+  /** A system picked in the search: its name in bold, where the cursor was. */
+  protected insertSystem(event: MatAutocompleteSelectedEvent): void {
+    this.insertBlock(orderLineForName(String(event.option.value)));
     this.systemSearchControl.setValue('');
     this.systemSuggestions.set([]);
-  }
-
-  protected async refreshNumbers(): Promise<void> {
-    if (this.refreshing()) {
-      return;
-    }
-    this.refreshing.set(true);
-    try {
-      const rows = await this.bgsService.getAllRows();
-      const { text, changes } = refreshOrderNumbers(this.store.text(), rows);
-      if (changes.length > 0) {
-        this.store.setText(text);
-      }
-      this.refreshResult.set({
-        changes,
-        message: changes.length > 0 ? `Aggiornate ${changes.length} righe:` : 'I numeri nel testo sono già quelli dei dati.',
-      });
-    } catch {
-      this.refreshResult.set({ changes: [], message: 'Dati dei sistemi non disponibili: riprova più tardi.' });
-    } finally {
-      this.refreshing.set(false);
-    }
   }
 
   protected restartFromSkeleton(): void {
