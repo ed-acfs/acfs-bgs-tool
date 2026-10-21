@@ -10,7 +10,13 @@ import { OrdersDoc } from '../orders/orders.store';
  * "Ordini" for the members (Membro Flotta, Cadetto) and the officers: the last orders the
  * officers published, laid out to be read — on a phone too — instead of the Discord Markdown.
  * Italian only, like the editor. The server checks the role (`/auth/orders/published`).
+ *
+ * Suspended since 22 October 2026 (see {@link MEMBERS_PAGE_SUSPENDED}): nobody sees it while the
+ * editor is rebuilt as a text editor, which no longer fills the structured items this page shows.
  */
+/** The user's choice of 22 October 2026: no members' page while the new editor is tried out. */
+const MEMBERS_PAGE_SUSPENDED = true;
+
 @Component({
   selector: 'app-orders-reader',
   imports: [MatButtonModule, RouterLink],
@@ -20,7 +26,9 @@ import { OrdersDoc } from '../orders/orders.store';
 })
 export class OrdersReaderComponent implements OnInit {
   protected readonly auth = inject(AuthService);
-  protected readonly state = signal<'loading' | 'ready' | 'empty' | 'forbidden' | 'error'>('loading');
+  protected readonly state = signal<'loading' | 'ready' | 'empty' | 'forbidden' | 'error' | 'suspended'>(
+    MEMBERS_PAGE_SUSPENDED ? 'suspended' : 'loading',
+  );
   protected readonly doc = signal<OrdersDoc | null>(null);
   protected readonly view = computed<OrdersView | null>(() => {
     const data = this.doc()?.data;
@@ -45,6 +53,9 @@ export class OrdersReaderComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.auth.load();
+    if (MEMBERS_PAGE_SUSPENDED) {
+      return;
+    }
     const session = this.auth.session();
     if (!session || !SERVER_API_URL) {
       this.state.set('forbidden');

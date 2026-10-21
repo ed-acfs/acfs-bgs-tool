@@ -1,0 +1,214 @@
+:host {
+  display: block;
+}
+
+.orders-text-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+
+  h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    color: var(--color-accent);
+  }
+}
+
+h2 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  color: var(--color-text-2);
+}
+
+.orders-text-beta {
+  margin-left: 6px;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  vertical-align: middle;
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning);
+}
+
+.orders-text-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.orders-text-title-actions,
+.orders-text-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.orders-text-gate {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 420px;
+}
+
+.orders-text-sync {
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+
+  &--warn {
+    color: var(--color-warning);
+  }
+}
+
+.orders-text-conflict {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 16px;
+  padding: 12px;
+  border: 1px solid var(--color-warning);
+  border-radius: 6px;
+
+  p {
+    flex-basis: 100%;
+    margin: 0;
+  }
+}
+
+.orders-text-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+
+  button {
+    margin-top: 8px;
+  }
+}
+
+.orders-text-search {
+  flex: 1 1 320px;
+}
+
+/* The emoji bar: big enough to hit, grouped so 🟢 and ⬆️ aren't hunted for. */
+.orders-text-emoji {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-bottom: 12px;
+}
+
+.orders-text-emoji-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.orders-text-emoji-label {
+  margin-right: 4px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.orders-text-emoji-button {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 4px;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  border: 1px solid var(--color-border-muted);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text);
+
+  &:hover {
+    background: var(--color-surface-hover);
+  }
+}
+
+/* Text and preview side by side; one above the other on a narrow screen. */
+.orders-text-panes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.orders-text-pane {
+  min-width: 0;
+}
+
+.orders-text-editor,
+.orders-text-preview {
+  box-sizing: border-box;
+  width: 100%;
+  height: 70vh;
+  min-height: 360px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  overflow: auto;
+}
+
+.orders-text-editor {
+  resize: vertical;
+  font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-surface);
+  tab-size: 2;
+}
+
+/* Close to Discord's dark message look, so the preview reads like the posted report. */
+.orders-text-preview {
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: #dbdee1;
+  background: #313338;
+  overflow-wrap: anywhere;
+
+  ::ng-deep .dc-h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 6px 0 2px;
+  }
+
+  ::ng-deep .dc-h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 6px 0 2px;
+  }
+
+  ::ng-deep .dc-h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 4px 0 2px;
+  }
+
+  ::ng-deep .dc-li::before {
+    content: '•';
+    margin: 0 8px 0 4px;
+  }
+
+  ::ng-deep .dc-blank {
+    height: 0.7em;
+  }
+
+  ::ng-deep .dc-mention {
+    padding: 0 2px;
+    border-radius: 3px;
+    color: #c9cdfb;
+    background: rgb(88 101 242 / 30%);
+  }
+}

@@ -15,7 +15,7 @@ import { TallyKeyDialogComponent } from '../tally-key-dialog/tally-key-dialog.co
  * Nell'intestazione: "Accedi con Discord", oppure chi è collegato con un menu. Compare solo se il
  * server dello Squadrone risponde e ha l'accesso configurato; altrimenti niente, e il tool resta
  * quello di sempre. Gli strumenti dello Squadrone stanno nel suo menu, solo in italiano: gli Ordini
- * per membri (lettura) e ufficiali (editor), Attività per membri e ufficiali, Chiavi dei piloti per gli ufficiali.
+ * per gli ufficiali (la lettura per i membri è sospesa), Attività per membri e ufficiali, Chiavi dei piloti per gli ufficiali.
  */
 @Component({
   selector: 'app-account',
@@ -31,8 +31,10 @@ import { TallyKeyDialogComponent } from '../tally-key-dialog/tally-key-dialog.co
       <mat-menu #accountMenu="matMenu">
         <p class="account-level">{{ i18n.t(session.officer ? 'account.officer' : session.member ? 'account.member' : 'account.connected') }}</p>
         @if ((session.officer || session.member) && i18n.isItalian()) {
-          <!-- Gli ufficiali scrivono gli Ordini, i membri li leggono. -->
-          <a mat-menu-item [routerLink]="session.officer ? '/ordini' : '/ordini/pubblicati'"><fa-icon [icon]="faClipboardList" aria-hidden="true"></fa-icon> Ordini</a>
+          <!-- Gli ufficiali scrivono gli Ordini; la pagina di lettura dei membri è sospesa dal 22 ottobre 2026. -->
+          @if (session.officer) {
+            <a mat-menu-item routerLink="/ordini"><fa-icon [icon]="faClipboardList" aria-hidden="true"></fa-icon> Ordini</a>
+          }
           <a mat-menu-item routerLink="/activity"><fa-icon [icon]="faChartColumn" aria-hidden="true"></fa-icon> Attività (beta)</a>
         }
         @if (session.officer && i18n.isItalian()) {

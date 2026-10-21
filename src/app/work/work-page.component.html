@@ -2,7 +2,9 @@
   <div class="work-title-row">
     <h1>Attività dello Squadrone <span class="work-beta">beta</span></h1>
     <div class="work-title-actions">
-      <a mat-stroked-button routerLink="/ordini">Ordini</a>
+      @if (auth.session()?.officer) {
+        <a mat-stroked-button routerLink="/ordini">Ordini</a>
+      }
       <a mat-stroked-button routerLink="/">&larr; Torna alla tabella</a>
     </div>
   </div>

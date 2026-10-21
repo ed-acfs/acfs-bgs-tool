@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -69,7 +69,6 @@ const SECTION_OPTIONS: { value: OrderSection; label: string }[] = [
 export class OrdersPageComponent implements OnInit {
   protected readonly store = inject(OrdersStore);
   protected readonly auth = inject(AuthService);
-  private readonly router = inject(Router);
   private readonly bgsService = inject(BgsService);
   private readonly dialog = inject(MatDialog);
 
@@ -110,9 +109,6 @@ export class OrdersPageComponent implements OnInit {
     const session = this.auth.session();
     if (session?.officer) {
       await this.store.load();
-    } else if (session?.member) {
-      // Members read the published orders; the editor isn't for them.
-      void this.router.navigate(['/ordini/pubblicati'], { replaceUrl: true });
     }
   }
 

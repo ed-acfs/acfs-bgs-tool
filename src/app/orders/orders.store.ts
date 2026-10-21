@@ -13,8 +13,10 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { SERVER_API_URL, STORAGE_PREFIX } from '../../core/config';
 import { createOrderItem, OrderItem, OrdersDraft, parseIsoDay, renderOrdersMarkdown, resolveOrdersDay } from '../../core/orders';
+import { insertAfterOperations, ordersSkeleton, shortcodesToEmoji } from '../../core/orders-text';
 
 const ITEMS_KEY = `${STORAGE_PREFIX}orders-items:v1`;
+const TEXT_KEY = `${STORAGE_PREFIX}orders-text:v1`;
 const META_KEY = `${STORAGE_PREFIX}orders-meta:v1`;
 const DAY_KEY = `${STORAGE_PREFIX}orders-day:v1`;
 /** Wait after the last change before saving, so typing doesn't send a request per key. */
@@ -32,6 +34,11 @@ export interface OrdersData {
   items: OrderItem[];
   meta: OrdersMeta;
   day: string;
+  /**
+   * The report as one text, for the text editor (October 2026). Absent in drafts saved before
+   * it: the editor then starts from the structured items, rendered (see {@link OrdersStore.ensureText}).
+   */
+  text?: string;
 }
 
 /** A saved version on the server, with who saved it. */
@@ -85,6 +92,7 @@ async function request(method: 'GET' | 'PUT' | 'POST', path: string, body?: unkn
 @Injectable({ providedIn: 'root' })
 export class OrdersStore {
   private readonly itemsSignal = signal<OrderItem[]>(readJson(ITEMS_KEY, []));
+  private readonly textSignal = signal<string>(readJson(TEXT_KEY, ''));
   private readonly metaSignal = signal<OrdersMeta>(readJson(META_KEY, DEFAULT_META));
   /** `YYYY-MM-DD`: the day the orders are for — tomorrow unless someone picked another (see {@link resolveOrdersDay}). */
   private readonly daySignal = signal<string>(resolveOrdersDay(readJson<string | null>(DAY_KEY, null), new Date()));
@@ -94,6 +102,7 @@ export class OrdersStore {
   private readonly conflictSignal = signal<OrdersDoc | null>(null);
 
   readonly items = this.itemsSignal.asReadonly();
+  readonly text = this.textSignal.asReadonly();
   readonly meta = this.metaSignal.asReadonly();
   readonly day = this.daySignal.asReadonly();
   readonly sync = this.syncSignal.asReadonly();
@@ -128,7 +137,7 @@ export class OrdersStore {
       if (doc.data) {
         this.adopt(doc);
         this.syncSignal.set('saved');
-      } else if (this.itemsSignal().length > 0) {
+      } else if (this.itemsSignal().length > 0 || this.textSignal().trim()) {
         // No shared draft yet: this browser's becomes it.
         this.syncSignal.set('pending');
         await this.save();
@@ -166,6 +175,40 @@ export class OrdersStore {
       throw new Error(`HTTP ${response.status}`);
     }
     return (await response.json()) as OrdersDoc;
+  }
+
+  setText(text: string): void {
+    this.textSignal.set(text);
+    writeJson(TEXT_KEY, text);
+    this.changed();
+  }
+
+  /**
+   * Gives the text editor something to start from when the draft has no text yet: the structured
+   * draft rendered (with real emoji), or an empty report for the day.
+   */
+  ensureText(): void {
+    if (this.textSignal().trim()) {
+      return;
+    }
+    const date = parseIsoDay(this.daySignal()) ?? new Date();
+    this.setText(this.itemsSignal().length > 0 ? shortcodesToEmoji(this.markdown()) : ordersSkeleton(date, this.metaSignal()));
+  }
+
+  /**
+   * Adds a system's lines to the text, at the end of the operations — the table's "Aggiungi agli
+   * ordini". Like {@link addDraftItem}, the shared draft is loaded first.
+   */
+  addTextBlock(block: string): void {
+    const add = () => {
+      this.ensureText();
+      this.setText(insertAfterOperations(this.textSignal(), block));
+    };
+    if (this.loaded) {
+      add();
+    } else {
+      void this.load().then(add);
+    }
   }
 
   addItem(section: OrderItem['section'], typeKey: string): OrderItem {
@@ -224,12 +267,14 @@ export class OrdersStore {
   }
 
   private data(): OrdersData {
-    return { items: this.itemsSignal(), meta: this.metaSignal(), day: this.daySignal() };
+    return { items: this.itemsSignal(), meta: this.metaSignal(), day: this.daySignal(), text: this.textSignal() };
   }
 
   private adopt(doc: OrdersDoc): void {
     const data = doc.data!;
     this.itemsSignal.set(data.items ?? []);
+    this.textSignal.set(data.text ?? '');
+    writeJson(TEXT_KEY, this.textSignal());
     this.metaSignal.set({ ...DEFAULT_META, ...data.meta });
     this.daySignal.set(resolveOrdersDay(data.day ?? null, new Date()));
     this.savedSignal.set({ at: doc.updated_at ?? null, by: doc.updated_by ?? null });

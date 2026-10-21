@@ -1,0 +1,110 @@
+<div class="orders-text-container">
+  <div class="orders-text-title-row">
+    <h1>Ordini Ufficiali <span class="orders-text-beta">bozza</span></h1>
+    <div class="orders-text-title-actions">
+      <a mat-stroked-button routerLink="/">&larr; Torna alla tabella</a>
+      @if (isOfficer()) {
+        <a mat-stroked-button routerLink="/ordini/moduli">Vecchio editor</a>
+        <a mat-stroked-button routerLink="/activity">Attività (beta)</a>
+      }
+      <button mat-stroked-button type="button" (click)="openHelp()">Come funziona?</button>
+    </div>
+  </div>
+
+  @if (!isOfficer()) {
+    <section class="orders-text-gate">
+      @if (auth.session() === undefined) {
+        <p>Caricamento…</p>
+      } @else if (auth.session(); as session) {
+        <p>
+          Sei collegato come {{ session.user.display_name }}. L'editor degli Ordini è per gli ufficiali; la pagina degli Ordini per
+          i membri è sospesa mentre l'editor viene rifatto.
+        </p>
+      } @else {
+        <p>L'editor degli Ordini è per gli ufficiali dello Squadrone: accedi con Discord.</p>
+        @if (auth.available()) {
+          <button mat-flat-button type="button" (click)="auth.login()">Accedi con Discord</button>
+        }
+      }
+    </section>
+  } @else {
+    <p class="orders-text-sync" [class.orders-text-sync--warn]="store.sync() === 'conflict' || store.sync() === 'error'" role="status">
+      {{ syncLabel() }}
+    </p>
+    @if (store.conflict(); as theirs) {
+      <section class="orders-text-conflict" role="alert">
+        <p>
+          La bozza è stata salvata{{ theirs.updated_by ? ' da ' + theirs.updated_by : '' }} dopo che l'avevi aperta. Scegli quale
+          versione tenere:
+        </p>
+        <button mat-flat-button type="button" (click)="store.takeTheirs()">Prendi la sua (perdi le tue modifiche)</button>
+        <button mat-stroked-button type="button" (click)="store.keepMine()">Tieni la mia (sostituisce la sua)</button>
+      </section>
+    }
+
+    <section class="orders-text-tools">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Ordini del</mat-label>
+        <input matInput type="date" [value]="store.day()" (change)="setDay($any($event.target).value)" />
+        <mat-hint>{{ inGameDate() }}, cambia anche la data nel testo</mat-hint>
+      </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="orders-text-search">
+        <mat-label>Aggiungi un sistema al testo</mat-label>
+        <input
+          matInput
+          [formControl]="systemSearchControl"
+          [matAutocomplete]="systemAuto"
+          (input)="onSystemSearchInput()"
+          placeholder="Nome sistema…"
+        />
+        <mat-autocomplete #systemAuto="matAutocomplete" (optionSelected)="insertSystem($event)">
+          @for (system of systemSuggestions(); track system) {
+            <mat-option [value]="system">{{ system }}</mat-option>
+          }
+        </mat-autocomplete>
+        <mat-hint>Scrive il nome in grassetto, con l'ortografia esatta, dove hai lasciato il cursore nel testo</mat-hint>
+      </mat-form-field>
+    </section>
+
+    <section class="orders-text-emoji" aria-label="Inserisci emoji">
+      @for (group of emojiGroups; track group.label) {
+        <div class="orders-text-emoji-group">
+          <span class="orders-text-emoji-label">{{ group.label }}</span>
+          @for (button of group.buttons; track button.insert) {
+            <button
+              type="button"
+              class="orders-text-emoji-button"
+              (mousedown)="$event.preventDefault()"
+              (click)="insert(button.insert)"
+              [title]="button.label"
+              [attr.aria-label]="button.label"
+            >{{ button.display }}</button>
+          }
+        </div>
+      }
+    </section>
+
+    <div class="orders-text-panes">
+      <div class="orders-text-pane">
+        <h2>Testo</h2>
+        <textarea
+          #editor
+          class="orders-text-editor"
+          spellcheck="false"
+          [value]="store.text()"
+          (input)="onInput(editor)"
+          aria-label="Testo degli Ordini"
+        ></textarea>
+      </div>
+      <div class="orders-text-pane">
+        <h2>Come appare su Discord</h2>
+        <div class="orders-text-preview" [innerHTML]="preview()"></div>
+      </div>
+    </div>
+
+    <section class="orders-text-actions">
+      <button mat-flat-button type="button" (click)="copy()">{{ copyConfirmed() ? 'Copiato!' : 'Copia per Discord' }}</button>
+      <button mat-stroked-button type="button" (click)="restartFromSkeleton()">Riparti da un report vuoto</button>
+    </section>
+  }
+</div>
