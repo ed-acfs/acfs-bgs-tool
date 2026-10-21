@@ -10,6 +10,9 @@
   </div>
 
   @switch (state()) {
+    @case ('suspended') {
+      <p class="reader-note">La pagina degli Ordini per i membri è sospesa mentre gli ufficiali provano un nuovo editor. Gli Ordini restano su Discord.</p>
+    }
     @case ('loading') {
       <p class="reader-note">Caricamento…</p>
     }

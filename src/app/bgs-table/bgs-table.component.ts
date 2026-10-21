@@ -42,7 +42,7 @@ import {
 } from '../../core/bgs';
 import { CONFLICT_MARGIN_POINTS, FACTION_NAME, HOME_SYSTEM, RETREAT_INFLUENCE_PERCENT, SEMAPHORE_THRESHOLDS } from '../../core/config';
 import { influenceSemaphore, marginSemaphore, Semaphore } from '../../core/semaphore';
-import { draftItemFromRow } from '../../core/orders';
+import { orderLineForRow } from '../../core/orders-text';
 import { retreatExpected } from '../../core/retreat';
 import { CloseFaction, alreadyInConflict, closeFactions } from '../../core/close-factions';
 import { HelpDialogComponent } from '../help-dialog/help-dialog.component';
@@ -1193,12 +1193,11 @@ export class BgsTableComponent implements OnDestroy {
   }
 
   /**
-   * Starts an Ordini Ufficiali draft for this system — see {@link draftItemFromRow} for how
-   * the type is guessed from the row's current state. Lands in the cart at /ordini, behind
-   * its own passphrase gate if not already unlocked this session.
+   * Adds this system's lines to the Ordini text, before the closing note — see
+   * {@link orderLineForRow} for how the type is guessed from the row's current state.
    */
   protected addToOrders(row: BgsRow): void {
-    this.ordersStore.addDraftItem(draftItemFromRow(row));
+    this.ordersStore.addTextBlock(orderLineForRow(row));
   }
 
   protected toggleLegend(): void {

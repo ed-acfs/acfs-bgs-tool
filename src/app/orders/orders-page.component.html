@@ -4,7 +4,7 @@
     <div class="orders-title-actions">
       <a mat-stroked-button routerLink="/">&larr; Torna alla tabella</a>
       @if (isOfficer()) {
-        <a mat-stroked-button routerLink="/ordini/pubblicati">Vista dei membri</a>
+        <a mat-stroked-button routerLink="/ordini">Nuovo editor a testo</a>
         <a mat-stroked-button routerLink="/activity">Attività (beta)</a>
       }
       <button mat-stroked-button type="button" (click)="openHelp()">Come funziona?</button>
@@ -16,11 +16,7 @@
       @if (auth.session() === undefined) {
         <p>Caricamento…</p>
       } @else if (auth.session(); as session) {
-        @if (session.member) {
-          <p>Gli Ordini per i membri sono in <a routerLink="/ordini/pubblicati">questa pagina</a>.</p>
-        } @else {
-          <p>Sei collegato come {{ session.user.display_name }}: gli Ordini sono per i membri dello Squadrone.</p>
-        }
+        <p>Sei collegato come {{ session.user.display_name }}: l'editor degli Ordini è per gli ufficiali.</p>
       } @else {
         <p>Gli Ordini sono per i membri dello Squadrone: accedi con Discord per leggerli.</p>
         @if (auth.available()) {
@@ -227,9 +223,6 @@
       <textarea class="orders-preview-text" readonly rows="16">{{ store.markdown() }}</textarea>
       <div class="orders-preview-actions">
         <button mat-flat-button type="button" (click)="copyMarkdown()">{{ copyConfirmed() ? 'Copiato!' : 'Copia' }}</button>
-        <button mat-flat-button type="button" [disabled]="publishing() || store.sync() === 'conflict'" (click)="publish()">
-          Pubblica per i membri
-        </button>
         <button mat-stroked-button type="button" (click)="clearAll()">Svuota tutto</button>
         @if (publishMessage(); as message) {
           <span class="orders-section-message" role="status">{{ message }}</span>
