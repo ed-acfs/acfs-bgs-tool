@@ -10,6 +10,8 @@ Rispondi in italiano su questo progetto.
 
 In cima a `ROADMAP.md` c'è **"Stato in breve"**: una tabella con lo stato di ogni fase. Va letta prima di proporre qualcosa o di dire che una cosa "è da fare", e aggiornata nello stesso commit di ogni modifica che cambia lo stato di una fase. Richiesta dell'utente del 22 ottobre 2026, dopo che Claude ha parlato del database come di una cosa ancora da fare quando la fase 10 era in produzione dal 18 ottobre: "perdiamo tempo tornando sempre sulle stesse cose".
 
+Lo stesso vale per **le singole voci**: quando una cosa è fatta, segnarla nella roadmap (`- [x]`, oppure "fatto il …" nel titolo della voce, con versione o commit) nello stesso commit del lavoro, anche se sta in un altro repo (`acfs-server`, sito). Richiesta dell'utente del 23 ottobre 2026, dopo aver trovato voci fatte ancora aperte (es. eventi Discord, favicon dell'API, la domanda sul canale Discord).
+
 ## Come proporre
 
 Proporre le soluzioni tecniche con pro e contro, consigliare la migliore secondo le richieste dell'utente e applicarla. **Non basare proposte o conclusioni su quali strumenti usano l'utente o singoli piloti** (es. "tu non usi BGS-Tally, quindi non ti serve"): l'utente comanda uno Squadrone di circa 200 persone e decide lui chi fa cosa (indicazione del 22 ottobre 2026).
