@@ -2,6 +2,13 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
+## [1.5.7-beta] - 2026-10-24 — Scheda del punteggio con i colori di Inara
+
+Versione di prova (`-beta`): l'editor degli Ordini non è ancora definitivo.
+
+- **Scheda del punteggio dei conflitti** (clic sulle icone dello Stato): come in Inara, lo sfondo di ciascun lato segue l'**esito** e non più il lato. Blu tenue per chi è avanti o ha vinto, rosso tenue per chi è indietro o ha perso, grigio tenue in caso di pari. Prima Flotta Stellare era sempre su blu e l'avversario sempre su rosso, anche quando eravamo noi a perdere.
+- La scritta della vittoria ("Close Victory", "Vinto"…) prende il **blu di Inara** (`#6dabea`) al posto del verde. Gli sfondi restano i nostri, più tenui di quelli di Inara: scelta dell'utente, per leggibilità.
+
 ## [1.5.6-beta] - 2026-10-22 — Ordini: editor a testo in prova; pagina dei membri sospesa
 
 Versione di prova (`-beta`): l'editor degli Ordini non è ancora definitivo.

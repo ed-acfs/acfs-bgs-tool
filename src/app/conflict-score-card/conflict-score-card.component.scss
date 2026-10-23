@@ -1,4 +1,6 @@
-// Like Inara's conflict card: us on the left (blue), them on the right (red), days won in the middle.
+// Like Inara's conflict card: us on the left, them on the right, days won in the middle. As in Inara
+// the background follows the outcome, not the side (blue for whoever is ahead, red for whoever is
+// behind, neutral when level), but in our softer tints.
 .score-card {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -18,13 +20,21 @@
   color: var(--color-text-2);
 }
 
-.side--ours {
+.side--theirs {
+  text-align: right;
+}
+
+.side[data-outcome='ahead'] {
   background: color-mix(in srgb, var(--color-info) 18%, transparent);
 }
 
-.side--theirs {
-  text-align: right;
+.side[data-outcome='behind'] {
   background: color-mix(in srgb, var(--color-danger) 18%, transparent);
+}
+
+// Neutral but clearly lighter than the dialog behind it, or a level card loses its edges.
+.side[data-outcome='level'] {
+  background: color-mix(in srgb, var(--color-text-bright) 12%, transparent);
 }
 
 .faction {
@@ -39,8 +49,9 @@
   letter-spacing: 0.02em;
 }
 
+// The victory blue of Inara's conflict card (24 Oct 2026); backgrounds stay our softer ones.
 [data-outcome='ahead'] > .outcome {
-  color: var(--color-success);
+  color: #6dabea;
 }
 
 [data-outcome='behind'] > .outcome {
