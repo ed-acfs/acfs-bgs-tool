@@ -22,7 +22,7 @@ Da leggere prima di proporre qualcosa o di dire che è "da fare", e da aggiornar
 | 10b. Classifiche del lavoro | Decise; Attività (beta) aperta ai membri dal 20 ottobre 2026 | Periodi, campagne, categorie |
 | 11. Plugin EDMC | Messo a piano | Tutto |
 | 12. Storico delle influenze | **Fatta il 25 ottobre 2026** (1.6.0-beta; `/v1/history` sul server) | Lo storico cresce da solo; in seguito eventualmente 90 giorni nel grafico |
-| Colony Plotter | **Prossimo lavoro**: obiettivo della settimana dal 26 ottobre 2026; in un **repo separato** | Tutto |
+| 13. Colony Plotter | **Avviata il 25 ottobre 2026**: progetto deciso, si parte dal motore degli Obiettivi | Obiettivi, Ponte, Cantieri (vedi fase 13) |
 
 **Da Spansh vengono ancora**: stazioni, popolazione e servizi, e i dati di riserva quando il server non risponde. Il tool li scarica col suo workflow (`bgs.json`); dal 23 ottobre 2026 il server li scarica anche da sé ogni ora, e da lì prende l'elenco dei sistemi da seguire.
 
@@ -350,6 +350,24 @@ Idea dal tool dei Canonn (commit `f90f4b7` del 15 ottobre e `50b2a23` del 25 ott
 - [x] **Grafico del sistema** (clic sul mini-grafico): influenza di tutte le fazioni su 30 giorni (o 90), con medie tratteggiate, legenda per accendere e spegnere le fazioni, lettura al passaggio del mouse e con le frecce; **trascinando si ingrandisce**, con un pulsante per tornare indietro; guerre ed elezioni come **bande colorate**, e al passaggio quelle in corso con punteggio o esito (secondo le regole del punteggio di `CLAUDE.md`). Flotta Stellare in arancione, come nel grafico Fazioni.
 - [x] Indirizzo del server con lo storico di tutti i sistemi in una richiesta: `/v1/history` (`acfs-server`, `history.mjs`), solo Flotta Stellare e un punto per ogni cambio di influenza, circa 10 kB compressi per 242 sistemi il 25 ottobre 2026; il grafico usa `/v1/systems/<id64>`, che ora dà anche i conflitti di ogni osservazione. Le medie tratteggiate dei Canonn non ci sono (il nostro server non le calcola). Resta aperto quante osservazioni tenere per giorno (oggi tutte: si lega allo "Spazio sul server").
 - [x] Legenda e Guida nelle tre lingue.
+
+### 13. Colony Plotter (avviata il 25 ottobre 2026)
+
+Obiettivo dell'utente: "un bel prodotto una volta finito", non uno strumento costruito attorno alla prossima operazione dello Squadrone (che partirà da HIP 21437, anche banco di prova del motore). Nasce dal Colony Finder dei Canonn (vedi "Ecosistema di strumenti" nelle idee).
+
+**Cosa fa il Colony Finder dei Canonn** (analizzato il 25 ottobre 2026, [pagina](https://canonn-science.github.io/canonn_colony_finder/), repo senza licenza: solo l'idea): uno script Python legge una volta l'archivio della galassia di Spansh (117 GB) e pubblica una tabella statica di circa 4.700 sistemi, aggiornata a mano (ultima il 10 ottobre). Punti di partenza: i sistemi con almeno una stazione controllata da Canonn o CDSR. Obiettivi: entro 15 ly, popolazione 0, nessuna fazione, "interessanti" (più di 40 corpi, oppure corpi rari: stelle particolari, Earth-like, Water world, Ammonia world, giganti gassosi con vita, segnali biologici, voci del Codex). Pagina: sistema, contatto da cui partire, architetto se reclamato, corpi interessanti, distanza da un sistema a scelta, filtri e link. Non fa il ponte, non collega il BGS, non si aggiorna da solo.
+
+**Verificato su Spansh il 25 ottobre 2026**: (1) la ricerca dei sistemi (`/api/systems/search` con `reference_system` e filtro `distance`) restituisce anche i sistemi disabitati con l'elenco dei corpi e lo stato della colonizzazione (`is_colonised`, `is_being_colonised`): attorno a HIP 21437 (nostro, 4 stazioni) 27 sistemi entro 15 ly. Quindi **l'archivio da 117 GB non serve**: bastano poche ricerche attorno alle nostre stazioni, dal server. (2) Spansh ha un Colonisation Plotter interrogabile (`POST /api/colonisation/route` con `source_system` e `destination_system`, risposta in coda: `/api/results/<job>`), che dà la catena di salti di al massimo 15 ly; da HIP 21437 ha risposto in circa un minuto, con `incomplete: true` da capire.
+
+**Regole del gioco** (dall'utente, 25 ottobre 2026; vedi anche `CLAUDE.md`, "Fazioni di un sistema colonizzato"): ogni stazione ha il Contatto di Colonizzazione; raggio 15 ly; il sistema nuovo prende 60% la fazione della stazione di partenza, 20% chi controlla il sistema (o la seconda fazione), 13% la fazione dello Squadrone, 6% un'Anarchy vicina. Per noi conta quindi partire da una **stazione controllata da Flotta Stellare**.
+
+**Obiettivi interessanti per noi** (dall'utente, 25 ottobre 2026): Earth-like, Water world, sistemi con **due o più stelle**; i criteri dei Canonn sono "certamente in linea coi nostri".
+
+**Progetto deciso** (proposto da Claude, accettato dall'utente il 25 ottobre 2026):
+- Repo a parte [`ed-acfs/acfs-colony-plotter`](https://github.com/ed-acfs/acfs-colony-plotter) per il motore (**creato il 25 ottobre 2026, pubblico** per scelta dell'utente: non contiene segreti); i risultati li espone `acfs-server`; una sezione **"Colonizzazione"** nel tool li mostra, riusando accesso con Discord, tre lingue, stile e registro degli architetti.
+- [ ] **Obiettivi** (**motore fatto il 25 ottobre 2026** in `acfs-colony-plotter`, provato su HIP 21437 e Col 285 Sector ZZ-Y d43; mancano il calcolo giornaliero sul server e la sezione nel tool): punti di partenza = stazioni controllate da Flotta Stellare (265, senza insediamenti di Odyssey, che non hanno il Contatto), ricalcolati ogni giorno; anelli per le RES (chiesti da un contrammiraglio: Col 285 Sector ZZ-Y d79, 6 corpi con anelli Pristine e un hotspot di Void Opal); obiettivi entro 15 ly, disabitati e non reclamati (quelli già reclamati segnati, con l'architetto se è nel nostro registro); perché è interessante, in chiaro; effetto BGS (da quale stazione partire perché Flotta Stellare abbia il 60%); filtri, distanza da un sistema a scelta, link a Inara e Spansh.
+- [ ] **Ponte**: scelto un obiettivo lontano, la catena di tappe da una nostra stazione; prima versione con il Plotter di Spansh interrogato dal server, segnando le tappe già occupate o nostre; in seguito un calcolo nostro che preferisca tappe con corpi utili.
+- [ ] **Cantieri**: avanzamento e consegne da BGS-Tally (vedi "Avanzamento delle colonie" nella fase 10).
 
 ## Spunti per il blog dell'utente
 
