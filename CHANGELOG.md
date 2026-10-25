@@ -2,6 +2,15 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
+## [1.7.1-beta] - 2026-10-25 — Salti di BGS-Tally come seconda fonte
+
+Versione di prova (`-beta`): l'editor degli Ordini non è ancora definitivo, e il Colony Plotter è appena nato.
+
+### Dati dal server
+
+- **I salti di BGS-Tally aggiornano la tabella**: il server dello Squadrone usa i salti che i piloti gli inviano con BGS-Tally come quelli di EDDN (fazioni, influenze, stati, controllo, punteggio dei conflitti, eventi e avvisi su Discord). Un sistema si aggiorna quindi anche quando ci passa solo chi ha BGS-Tally senza l'invio a EDDN, come a Crowfor dal 19 al 22 ottobre 2026, e i dati continuano ad arrivare se EDDN si ferma. Il tool non cambia: legge gli stessi indirizzi del server.
+- La **finestra della chiave BGS-Tally** e la **Guida** lo dicono, nelle tre lingue: con la chiave ogni salto in un sistema di Flotta Stellare aggiorna il tool in pochi secondi; l'invio a EDDN resta consigliato, anche senza BGS-Tally, perché porta i dati anche a Spansh. Le indicazioni della fonte nei riquadri degli stati, nella freschezza e nel grafico dicono ora "server ACFS (EDDN e BGS-Tally)".
+
 ## [1.7.0-beta] - 2026-10-25 — ACFS Colony Plotter
 
 Versione di prova (`-beta`): l'editor degli Ordini non è ancora definitivo, e il Colony Plotter è appena nato.
