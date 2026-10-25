@@ -4,7 +4,7 @@ Tool BGS per lo Squadrone **Alto Comando Flotta Stellare** (ACFS) e per la sua P
 
 La domanda a cui il tool deve rispondere ogni giorno dopo il tick: **dove dobbiamo lavorare oggi?**
 
-## Stato in breve (aggiornato il 25 ottobre 2026)
+## Stato in breve (aggiornato il 25 ottobre 2026, sera)
 
 Da leggere prima di proporre qualcosa o di dire che è "da fare", e da aggiornare a ogni modifica che cambia lo stato di una fase (vedi `CLAUDE.md`). I dettagli stanno nelle fasi più sotto.
 
@@ -22,7 +22,7 @@ Da leggere prima di proporre qualcosa o di dire che è "da fare", e da aggiornar
 | 10b. Classifiche del lavoro | Decise; Attività (beta) aperta ai membri dal 20 ottobre 2026 | Periodi, campagne, categorie |
 | 11. Plugin EDMC | Messo a piano | Tutto |
 | 12. Storico delle influenze | **Fatta il 25 ottobre 2026** (1.6.0-beta; `/v1/history` sul server) | Lo storico cresce da solo; in seguito eventualmente 90 giorni nel grafico |
-| 13. Colony Plotter | **Avviata il 25 ottobre 2026**: progetto deciso, si parte dal motore degli Obiettivi | Obiettivi, Ponte, Cantieri (vedi fase 13) |
+| 13. Colony Plotter | **Obiettivi pubblicati il 25 ottobre 2026** (1.7.0-beta, pagina `/colony-plotter` per i membri; calcolo giornaliero sul server) | Ponte, Cantieri, taratura dei punteggi per scopo (vedi fase 13) |
 
 **Da Spansh vengono ancora**: stazioni, popolazione e servizi, e i dati di riserva quando il server non risponde. Il tool li scarica col suo workflow (`bgs.json`); dal 23 ottobre 2026 il server li scarica anche da sé ogni ora, e da lì prende l'elenco dei sistemi da seguire.
 
@@ -365,7 +365,9 @@ Obiettivo dell'utente: "un bel prodotto una volta finito", non uno strumento cos
 
 **Progetto deciso** (proposto da Claude, accettato dall'utente il 25 ottobre 2026):
 - Repo a parte [`ed-acfs/acfs-colony-plotter`](https://github.com/ed-acfs/acfs-colony-plotter) per il motore (**creato il 25 ottobre 2026, pubblico** per scelta dell'utente: non contiene segreti); i risultati li espone `acfs-server`; una sezione **"Colonizzazione"** nel tool li mostra, riusando accesso con Discord, tre lingue, stile e registro degli architetti.
-- [ ] **Obiettivi** (**motore fatto il 25 ottobre 2026** in `acfs-colony-plotter`, provato su HIP 21437 e Col 285 Sector ZZ-Y d43; mancano il calcolo giornaliero sul server e la sezione nel tool): punti di partenza = stazioni controllate da Flotta Stellare (265, senza insediamenti di Odyssey, che non hanno il Contatto), ricalcolati ogni giorno; anelli per le RES (chiesti da un contrammiraglio: Col 285 Sector ZZ-Y d79, 6 corpi con anelli Pristine e un hotspot di Void Opal); obiettivi entro 15 ly, disabitati e non reclamati (quelli già reclamati segnati, con l'architetto se è nel nostro registro); perché è interessante, in chiaro; effetto BGS (da quale stazione partire perché Flotta Stellare abbia il 60%); filtri, distanza da un sistema a scelta, link a Inara e Spansh.
+- [x] **Obiettivi** (**fatti e pubblicati il 25 ottobre 2026**, tool 1.7.0-beta: pagina "ACFS Colony Plotter" su `/colony-plotter`, per i membri; il motore `acfs-colony-plotter` è una dipendenza di `acfs-server`, che lo fa girare una volta al giorno e serve il risultato su `/v1/colonisation`): punti di partenza = stazioni controllate da Flotta Stellare (265, senza insediamenti di Odyssey, che non hanno il Contatto), ricalcolati ogni giorno; anelli per le RES (chiesti da un contrammiraglio: Col 285 Sector ZZ-Y d79, 6 corpi con anelli Pristine e un hotspot di Void Opal); obiettivi entro 15 ly, disabitati e non reclamati (quelli già reclamati segnati, con l'architetto se è nel nostro registro); perché è interessante, in chiaro; effetto BGS (da quale stazione partire perché Flotta Stellare abbia il 60%); filtri, distanza da un sistema a scelta, link a Inara e Spansh.
+- **Decisioni dell'utente sulla pagina (25 ottobre 2026)**: nome **ACFS Colony Plotter** (indirizzo e repo restano `colony-plotter`); impaginazione sul modello del Colony Finder dei Canonn, "anche come leggibilità", senza testi da "tech demo" sotto il titolo; colonna **"Ragioni di interesse"** con tutto ciò che c'era dai Canonn, biologia compresa (un contrammiraglio: "danno bonus per alcune economie"); punteggio **per scopo**, come indica la Mega Guide, ma solo come filtro ("Adatto a"); filtri separati per tipo di corpo e biologia; niente filtro per nome dell'obiettivo (basta la distanza da quel sistema); **solo per i membri dello Squadrone**, in italiano, con Guida e Legenda proprie. I ruoli sono quelli del `.env` del server, come per Attività.
+- [ ] **Taratura dei punteggi per scopo** (`purposes.mjs` del motore): prima taratura dalla Mega Guide; la Raffineria vince spesso per il solo numero di corpi rocciosi. Da rivedere con l'utente sui sistemi veri; con `--cached` si ricalcola in pochi secondi.
 - [ ] **Ponte**: scelto un obiettivo lontano, la catena di tappe da una nostra stazione; prima versione con il Plotter di Spansh interrogato dal server, segnando le tappe già occupate o nostre; in seguito un calcolo nostro che preferisca tappe con corpi utili.
 - [ ] **Cantieri**: avanzamento e consegne da BGS-Tally (vedi "Avanzamento delle colonie" nella fase 10).
 

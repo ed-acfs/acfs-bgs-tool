@@ -2,6 +2,19 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
+## [1.7.0-beta] - 2026-10-25 — ACFS Colony Plotter
+
+Versione di prova (`-beta`): l'editor degli Ordini non è ancora definitivo, e il Colony Plotter è appena nato.
+
+### ACFS Colony Plotter (fase 13 della roadmap)
+
+- **Nuova pagina `/colony-plotter`**, per i **membri dello Squadrone** (accesso con Discord; il controllo lo fa il server): i sistemi che si possono reclamare entro 15 ly da una stazione controllata da Flotta Stellare. Partendo da una nostra stazione il sistema nuovo nasce con Flotta Stellare al 60%. Nel menu con il proprio nome, "Colony Plotter (beta)". Solo in italiano, come Attività.
+- Impaginata sul modello del **Colony Finder dei Canonn**, preferito dall'utente per leggibilità: per ogni sistema il nostro sistema di partenza con la stazione da cui reclamare, la distanza, i corpi e le **ragioni di interesse** corpo per corpo: i corpi rari (Earth-like, Water world, Ammonia world, giganti gassosi con vita, stelle rare), i tipi comuni raggruppati, la **biologia specie per specie** (dà bonus ad alcune economie), la geologia, gli **anelli** con la riserva (Pristine per le RES) e gli hotspot, più stelle, più di 40 corpi.
+- Sotto ogni nome i link a **Inara, Raven Colonial, Spansh e Canonn Signals** e la copia del nome; un clic sul nome apre la **scheda del sistema** (stato, coordinate, stelle, riserva, tutte le partenze con le fazioni del sistema nuovo, corpi interessanti, anelli, a cosa è adatto).
+- **Filtri**: ordina per distanza da un sistema qualunque; corpi minimi; ordinamento e verso; tipo di corpo (pianeti e stelle); biologia (per genere); altro (anelli, hotspot, riserva Pristine, geologia, più stelle, più di 40 corpi); **Adatto a** (raffineria, industria, estrazione, agricoltura, turismo, High Tech, secondo la Colonization Mega Guide); il nostro sistema di partenza; anche i sistemi già reclamati; azzera i filtri.
+- **Guida e Legenda** proprie della pagina; nella Guida del tool una scheda "Colony Plotter (beta)".
+- Gli obiettivi li calcola ogni giorno il **server dello Squadrone** con il motore del nuovo repo pubblico [`acfs-colony-plotter`](https://github.com/ed-acfs/acfs-colony-plotter), dai dati di Spansh, e li serve su `/v1/colonisation` solo ai membri. Il primo calcolo richiede qualche minuto dopo l'aggiornamento del server.
+
 ## [1.6.0-beta] - 2026-10-25 — Storico dell'influenza
 
 Versione di prova (`-beta`): l'editor degli Ordini non è ancora definitivo.

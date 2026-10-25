@@ -1,6 +1,30 @@
-<h2 mat-dialog-title class="info-title">{{ t('help.title') }}</h2>
+<h2 mat-dialog-title class="info-title">{{ showColonyPlotter ? 'Guida del Colony Plotter' : t('help.title') }}</h2>
 
 <mat-dialog-content>
+  @if (showColonyPlotter) {
+  <section class="info-card">
+    <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">🪐</span> Cos'è</h3>
+    <p>I sistemi che si possono reclamare entro <strong>15 ly</strong> da una stazione controllata da {{ factionName }}, ricalcolati ogni giorno dai dati di Spansh. Partendo da una nostra stazione, il sistema nuovo nasce con {{ factionName }} al 60%; il 20% va a chi controlla il sistema di partenza (o alla seconda fazione), il 6% a un'Anarchy vicina. Gli insediamenti di Odyssey non hanno il Contatto di Colonizzazione e non contano come partenza.</p>
+    <p>Spansh può essere indietro rispetto al gioco: prima di partire controllate il sistema in gioco o su Inara, e pianificate le costruzioni con Raven Colonial.</p>
+  </section>
+
+  <section class="info-card">
+    <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">📋</span> La lista</h3>
+    <p>Un sistema per riga: il sistema da colonizzare, il nostro sistema di partenza (con la stazione da cui reclamare e, se ce ne sono, quante altre), la distanza, il numero di corpi e le <strong>ragioni di interesse</strong>, come nel Colony Finder dei Canonn: i corpi rari in arancione (Earth-like, Water world, Ammonia world, giganti gassosi con vita, stelle rare…), i tipi comuni raggruppati ("Rocky body ×4"), la biologia in verde specie per specie (dà bonus ad alcune economie), la geologia, gli anelli con la riserva (Pristine è la migliore per le RES) e i loro hotspot, più stelle, più di 40 corpi. Il tooltip di ogni etichetta dice quali corpi.</p>
+    <p>Sotto ogni nome, i link a Inara, Raven Colonial, Spansh e Canonn Signals e il pulsante per copiare il nome. Un clic sul nome del sistema apre la sua <strong>scheda</strong>: stato, coordinate, stelle e riserva, tutte le partenze possibili con le fazioni del sistema nuovo, i corpi interessanti, gli anelli e per cosa è adatto.</p>
+  </section>
+
+  <section class="info-card">
+    <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">🔎</span> Filtri e ordinamento</h3>
+    <p><strong>Ordina per distanza da sistema</strong>: scrivi un sistema qualunque (anche un obiettivo di cui ti hanno parlato) e la lista si ordina dal più vicino. <strong>Corpi minimi</strong> tiene solo i sistemi grandi; <strong>Ordina per</strong> e <strong>Ordine</strong> scelgono l'ordinamento. <strong>Tipo di corpo</strong> tiene solo i sistemi con quel tipo di pianeta o di stella; <strong>Biologia</strong> quelli con un genere biologico (o con qualunque biologia); <strong>Altro</strong> quelli con anelli, hotspot, riserva Pristine, geologia, più stelle o più di 40 corpi; <strong>Nostro sistema di partenza</strong> solo quelli raggiungibili da un nostro sistema; <strong>Anche i reclamati</strong> aggiunge i sistemi che qualcuno sta già costruendo. <strong>Azzera i filtri</strong> riporta la lista com'è all'apertura.</p>
+    <p><strong>Adatto a</strong> tiene i sistemi adatti a uno scopo (raffineria, industria, estrazione, agricoltura, turismo, High Tech), secondo la Colonization Mega Guide: per esempio un Rocky ice world per raffineria e industria, un Water world per le fattorie, riserve Pristine per estrazione, industria e raffineria. È una prima taratura: i corpi troppo lontani dalla stella d'arrivo contano meno.</p>
+  </section>
+
+  <section class="info-card">
+    <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">🌉</span> Reclamare e costruire</h3>
+    <p>La richiesta si fa dal Contatto di Colonizzazione di una stazione: 25 milioni di crediti, 24 ore per posare il beacon, 4 settimane per completare il porto primario. Finito un porto, per 30 minuti può reclamare da lì solo l'architetto, poi tutto il suo Squadrone per 23,5 ore: è il momento per il passo successivo di un ponte. Per i sistemi oltre 15 ly serve un ponte di avamposti, un passo alla volta (in arrivo nel Colony Plotter).</p>
+  </section>
+  } @else {
   <section class="info-card">
     <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">📊</span> {{ t('help.table') }}</h3>
     <p>{{ t('help.table1', { faction: factionName }) }}</p>
@@ -51,6 +75,11 @@
     <p>La pagina <strong>Attività</strong> mostra il lavoro BGS per Flotta Stellare che i piloti mandano con BGS-Tally al server dello Squadrone, per tick, sistema e pilota. È per i membri dello Squadrone e gli ufficiali: dopo l'accesso con Discord la trovi nel menu con il tuo nome. Chi non usa BGS-Tally non compare, quindi i totali non sono tutto il lavoro dello Squadrone.</p>
   </section>
 
+  <section class="info-card">
+    <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">🪐</span> Colony Plotter (beta)</h3>
+    <p>Il <strong>Colony Plotter</strong> mostra i sistemi che si possono reclamare entro 15 ly da una stazione di {{ factionName }}, con le ragioni di interesse corpo per corpo e da quale nostra stazione partire. È per i membri dello Squadrone: dopo l'accesso con Discord lo trovi nel menu con il tuo nome. La sua pagina ha una Guida e una Legenda proprie.</p>
+  </section>
+
   @if (!showOrders) {
     <section class="info-card">
       <h3 class="info-heading"><span class="info-emoji" aria-hidden="true">📜</span> Ordini Ufficiali</h3>
@@ -67,6 +96,7 @@
     <p><strong>Data:</strong> scegliendo il giorno cambia anche la riga "AGGIORNAMENTO ORDINI DEL …" nel testo, nel calendario di gioco (l'anno reale più 1286). <strong>Copia per Discord</strong> mette il testo negli appunti.</p>
     <p>Il <strong>vecchio editor a moduli</strong> resta raggiungibile dal pulsante "Vecchio editor", per confronto. La pagina di lettura per i membri è sospesa mentre si prova il nuovo editor.</p>
   </section>
+  }
   }
   }
 </mat-dialog-content>

@@ -1,0 +1,357 @@
+<div class="cp-container">
+  <header class="cp-header">
+    <div class="cp-title">
+      <h1>ACFS Colony Plotter <span class="cp-beta">beta</span></h1>
+      <p class="cp-subtitle">Sistemi colonizzabili entro 15 ly da una stazione controllata da {{ factionName }}</p>
+      @if (data(); as d) {
+        <p class="cp-meta">
+          Dati Spansh del {{ generatedAt() }} · {{ d.anchors.length }} nostri sistemi di partenza · {{ d.count }} sistemi colonizzabili
+        </p>
+      }
+    </div>
+    <div class="cp-actions">
+      <button mat-stroked-button type="button" (click)="openHelp()">
+        <fa-icon [icon]="faHelp" aria-hidden="true"></fa-icon> Guida
+      </button>
+      <button mat-stroked-button type="button" (click)="legendOpen.set(!legendOpen())" [attr.aria-expanded]="legendOpen()" aria-controls="cp-legend">
+        <fa-icon [icon]="faLegend" aria-hidden="true"></fa-icon> Legenda
+      </button>
+      <a mat-stroked-button routerLink="/">&larr; Tabella</a>
+      <div class="cp-user">
+        <app-account></app-account>
+      </div>
+    </div>
+    <app-acfs-logo class="cp-logo" [animating]="state() === 'loading'"></app-acfs-logo>
+  </header>
+
+  @if (legendOpen()) {
+    <section id="cp-legend" class="cp-legend" aria-label="Legenda">
+      <div class="cp-legend-group">
+        <h2 class="cp-legend-title">Ragioni di interesse</h2>
+        <ul>
+          <li><span class="cp-legend-key"><span class="cp-tag cp-tag--body">A 2 Water world</span></span><span>un corpo raro, con il suo nome nel sistema (o "×3" se ce ne sono più, i nomi nel tooltip)</span></li>
+          <li><span class="cp-legend-key"><span class="cp-tag cp-tag--common">Rocky body ×4</span></span><span>tipi di corpo comuni, contati come nel Colony Finder dei Canonn</span></li>
+          <li><span class="cp-legend-key"><span class="cp-tag cp-tag--biology">A 6 d: Tussock Cultro</span></span><span>biologia, specie per specie: dà bonus ad alcune economie</span></li>
+          <li><span class="cp-legend-key"><span class="cp-tag cp-tag--geology">Geologia: A 2 a</span></span><span>geyser, fumarole e lava sui corpi elencati</span></li>
+          <li><span class="cp-legend-key"><span class="cp-tag cp-tag--rings">5 corpi con anelli, Pristine</span></span><span>corpi con anelli e riserva migliore del sistema (Pristine è la migliore per le RES); il tooltip li elenca</span></li>
+          <li><span class="cp-legend-key"><span class="cp-tag cp-tag--hotspots">Hotspot: Painite</span></span><span>hotspot di estrazione negli anelli</span></li>
+          <li><span class="cp-legend-key"><span class="cp-tag cp-tag--stars">3 stelle</span><span class="cp-tag cp-tag--manyBodies">52 corpi</span></span><span>sistema con più stelle, o con più di 40 corpi</span></li>
+        </ul>
+      </div>
+      <div class="cp-legend-group">
+        <h2 class="cp-legend-title">Link sotto i nomi</h2>
+        <ul>
+          <li><span class="cp-legend-key"><fa-icon [icon]="faInara"></fa-icon></span><span>Inara</span></li>
+          <li><span class="cp-legend-key"><fa-icon [icon]="faRaven"></fa-icon></span><span>Raven Colonial, per pianificare le costruzioni</span></li>
+          <li><span class="cp-legend-key"><fa-icon [icon]="faSpansh"></fa-icon></span><span>Spansh</span></li>
+          <li><span class="cp-legend-key"><fa-icon [icon]="faSignals"></fa-icon></span><span>Canonn Signals, i corpi e i segnali del sistema</span></li>
+          <li><span class="cp-legend-key"><fa-icon [icon]="faCopy"></fa-icon></span><span>copia il nome del sistema</span></li>
+        </ul>
+      </div>
+      <div class="cp-legend-group">
+        <h2 class="cp-legend-title">Sistema e partenza</h2>
+        <ul>
+          <li><span class="cp-legend-key"><span class="cp-name cp-legend-name">Nome</span></span><span>un clic apre la scheda del sistema</span></li>
+          <li><span class="cp-legend-key"><span class="cp-claimed">reclamato</span></span><span>qualcuno lo sta già costruendo (con "Anche i reclamati")</span></li>
+          <li><span class="cp-legend-key"><span class="cp-sub">da Porto (+2)</span></span><span>la stazione da cui reclamare e quante altre ce ne sono; il tooltip dice le fazioni del sistema nuovo</span></li>
+        </ul>
+      </div>
+    </section>
+  }
+
+  @if (state() === 'locked' && !error()) {
+    @if (auth.session(); as session) {
+      @if (!session.member) {
+        <p class="cp-note">Sei collegato come {{ session.user.display_name }}, ma il Colony Plotter è riservato ai membri dello Squadrone.</p>
+      }
+    } @else if (auth.available()) {
+      <p class="cp-note">
+        Riservato ai membri dello Squadrone.
+        <button mat-flat-button type="button" (click)="auth.login()">Accedi con Discord</button>
+      </p>
+    }
+  }
+  @if (error(); as message) {
+    <p class="cp-error" role="alert">{{ message }}</p>
+  }
+
+  @if (state() === 'ready' && data()) {
+    <section class="cp-panel">
+      <div class="cp-row">
+        <label class="cp-field cp-field--grow">
+          <span>Ordina per distanza da sistema</span>
+          <input
+            type="search"
+            placeholder="Nome del sistema…"
+            [value]="searchText()"
+            (input)="searchText.set(value($event))"
+            (keydown.enter)="searchSystem()"
+          />
+        </label>
+        <button mat-stroked-button type="button" (click)="searchSystem()">Ordina per distanza</button>
+        @if (search()) {
+          <button mat-stroked-button type="button" (click)="searchText.set(''); searchSystem()">Annulla</button>
+        }
+      </div>
+      @if (searchError(); as message) {
+        <p class="cp-error">{{ message }}</p>
+      }
+    </section>
+
+    <section class="cp-panel cp-filters">
+      <div class="cp-row">
+        <label class="cp-field cp-field--narrow">
+          <span>Corpi minimi</span>
+          <input type="number" min="0" placeholder="0" [value]="filter().minBodies || ''" (input)="update({ minBodies: +value($event) || 0 })" />
+        </label>
+        <label class="cp-field">
+          <span>Ordina per</span>
+          <select [value]="filter().sort" (change)="setSort($any(value($event)))">
+            <option value="interest">Ragioni di interesse</option>
+            <option value="bodies">Numero di corpi</option>
+            <option value="distance">Distanza dalla partenza</option>
+            @if (search(); as s) {
+              <option value="search">Distanza da {{ s.name }}</option>
+            }
+            @if (filter().purpose) {
+              <option value="purpose">Adatto a {{ chosenPurposeLabel() }}</option>
+            }
+            <option value="name">Nome</option>
+          </select>
+        </label>
+        <label class="cp-field">
+          <span>Ordine</span>
+          <select [value]="filter().direction" (change)="update({ direction: $any(value($event)) })">
+            <option value="desc">Decrescente</option>
+            <option value="asc">Crescente</option>
+          </select>
+        </label>
+      </div>
+      <div class="cp-row">
+        <label class="cp-field">
+          <span>Tipo di corpo</span>
+          <select [value]="filter().bodyType" (change)="update({ bodyType: value($event) })">
+            <option value="">Tutti</option>
+            <optgroup label="Pianeti">
+              @for (s of bodyTypes().planets; track s) {
+                <option [value]="s">{{ s }}</option>
+              }
+            </optgroup>
+            <optgroup label="Stelle">
+              @for (s of bodyTypes().stars; track s) {
+                <option [value]="s">{{ s }}</option>
+              }
+            </optgroup>
+          </select>
+        </label>
+        <label class="cp-field">
+          <span>Biologia</span>
+          <select [value]="filter().biology" (change)="update({ biology: value($event) })">
+            <option value="">Indifferente</option>
+            <option value="*">Qualunque biologia</option>
+            @for (g of genera(); track g) {
+              <option [value]="g">{{ g }}</option>
+            }
+          </select>
+        </label>
+        <label class="cp-field">
+          <span>Altro</span>
+          <select [value]="filter().other" (change)="update({ other: value($event) })">
+            <option value="">Indifferente</option>
+            @for (o of otherFilters; track o.key) {
+              <option [value]="o.key">{{ o.label }}</option>
+            }
+          </select>
+        </label>
+        <label class="cp-field">
+          <span>Adatto a</span>
+          <select [value]="filter().purpose" (change)="update({ purpose: $any(value($event)) })">
+            <option value="">Qualunque scopo</option>
+            @for (p of purposes; track p) {
+              <option [value]="p">{{ purposeLabels[p] }}</option>
+            }
+          </select>
+        </label>
+        <label class="cp-field">
+          <span>Nostro sistema di partenza</span>
+          <input type="search" placeholder="Nome…" [value]="filter().from" (input)="update({ from: value($event) })" />
+        </label>
+        <label class="cp-check">
+          <input type="checkbox" [checked]="filter().includeClaimed" (change)="update({ includeClaimed: $any($event.target).checked })" />
+          Anche i reclamati
+        </label>
+        <button mat-stroked-button type="button" class="cp-reset" [disabled]="!filtersActive()" (click)="resetFilters()">Azzera i filtri</button>
+      </div>
+    </section>
+
+    <div class="cp-count-row">
+      <span>{{ results().length }} sistemi</span>
+      <label class="cp-check">
+        Per pagina
+        <select [value]="pageSize()" (change)="setPageSize(+value($event))">
+          @for (size of pageSizes; track size) {
+            <option [value]="size">{{ size }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <div class="cp-table-wrap">
+      <table class="cp-table">
+        <thead>
+          <tr>
+            <th class="cp-col-system">Sistema</th>
+            <th class="cp-col-system">Partenza</th>
+            <th class="cp-num">Distanza</th>
+            <th class="cp-num">Corpi</th>
+            <th>Ragioni di interesse</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (t of visible(); track t.id64) {
+            <tr>
+              <td data-label="Sistema">
+                <button type="button" class="cp-name" (click)="open(t)">{{ t.name }}</button>
+                @if (t.status === 'claimed') {
+                  <span class="cp-claimed" title="Già reclamato: qualcuno lo sta costruendo">reclamato</span>
+                }
+                <span class="cp-links">
+                  <ng-container *ngTemplateOutlet="systemLinks; context: { name: t.name, id64: t.id64 }"></ng-container>
+                </span>
+              </td>
+              <td data-label="Partenza">
+                @let f = t.from[0];
+                <span class="cp-from">{{ f.name }}</span>
+                <span class="cp-links">
+                  <ng-container *ngTemplateOutlet="systemLinks; context: { name: f.name, id64: f.id64 }"></ng-container>
+                </span>
+                <span class="cp-sub" [title]="describeShares(f.factions)">da {{ f.stations[0]?.name }}{{ f.stations.length > 1 ? ' (+' + (f.stations.length - 1) + ')' : '' }}</span>
+              </td>
+              <td class="cp-num" data-label="Distanza">
+                {{ f.distance.toFixed(2) }} ly
+                @if (distanceFromSearch(t); as d) {
+                  <span class="cp-sub">{{ d.toFixed(1) }} ly da {{ search()?.name }}</span>
+                }
+              </td>
+              <td class="cp-num" data-label="Corpi">{{ t.bodyCount ?? '—' }}</td>
+              <td data-label="Ragioni di interesse">
+                @for (tag of tags(t); track $index) {
+                  <span [class]="'cp-tag cp-tag--' + tag.kind" [title]="tag.title">{{ tag.label }}</span>
+                } @empty {
+                  <span class="cp-sub">—</span>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="cp-note">Nessun sistema con questi filtri.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (pages() > 1) {
+      <nav class="cp-pager">
+        <button mat-stroked-button type="button" [disabled]="page() === 0" (click)="goTo(page() - 1)">&larr; Precedente</button>
+        <span>Pagina {{ page() + 1 }} di {{ pages() }}</span>
+        <button mat-stroked-button type="button" [disabled]="page() >= pages() - 1" (click)="goTo(page() + 1)">Successiva &rarr;</button>
+      </nav>
+    }
+  }
+
+  @if (selected(); as t) {
+    <div class="cp-overlay" (click)="close()">
+      <section class="cp-card" role="dialog" aria-modal="true" [attr.aria-label]="t.name" (click)="$event.stopPropagation()">
+        <header class="cp-card-header">
+          <h2>{{ t.name }}</h2>
+          <button mat-stroked-button type="button" (click)="close()">Chiudi</button>
+        </header>
+        <p class="cp-links cp-links--card">
+          <ng-container *ngTemplateOutlet="systemLinks; context: { name: t.name, id64: t.id64, labels: true }"></ng-container>
+        </p>
+        <dl class="cp-facts">
+          <dt>Stato</dt>
+          <dd>{{ t.status === 'claimed' ? 'Già reclamato (in costruzione)' : 'Libero' }}</dd>
+          <dt>Coordinate</dt>
+          <dd>{{ t.x }}, {{ t.y }}, {{ t.z }}</dd>
+          <dt>Corpi</dt>
+          <dd>{{ t.bodyCount ?? '—' }}</dd>
+          <dt>Stelle</dt>
+          <dd>{{ t.stars.join(', ') || '—' }}</dd>
+          @if (t.reserve) {
+            <dt>Riserva</dt>
+            <dd>{{ t.reserve }}</dd>
+          }
+          @if (distanceFromSearch(t); as d) {
+            <dt>Da {{ search()?.name }}</dt>
+            <dd>{{ d.toFixed(2) }} ly</dd>
+          }
+        </dl>
+
+        <h3>Partenza</h3>
+        @for (f of t.from; track f.name) {
+          <div class="cp-source">
+            <p>
+              <strong>{{ f.name }}</strong> · {{ f.distance.toFixed(2) }} ly
+              <span class="cp-links">
+                <ng-container *ngTemplateOutlet="systemLinks; context: { name: f.name, id64: f.id64 }"></ng-container>
+              </span>
+            </p>
+            <p class="cp-sub">Stazioni: {{ stationNames(f) }}</p>
+            <p class="cp-sub">Fazioni del sistema nuovo: {{ describeShares(f.factions) }}</p>
+          </div>
+        }
+
+        <h3>Corpi interessanti</h3>
+        <ul class="cp-list">
+          @for (line of bodyDetails(t); track $index) {
+            <li>{{ line }}</li>
+          } @empty {
+            <li>—</li>
+          }
+        </ul>
+        @if (t.rings.length) {
+          <h3>Anelli</h3>
+          <ul class="cp-list">
+            @for (r of t.rings; track r.body) {
+              <li>{{ ringLine(t, r) }}</li>
+            }
+          </ul>
+        }
+
+        @if (suitability(t).length) {
+          <h3>Adatto a <span class="cp-sub cp-inline">(secondo la Colonization Mega Guide)</span></h3>
+          <ul class="cp-list">
+            @for (s of suitability(t); track s.purpose) {
+              <li>{{ s.label }} {{ s.score }} <span class="cp-sub cp-inline">· {{ purposeBodies(t, s.purpose) }}</span></li>
+            }
+          </ul>
+        }
+        @if (t.spanshUpdatedAt) {
+          <p class="cp-sub">Spansh ha aggiornato il sistema il {{ t.spanshUpdatedAt.slice(0, 10) }}.</p>
+        }
+      </section>
+    </div>
+  }
+</div>
+
+<ng-template #systemLinks let-name="name" let-id64="id64" let-labels="labels">
+  <a [href]="links.inara(name)" target="_blank" rel="noopener" title="Apri in Inara" aria-label="Apri in Inara"
+    ><fa-icon [icon]="faInara"></fa-icon>@if (labels) { Inara }</a
+  >
+  <a [href]="links.raven(name)" target="_blank" rel="noopener" title="Apri in Raven Colonial" aria-label="Apri in Raven Colonial"
+    ><fa-icon [icon]="faRaven"></fa-icon>@if (labels) { Raven Colonial }</a
+  >
+  @if (id64) {
+    <a [href]="links.spansh(id64)" target="_blank" rel="noopener" title="Apri in Spansh" aria-label="Apri in Spansh"
+      ><fa-icon [icon]="faSpansh"></fa-icon>@if (labels) { Spansh }</a
+    >
+  }
+  <a [href]="links.signals(name)" target="_blank" rel="noopener" title="Apri in Canonn Signals" aria-label="Apri in Canonn Signals"
+    ><fa-icon [icon]="faSignals"></fa-icon>@if (labels) { Canonn Signals }</a
+  >
+  <button type="button" class="cp-copy" (click)="copy(name)" [title]="copied() === name ? 'Copiato' : 'Copia il nome'" aria-label="Copia il nome del sistema">
+    <fa-icon [icon]="faCopy"></fa-icon>{{ copied() === name ? ' copiato' : '' }}
+  </button>
+</ng-template>

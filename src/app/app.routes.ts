@@ -4,6 +4,7 @@ import { OrdersPageComponent } from './orders/orders-page.component';
 import { OrdersTextEditorComponent } from './orders/orders-text-editor.component';
 import { OrdersReaderComponent } from './orders-reader/orders-reader.component';
 import { WorkPageComponent } from './work/work-page.component';
+import { ColonyPlotterPageComponent } from './colony-plotter/colony-plotter-page.component';
 
 export const routes: Routes = [
   {
@@ -25,6 +26,11 @@ export const routes: Routes = [
     // Lavoro BGS-Tally per pilota, per membri e ufficiali (ruolo controllato dal server), in beta.
     path: 'activity',
     component: WorkPageComponent,
+  },
+  {
+    // Colony Plotter: obiettivi di colonizzazione, per i membri (ruolo controllato dal server), in beta.
+    path: 'colony-plotter',
+    component: ColonyPlotterPageComponent,
   },
   {
     path: '**',
