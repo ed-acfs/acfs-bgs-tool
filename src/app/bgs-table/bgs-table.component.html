@@ -347,6 +347,7 @@
           <li><span class="bgs-legend-key"><span class="bgs-legend-sample bgs-light--red bgs-margin--risk">⚠️ +{{ i18n.decimal(3.1) }}</span></span><span>{{ t('legend.marginRisk', { points: conflictMarginPoints }) }}</span></li>
           <li><span class="bgs-legend-key"><span class="bgs-legend-sample bgs-margin--gap bgs-margin--risk">⚠️ −{{ i18n.decimal(4.1) }}</span></span><span>{{ t('legend.marginGapRisk', { points: conflictMarginPoints }) }}</span></li>
           <li><span class="bgs-legend-key"><span class="bgs-legend-sample bgs-legend-sample--accent">{{ i18n.percent(12.5) }}</span></span><span>{{ t('legend.influenceElsewhere') }}</span></li>
+          <li><span class="bgs-legend-key"><app-influence-trend [trend]="legendTrend" /></span><span>{{ t('legend.trend', { faction: factionName }) }}</span></li>
           <li><span class="bgs-legend-key"><span class="bgs-legend-sample bgs-legend-sample--accent">⚠️ {{ i18n.percent(6) }}</span></span><span>{{ t('legend.closeFaction', { points: conflictMarginPoints }) }}</span></li>
           <li><span class="bgs-legend-key"><span class="bgs-legend-sample bgs-legend-sample--muted">−{{ i18n.decimal(8.4) }}</span></span><span>{{ t('legend.marginGap') }}</span></li>
         </ul>
@@ -493,6 +494,19 @@
               >
                 ACFS
                 @if (sortIndicator('influence'); as indicator) {
+                  <span class="bgs-sort-indicator">{{ indicator }}</span>
+                }
+              </button>
+              <button
+                type="button"
+                class="bgs-sort-header bgs-sort-header--trend"
+                (click)="sortByColumn('trend')"
+                [disabled]="loading()"
+                [title]="t('sort.trend', { faction: factionName })"
+                [attr.aria-label]="t('sort.trend', { faction: factionName })"
+              >
+                ▲▼
+                @if (sortIndicator('trend'); as indicator) {
                   <span class="bgs-sort-indicator">{{ indicator }}</span>
                 }
               </button>
@@ -732,6 +746,9 @@
                   [title]="influenceTitle(row) ?? ''"
                 >
                   @if (closeRivals(row).length > 0) {<span class="bgs-close-warning" aria-hidden="true">⚠️ </span>}{{ row.factionInfluence !== null ? i18n.percent(row.factionInfluence) : '—' }}
+                  @if (row.factionInfluence !== null) {
+                    <app-influence-trend class="bgs-trend" [trend]="trendFor(row)" (open)="openInfluenceChart(row)" />
+                  }
                 </td>
                 <td
                   class="bgs-col-influence bgs-col-margin"

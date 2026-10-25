@@ -12,6 +12,7 @@ import {
   TYPEAHEAD_URL,
   WATCHLIST_SHEET_URL,
 } from '../core/config';
+import { InfluenceTrend, ServerHistoryPoint, ServerHistoryResponse, trendsFrom } from '../core/influence-history';
 import { logger } from '../core/logger';
 import { PriorityWatchlistEntry, buildWatchlistMap, parseWatchlistTsv, watchlistFirst } from '../core/priority-watchlist';
 import { ServerData, ServerSystemsResponse, serverDataFrom, withServerData } from '../core/server-data';
@@ -128,6 +129,7 @@ export class BgsService {
   assignUrl: string | null = SERVER_API_URL ? `${SERVER_API_URL}/auth/assign` : null;
 
   private datasetPromise?: Promise<BgsDataset>;
+  private trendsPromise?: Promise<Map<string, InfluenceTrend>>;
   /** Whether the squadron server answered this session. */
   private serverConflictsAvailable = false;
   private readonly pagePromises = new Map<number, Promise<BgsPage>>();
@@ -320,6 +322,36 @@ export class BgsService {
         });
     }
     return this.datasetPromise;
+  }
+
+  /**
+   * Our faction's influence trend in every system the server has watched, by lowercased name, for
+   * the table's sparklines; loaded once per session. Empty if the server is off or didn't answer:
+   * the table just shows no trend (never throws).
+   */
+  getInfluenceTrends(): Promise<Map<string, InfluenceTrend>> {
+    this.trendsPromise ??= (async () => {
+      if (!SERVER_API_URL) {
+        return new Map<string, InfluenceTrend>();
+      }
+      try {
+        const text = await this.fetchTextOnce(`${SERVER_API_URL}/v1/history?days=30`, SERVER_API_TIMEOUT_MS);
+        return trendsFrom(JSON.parse(text) as ServerHistoryResponse);
+      } catch (error) {
+        logger.warn('Squadron server unavailable; no influence trends this session.', error);
+        return new Map<string, InfluenceTrend>();
+      }
+    })();
+    return this.trendsPromise;
+  }
+
+  /** One system's history for its chart: every faction's influence and the conflicts, over `days` (throws on failure). */
+  async getSystemHistory(systemAddress: string, days = 30): Promise<ServerHistoryPoint[]> {
+    if (!SERVER_API_URL) {
+      throw new Error('No squadron server configured');
+    }
+    const text = await this.fetchTextOnce(`${SERVER_API_URL}/v1/systems/${encodeURIComponent(systemAddress)}?days=${days}`, HTTP_TIMEOUT_MS);
+    return (JSON.parse(text) as { history?: ServerHistoryPoint[] }).history ?? [];
   }
 
   /** The server's systems, or null if it's not configured or didn't answer in time (never throws). */

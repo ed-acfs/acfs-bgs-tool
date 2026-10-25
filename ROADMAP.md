@@ -21,8 +21,8 @@ Da leggere prima di proporre qualcosa o di dire che è "da fare", e da aggiornar
 | 10. Server: ascoltatore EDDN, database SQLite, API | **In produzione dal 18 ottobre 2026** su Oracle (`api.flottastellare.it`). Il tool prende da lì fazioni, influenze, stati, controllo e punteggi quando sono più recenti di Spansh. **Dal 23 ottobre 2026 scarica da sé Spansh ogni ora e pubblica `/v1/site` per il sito** (mappa 3D del sito che legge da lì pubblicata lo stesso giorno, sito 1.9.0) | **Prossimo incontro**: salti di BGS-Tally come seconda fonte + avviso dei dati fermi (vedi fase 10). Poi: tool che prende tutto dal server ("vince il più fresco" per blocchi), sistemi nuovi scoperti dall'ascoltatore, avanzamento delle colonie, spazio sul server |
 | 10b. Classifiche del lavoro | Decise; Attività (beta) aperta ai membri dal 20 ottobre 2026 | Periodi, campagne, categorie |
 | 11. Plugin EDMC | Messo a piano | Tutto |
-| 12. Storico delle influenze | **Prossimo lavoro** (deciso il 25 ottobre 2026), prima del Colony Plotter | Tutto |
-| Colony Plotter | Obiettivo della settimana dal 26 ottobre 2026, dopo lo storico; in un **repo separato** | Tutto |
+| 12. Storico delle influenze | **Fatta il 25 ottobre 2026** (1.6.0-beta; `/v1/history` sul server) | Lo storico cresce da solo; in seguito eventualmente 90 giorni nel grafico |
+| Colony Plotter | **Prossimo lavoro**: obiettivo della settimana dal 26 ottobre 2026; in un **repo separato** | Tutto |
 
 **Da Spansh vengono ancora**: stazioni, popolazione e servizi, e i dati di riserva quando il server non risponde. Il tool li scarica col suo workflow (`bgs.json`); dal 23 ottobre 2026 il server li scarica anche da sé ogni ora, e da lì prende l'elenco dei sistemi da seguire.
 
@@ -342,14 +342,14 @@ Un plugin EDMC dello Squadrone, sul modello di [EDMC-Canonn](https://github.com/
 | canonn-tools, Canonn-Scripts | GPL-3.0 | Come Canonn-GCloud |
 | canonn_colony_finder | nessuna licenza | Tutti i diritti riservati: solo l'idea; codice da riscrivere o con il loro permesso |
 
-### 12. Storico delle influenze (deciso il 25 ottobre 2026, prima del Colony Plotter)
+### 12. Storico delle influenze (deciso e fatto il 25 ottobre 2026, versione 1.6.0-beta)
 
 Idea dal tool dei Canonn (commit `f90f4b7` del 15 ottobre e `50b2a23` del 25 ottobre di `upstream`, MIT: si può riprendere codice citando la fonte, adattandolo a una sola fazione). L'utente: "mi sembra un'ottima idea", da fare prima del Colony Plotter. I dati ci sono già: `/v1/systems/<id64>` di `acfs-server` dà lo storico delle influenze fino a 90 giorni (`?days=`), dalle osservazioni EDDN dal 18 ottobre 2026; prima di quella data non c'è storico nostro.
 
-- [ ] **In tabella**: accanto all'influenza di Flotta Stellare un mini-grafico dell'andamento e la variazione in punti (freccia e numero con segno, su 7 giorni o 24 ore), ordinabile per variazione (prima chi perde di più, o chi guadagna).
-- [ ] **Grafico del sistema** (clic sul mini-grafico): influenza di tutte le fazioni su 30 giorni (o 90), con medie tratteggiate, legenda per accendere e spegnere le fazioni, lettura al passaggio del mouse e con le frecce; **trascinando si ingrandisce**, con un pulsante per tornare indietro; guerre ed elezioni come **bande colorate**, e al passaggio quelle in corso con punteggio o esito (secondo le regole del punteggio di `CLAUDE.md`). Flotta Stellare in arancione, come nel grafico Fazioni.
-- [ ] Da decidere nel lavoro: un indirizzo del server con lo storico di tutti i sistemi in una richiesta (per i mini-grafici della tabella) invece di 400 richieste; quante osservazioni tenere per giorno (oggi tutte: si lega allo "Spazio sul server").
-- [ ] Legenda e Guida nelle tre lingue.
+- [x] **In tabella**: accanto all'influenza di Flotta Stellare un mini-grafico dell'andamento e la variazione in punti (freccia e numero con segno, su 7 giorni o 24 ore), ordinabile per variazione (prima chi perde di più, o chi guadagna).
+- [x] **Grafico del sistema** (clic sul mini-grafico): influenza di tutte le fazioni su 30 giorni (o 90), con medie tratteggiate, legenda per accendere e spegnere le fazioni, lettura al passaggio del mouse e con le frecce; **trascinando si ingrandisce**, con un pulsante per tornare indietro; guerre ed elezioni come **bande colorate**, e al passaggio quelle in corso con punteggio o esito (secondo le regole del punteggio di `CLAUDE.md`). Flotta Stellare in arancione, come nel grafico Fazioni.
+- [x] Indirizzo del server con lo storico di tutti i sistemi in una richiesta: `/v1/history` (`acfs-server`, `history.mjs`), solo Flotta Stellare e un punto per ogni cambio di influenza, circa 10 kB compressi per 242 sistemi il 25 ottobre 2026; il grafico usa `/v1/systems/<id64>`, che ora dà anche i conflitti di ogni osservazione. Le medie tratteggiate dei Canonn non ci sono (il nostro server non le calcola). Resta aperto quante osservazioni tenere per giorno (oggi tutte: si lega allo "Spazio sul server").
+- [x] Legenda e Guida nelle tre lingue.
 
 ## Spunti per il blog dell'utente
 

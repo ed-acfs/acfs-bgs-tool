@@ -411,6 +411,13 @@
     gap: 4px;
   }
 
+  // The second sort of the ACFS column: by the change in influence over the week.
+  .bgs-sort-header--trend {
+    margin-left: 6px;
+    font-size: 0.65em;
+    opacity: 0.8;
+  }
+
   .bgs-sort-header:hover:not(:disabled),
   .bgs-sort-header:focus-visible:not(:disabled) {
     color: var(--color-link-hover);
@@ -1166,4 +1173,9 @@
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
   color: var(--color-text-subtle);
+}
+
+// Sparkline and weekly change under our influence (phase 12).
+.bgs-trend {
+  margin-top: 2px;
 }
