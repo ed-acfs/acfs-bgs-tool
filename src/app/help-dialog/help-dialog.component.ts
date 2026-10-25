@@ -6,9 +6,10 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { CONFLICT_MARGIN_POINTS, FACTION_NAME, RETREAT_INFLUENCE_PERCENT } from '../../core/config';
 import { I18nService } from '../i18n.service';
 
-/** Optional dialog data: the Ordini Ufficiali page asks for the full Ordini section. */
+/** Optional dialog data: the Ordini Ufficiali page asks for the full Ordini section, the Colony Plotter for its own guide. */
 export interface HelpDialogData {
   orders?: boolean;
+  colonyPlotter?: boolean;
 }
 
 /**
@@ -31,5 +32,8 @@ export class HelpDialogComponent {
   protected readonly factionName = FACTION_NAME;
   protected readonly conflictMarginPoints = CONFLICT_MARGIN_POINTS;
   protected readonly retreatInfluencePercent = RETREAT_INFLUENCE_PERCENT;
-  protected readonly showOrders = inject<HelpDialogData | null>(MAT_DIALOG_DATA, { optional: true })?.orders === true;
+  private readonly data = inject<HelpDialogData | null>(MAT_DIALOG_DATA, { optional: true });
+  protected readonly showOrders = this.data?.orders === true;
+  /** Opened from the Colony Plotter page: only its guide, in Italian like the page. */
+  protected readonly showColonyPlotter = this.data?.colonyPlotter === true;
 }

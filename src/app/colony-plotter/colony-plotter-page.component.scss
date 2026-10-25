@@ -1,0 +1,496 @@
+.cp-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+// Intestazione come la tabella principale: titolo e riga dei dati a sinistra, pulsanti, logo a destra.
+.cp-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.cp-title {
+  flex: 1 1 auto;
+
+  h1 {
+    margin: 0;
+    color: var(--color-accent);
+  }
+}
+
+.cp-subtitle {
+  margin: 4px 0 0;
+  color: var(--color-text);
+}
+
+.cp-meta {
+  margin: 2px 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.cp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  max-width: 460px;
+}
+
+// Seconda riga dei pulsanti: l'accesso con Discord, come nella tabella.
+.cp-user {
+  display: flex;
+  justify-content: flex-end;
+  flex-basis: 100%;
+}
+
+// Legenda, sullo stile di quella della tabella.
+.cp-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px 24px;
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid var(--color-border-muted);
+  border-radius: 6px;
+  background-color: var(--color-surface);
+  color: var(--color-text-2);
+  font-size: 0.85rem;
+
+  ul {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 6px 10px;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    align-items: center;
+  }
+
+  .cp-tag {
+    margin: 0 4px 0 0;
+  }
+}
+
+.cp-legend-title {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.cp-legend-key {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-text);
+}
+
+.cp-legend-name {
+  cursor: default;
+}
+
+.cp-logo {
+  display: block;
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+}
+
+.cp-beta {
+  margin-left: 6px;
+  padding: 1px 6px;
+  border: 1px solid var(--color-accent);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  vertical-align: middle;
+}
+
+.cp-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-text-2);
+}
+
+.cp-error {
+  color: var(--color-danger);
+}
+
+.cp-panel {
+  margin-bottom: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--color-border-muted);
+  border-radius: 8px;
+  background: var(--color-surface-2);
+}
+
+.cp-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px 16px;
+}
+
+// Due righe: ordinamento sopra, filtri sotto.
+.cp-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+
+  &--grow {
+    flex: 1 1 280px;
+  }
+
+  &--narrow input {
+    width: 90px;
+    min-width: 0;
+  }
+
+  select,
+  input {
+    min-width: 170px;
+    padding: 7px 10px;
+    border: 1px solid var(--color-border-muted);
+    border-radius: 6px;
+    background: var(--color-surface-3);
+    color: var(--color-text);
+    font: inherit;
+    font-size: 0.9rem;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+}
+
+// Il pulsante per azzerare i filtri va in fondo alla riga, allineato ai campi.
+.cp-reset {
+  margin-left: auto;
+}
+
+.cp-check {
+  min-height: 36px;
+}
+
+.cp-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-2);
+  font-size: 0.85rem;
+
+  select {
+    padding: 4px 6px;
+    border: 1px solid var(--color-border-muted);
+    border-radius: 6px;
+    background: var(--color-surface-3);
+    color: var(--color-text);
+  }
+}
+
+.cp-count-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 8px 0;
+  color: var(--color-text-2);
+  font-size: 0.9rem;
+}
+
+.cp-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-border-muted);
+  border-radius: 8px;
+}
+
+.cp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+
+  th {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-accent);
+    font-size: 0.75rem;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border-muted);
+    vertical-align: top;
+  }
+
+  .cp-num {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  // Sistema e partenza larghi abbastanza per il nome e la riga dei link.
+  .cp-col-system {
+    min-width: 210px;
+  }
+}
+
+.cp-muted {
+  color: var(--color-text-muted);
+}
+
+.cp-name {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text-bright);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+}
+
+.cp-from {
+  color: var(--color-text-bright);
+  font-weight: 600;
+}
+
+.cp-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 4px 0 2px;
+  font-size: 0.8rem;
+
+  a,
+  .cp-copy {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-text-muted);
+    font: inherit;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-accent);
+    }
+  }
+
+  &--card {
+    gap: 16px;
+    font-size: 0.85rem;
+  }
+}
+
+.cp-sub {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.cp-inline {
+  display: inline;
+}
+
+.cp-claimed {
+  margin-left: 6px;
+  padding: 0 6px;
+  border: 1px solid var(--color-warning);
+  border-radius: 999px;
+  color: var(--color-warning);
+  font-size: 0.7rem;
+}
+
+.cp-tag {
+  display: inline-block;
+  margin: 0 4px 4px 0;
+  padding: 1px 8px;
+  border: 1px solid var(--color-accent);
+  border-radius: 999px;
+  color: var(--color-accent);
+  font-size: 0.75rem;
+
+  // Corpi rari in arancione, comuni neutri, biologia in verde, anelli e hotspot in azzurro.
+  &--common,
+  &--stars,
+  &--manyBodies {
+    border-color: var(--color-border);
+    color: var(--color-text);
+  }
+
+  &--biology {
+    border-color: var(--color-success);
+    color: var(--color-success);
+  }
+
+  &--geology {
+    border-color: var(--color-watchlist);
+    color: var(--color-watchlist);
+  }
+
+  &--rings,
+  &--hotspots {
+    border-color: var(--color-info);
+    color: var(--color-info);
+  }
+}
+
+.cp-pager {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0;
+  color: var(--color-text-2);
+}
+
+// Scheda del sistema, aperta dal nome.
+.cp-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 5vh 16px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.cp-card {
+  width: min(720px, 100%);
+  padding: 20px 24px;
+  border: 1px solid var(--color-border-muted);
+  border-radius: 10px;
+  background: var(--color-surface);
+  color: var(--color-text);
+
+  h2 {
+    margin: 0;
+    color: var(--color-accent);
+  }
+
+  h3 {
+    margin: 18px 0 6px;
+    color: var(--color-text-bright);
+    font-size: 1rem;
+  }
+
+  p {
+    margin: 2px 0;
+  }
+}
+
+.cp-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.cp-facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 16px;
+  margin: 12px 0 0;
+
+  dt {
+    color: var(--color-text-muted);
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.cp-source {
+  margin-bottom: 8px;
+}
+
+.cp-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+// Sotto i 720 px ogni sistema diventa una scheda, come nella tabella principale.
+@media (max-width: 720px) {
+  .cp-logo {
+    width: 56px;
+    height: 56px;
+  }
+
+  .cp-table {
+    thead {
+      display: none;
+    }
+
+    tr {
+      display: block;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    td {
+      display: block;
+      padding: 4px 0;
+      border: 0;
+
+      &.cp-num {
+        text-align: left;
+      }
+
+      &[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        color: var(--color-accent);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+      }
+    }
+  }
+}
+
+// I campi dei filtri si allargano fino a riempire la riga; casella e pulsante restano della loro misura.
+.cp-filters .cp-field {
+  flex: 1 1 0;
+  min-width: 160px;
+
+  select,
+  input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+}
+
+// Corpi minimi: al massimo tre cifre, resta stretto; gli altri campi della riga si dividono lo spazio.
+.cp-filters .cp-field--narrow {
+  flex: 0 0 110px;
+  min-width: 0;
+}

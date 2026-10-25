@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
-import { faChartColumn, faClipboardList, faKey, faRightFromBracket, faUserLock } from '@fortawesome/free-solid-svg-icons';
+import { faChartColumn, faClipboardList, faFlag, faKey, faRightFromBracket, faUserLock } from '@fortawesome/free-solid-svg-icons';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
@@ -36,6 +36,7 @@ import { TallyKeyDialogComponent } from '../tally-key-dialog/tally-key-dialog.co
             <a mat-menu-item routerLink="/ordini"><fa-icon [icon]="faClipboardList" aria-hidden="true"></fa-icon> Ordini</a>
           }
           <a mat-menu-item routerLink="/activity"><fa-icon [icon]="faChartColumn" aria-hidden="true"></fa-icon> Attività (beta)</a>
+          <a mat-menu-item routerLink="/colony-plotter"><fa-icon [icon]="faFlag" aria-hidden="true"></fa-icon> Colony Plotter (beta)</a>
         }
         @if (session.officer && i18n.isItalian()) {
           <button mat-menu-item type="button" (click)="openPilotKeys()"><fa-icon [icon]="faUserLock" aria-hidden="true"></fa-icon> Chiavi dei piloti</button>
@@ -83,6 +84,7 @@ export class AccountComponent implements OnInit {
   protected readonly faRightFromBracket = faRightFromBracket;
   protected readonly faClipboardList = faClipboardList;
   protected readonly faChartColumn = faChartColumn;
+  protected readonly faFlag = faFlag;
   protected readonly faKey = faKey;
   protected readonly faUserLock = faUserLock;
   private readonly dialog = inject(MatDialog);
