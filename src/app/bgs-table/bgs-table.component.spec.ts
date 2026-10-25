@@ -294,7 +294,7 @@ describe('BgsTableComponent', () => {
     expect(panel.querySelector('.bgs-state-entry-status--ended')!.textContent!.trim()).toBe('concluso');
     expect(panel.querySelector('app-conflict-score-card .side--ours .outcome')!.textContent).toBe('Vinto');
     expect(panel.querySelector('app-conflict-score-card .side--theirs .outcome')!.textContent).toBe('Perso');
-    expect(panel.textContent).toContain('Dato dal server ACFS (EDDN)');
+    expect(panel.textContent).toContain('Dato dal server ACFS (EDDN e BGS-Tally)');
   });
 
   it('opens the State details panel from the State icons, with factions, influence and status', async () => {
