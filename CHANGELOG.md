@@ -2,6 +2,19 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
+## [1.6.0-beta] - 2026-10-25 — Storico dell'influenza
+
+Versione di prova (`-beta`): l'editor degli Ordini non è ancora definitivo.
+
+### Storico dell'influenza (fase 12 della roadmap)
+
+- **Sotto l'influenza ACFS** di ogni sistema: un mini-grafico arancione degli ultimi 30 giorni e la variazione in punti nell'ultima settimana (▲ verde se guadagniamo, ▼ rosso se perdiamo, ▶ se è ferma), con i giorni su cui è misurata: se lo storico è più corto di una settimana compaiono i giorni reali (es. "4g").
+- **Ordinamento per variazione**: il pulsante ▲▼ accanto ad "ACFS" mette prima i sistemi in cui perdiamo di più.
+- **Grafico del sistema**, con un clic sul mini-grafico: l'influenza di tutte le fazioni, con Flotta Stellare in arancione e più spessa; guerre ed elezioni come bande colorate; passando il mouse (o con le frecce) le influenze di quel momento e i conflitti in corso con il punteggio dal nostro punto di vista ("Election contro X: Close Victory; 2-1", oppure "vinto, 4-1" a conflitto concluso); trascinando si ingrandisce un periodo; un clic sulle fazioni della legenda ne nasconde o mostra la linea.
+- Lo storico viene dal **server dello Squadrone** (nuovo indirizzo `/v1/history`, e lo storico dei conflitti in `/v1/systems/<id64>`) e parte dal 18 ottobre 2026, quando l'ascoltatore EDDN è partito: per ora copre circa una settimana e cresce da solo. Se il server non risponde la tabella si apre lo stesso, senza storico.
+- Idea, disegno e parte del codice dal tool dei Canonn (MIT), adattati a una sola fazione e ai dati del nostro server.
+- Legenda e Guida spiegano mini-grafico, variazione, ordinamento e grafico, nelle tre lingue.
+
 ## [1.5.7-beta] - 2026-10-24 — Scheda del punteggio con i colori di Inara
 
 Versione di prova (`-beta`): l'editor degli Ordini non è ancora definitivo.

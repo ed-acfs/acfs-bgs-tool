@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { BgsRow } from '../../core/bgs';
 import { FACTION_NAME, HOME_SYSTEM } from '../../core/config';
+import { InfluenceTrend } from '../../core/influence-history';
 import { BgsPage, BgsService } from '../bgs.service';
 import { BgsTableComponent, comparePriorityRows } from './bgs-table.component';
 
@@ -59,9 +60,11 @@ function serverPage(page: number): BgsPage {
 describe('BgsTableComponent', () => {
   let fixture: ComponentFixture<BgsTableComponent>;
   let component: BgsTableComponent;
-  let service: { getPage: ReturnType<typeof vi.fn>; prefetchPage: ReturnType<typeof vi.fn>; getArchitectRegistry: ReturnType<typeof vi.fn>; getDatasetInfo: ReturnType<typeof vi.fn>; getAllRows: ReturnType<typeof vi.fn> };
+  let service: { getPage: ReturnType<typeof vi.fn>; prefetchPage: ReturnType<typeof vi.fn>; getArchitectRegistry: ReturnType<typeof vi.fn>; getDatasetInfo: ReturnType<typeof vi.fn>; getAllRows: ReturnType<typeof vi.fn>; getInfluenceTrends: ReturnType<typeof vi.fn> };
   /** What the service's getAllRows hands the table: every system, as the single data file has them. */
   let allRows: BgsRow[];
+  /** What the service's getInfluenceTrends hands the table: none, unless a test sets some. */
+  let trends: Map<string, InfluenceTrend>;
 
   /** Reaches past `protected`/`private` — these are the component's externally observable state. */
   function pageSize(): number {
@@ -86,7 +89,9 @@ describe('BgsTableComponent', () => {
       getArchitectRegistry: vi.fn().mockResolvedValue([]),
       getDatasetInfo: vi.fn().mockResolvedValue({ generatedAt: '2026-10-04T21:28:47Z', tickAt: '2026-10-04T16:06:50Z', count: 500, conflictScoresAvailable: true }),
       getAllRows: vi.fn(() => Promise.resolve(allRows)),
+      getInfluenceTrends: vi.fn(() => Promise.resolve(trends)),
     };
+    trends = new Map();
 
     await TestBed.configureTestingModule({
       imports: [BgsTableComponent],
@@ -223,6 +228,25 @@ describe('BgsTableComponent', () => {
     await fixture.whenStable();
     expect(visibleRows().map(r => r.systemName)).toEqual(['Wong Sher', 'Sol', 'alpha Centauri', 'Achenar']);
     expect(header.textContent).toContain('▼');
+  });
+
+  it('shows the weekly change under our influence and sorts by it, biggest losses first', async () => {
+    const trend = (points: number): InfluenceTrend => ({
+      systemAddress: '1',
+      values: [40, 40 + points],
+      latestAt: Date.parse('2026-10-25T10:00:00Z'),
+      change: { points, days: 7, direction: points > 0 ? 'up' : points < 0 ? 'down' : 'flat' },
+    });
+    trends = new Map([['sol', trend(2.5)], ['achenar', trend(-3)]]);
+    const present = (systemName: string): BgsRow => ({ ...row(systemName), factionInfluence: 40 });
+    await load([present('Sol'), present('Achenar'), present('Wong Sher')]);
+    const host: HTMLElement = fixture.nativeElement;
+    expect(host.textContent).toContain('▼ −3,0');
+    expect(host.textContent).toContain('▲ +2,5');
+
+    host.querySelector<HTMLButtonElement>(`button[title^="Ordina per variazione"]`)!.click();
+    await fixture.whenStable();
+    expect(visibleRows().map(r => r.systemName)).toEqual(['Achenar', 'Sol', 'Wong Sher']);
   });
 
   it('keeps the Watchlist systems on top whatever the sort, sorted among themselves', async () => {

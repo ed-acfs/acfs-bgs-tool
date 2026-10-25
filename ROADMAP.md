@@ -10,18 +10,19 @@ Da leggere prima di proporre qualcosa o di dire che è "da fare", e da aggiornar
 
 | Fase | Stato | Cosa manca |
 |---|---|---|
-| 0-3. Preparazione, dati, `core`, identità e italiano | Fatte | Dettaglio minore: il typeahead è ancora quello dei Canonn |
+| 0-3. Preparazione, dati, `core`, identità e italiano | Fatte | Dettaglio minore: la ricerca per distanza usa ancora il typeahead dei Canonn (da spostare sul nostro server) |
 | 4. Priorità a fazione singola | Fatta | Rivedere soglie e pesi dopo qualche settimana d'uso |
 | 5. Form, Sheet e Watchlist | Fatta | — |
 | 6. Pubblicazione automatica | Fatta | — |
 | 7. Report su Discord | Superata dalla fase 10: gli avvisi partono dal server | Bot con slash command (in seguito) |
 | 8b. Accedi con Discord | **In produzione dal 18 ottobre 2026** (ruoli, chiavi BGS-Tally, Ordini e Assegna ai ruoli) | Cambiare la password dello script di "Assegna" |
-| 8. Accesso ristretto (Cloudflare) | Non serve per ora: coperta in buona parte dalla 8b | Da rivalutare solo se servono dati riservati |
+| 8. Accesso ristretto (Cloudflare) | **Chiusa il 25 ottobre 2026**: superata dalla 8b | Da riaprire solo se serviranno dati riservati |
 | 9. Ordini Ufficiali | **Editor a testo in prova (1.5.6-beta, 22 ottobre 2026)**; pagina dei membri sospesa | Decidere la pagina dei membri; rendere definitivo l'editor |
 | 10. Server: ascoltatore EDDN, database SQLite, API | **In produzione dal 18 ottobre 2026** su Oracle (`api.flottastellare.it`). Il tool prende da lì fazioni, influenze, stati, controllo e punteggi quando sono più recenti di Spansh. **Dal 23 ottobre 2026 scarica da sé Spansh ogni ora e pubblica `/v1/site` per il sito** (mappa 3D del sito che legge da lì pubblicata lo stesso giorno, sito 1.9.0) | **Prossimo incontro**: salti di BGS-Tally come seconda fonte + avviso dei dati fermi (vedi fase 10). Poi: tool che prende tutto dal server ("vince il più fresco" per blocchi), sistemi nuovi scoperti dall'ascoltatore, avanzamento delle colonie, spazio sul server |
 | 10b. Classifiche del lavoro | Decise; Attività (beta) aperta ai membri dal 20 ottobre 2026 | Periodi, campagne, categorie |
 | 11. Plugin EDMC | Messo a piano | Tutto |
-| Colony Plotter | Obiettivo della settimana dal 26 ottobre 2026 | Tutto |
+| 12. Storico delle influenze | **Fatta il 25 ottobre 2026** (1.6.0-beta; `/v1/history` sul server) | Lo storico cresce da solo; in seguito eventualmente 90 giorni nel grafico |
+| Colony Plotter | **Prossimo lavoro**: obiettivo della settimana dal 26 ottobre 2026; in un **repo separato** | Tutto |
 
 **Da Spansh vengono ancora**: stazioni, popolazione e servizi, e i dati di riserva quando il server non risponde. Il tool li scarica col suo workflow (`bgs.json`); dal 23 ottobre 2026 il server li scarica anche da sé ogni ora, e da lì prende l'elenco dei sistemi da seguire.
 
@@ -63,7 +64,7 @@ Ogni fase si chiude con qualcosa da vedere o provare, su un branch, prima di far
 - [x] `canonn-bgs.service.ts` legge il JSON statico al posto della Cloud Function, con un solo fetch e senza token o pagine
 - [x] Sheet e Form Canonn scollegati: nessuna lettura del loro registro e invio dal dialog Assign bloccato finché non c'è il nostro Form (fase 5)
 - [x] Test: `npm run test:scripts` per lo script, `canonn-bgs.service.spec.ts` riscritto per il JSON statico
-- [ ] Typeahead per la distanza: per ora resta l'intermediario pubblico dei Canonn (`query/typeahead`), che copre tutta la galassia. Da sostituire quando avremo un nostro intermediario (fase 8, Worker)
+- [ ] Typeahead per la distanza: per ora resta l'intermediario pubblico dei Canonn (`query/typeahead`), che copre tutta la galassia. **Aggiornato il 25 ottobre 2026**: il Worker della fase 8 non serve più, l'intermediario nostro c'è già ed è `acfs-server` (un indirizzo come `/v1/typeahead` che gira la ricerca a Spansh, che non manda CORS). Lo usa anche la ricerca sistemi degli Ordini
 
 **Fatto quando:** `npm start` mostra i circa 389 sistemi di Flotta Stellare con stati e freschezza del dato. Raggiunto il 4 ottobre 2026: 389 sistemi, 249 controllati. L'influenza di Flotta Stellare compare con le fasi 3–4, perché le colonne CANO/CDSR e i test della priorità sono scritti per i nomi Canonn.
 
@@ -173,15 +174,17 @@ L'utente vuole "un vero pannello di accesso, senza password buttate lì a caso",
 - **Passi**: (1) applicazione nel Discord Developer Portal, creata dall'utente (redirect `https://api.flottastellare.it/auth/discord/callback`; il Client Secret solo nel `.env` del server); (2) servizio `auth` sul server e `/v1/work` anche con la sessione; (3) pulsante nel tool e `/activity` aperta dal ruolo; (4) chiavi BGS-Tally self-service; (5) Ordini e "Assegna" ai ruoli, via le password condivise. **Passo 5 fatto il 18 ottobre 2026 sera**: Assegna passa dal server (solo ufficiali, password solo nel `.env` del server), Ordini con bozza condivisa e pubblicazione per i membri, `/v1/work` senza `OFFICERS_PASSWORD`.
 - [ ] **Cambiare la password dello script di "Assegna"** (da fare con calma, deciso dall'utente il 18 ottobre 2026): oggi la chiave fra server e foglio è ancora la vecchia password che gli ufficiali conoscevano, e lo script risponde a chiunque ne conosca l'indirizzo (pubblico, è nella storia del repo). Sceglierne una lunga e casuale (`openssl rand -hex 24` sul server) e metterla insieme nelle Proprietà dello script (`ASSIGN_PASSWORD`) e nel `.env` del server, poi `docker compose up -d auth`. Così si scrive nel foglio solo con il ruolo Discord. Rischio basso: è una pulizia, non un'urgenza.
 
-### 8. Accesso ristretto (in seguito)
+### 8. Accesso ristretto (chiusa il 25 ottobre 2026: superata dalla fase 8b)
+
+Chiusa perché l'accesso con Discord (8b) copre ciò che serviva: Ordini, "Assegna", Attività e chiavi seguono il ruolo Discord, controllato dal server. Fazioni preferite e motivazioni della Watchlist **non sono riservate** (decisione dell'utente del 6 ottobre 2026, vedi `CLAUDE.md`). Da riaprire solo se un giorno servissero dati riservati. Testo originale qui sotto, per memoria.
 
 Il tool contiene strategia di gioco: accordi, fazione preferita, motivazioni della Watchlist. Su GitHub Pages è visibile a chiunque. I Canonn non proteggono nulla: sito, repo, Sheet e Form sono pubblici, e le note della loro Watchlist si leggono senza login.
 
 Da proteggere sono **lo Sheet e le sue note**, non i dati Spansh (chiunque può interrogare Spansh):
 
-- [ ] Spostare l'hosting su Cloudflare Pages con Cloudflare Access, gratuito fino a 50 utenti. Login con codice via email, account GitHub o Google. Il repo può tornare privato. In alternativa, login con Discord e controllo del ruolo nel server ACFS tramite un Cloudflare Worker: più lavoro, ma l'accesso segue i ruoli Discord
-- [ ] Togliere la pubblicazione sul web dello Sheet: lo legge il workflow o il Worker, con un account di servizio Google le cui credenziali stanno nei Secrets
-- [ ] Valutare se sostituire il Google Form con un endpoint del Worker, così solo chi ha fatto login può scrivere
+- [x] ~~Spostare l'hosting su Cloudflare Pages con Cloudflare Access~~ (superata: login con Discord e ruoli dal nostro server, fase 8b), gratuito fino a 50 utenti. Login con codice via email, account GitHub o Google. Il repo può tornare privato. In alternativa, login con Discord e controllo del ruolo nel server ACFS tramite un Cloudflare Worker: più lavoro, ma l'accesso segue i ruoli Discord
+- [x] ~~Togliere la pubblicazione sul web dello Sheet~~ (non serve: i dati del foglio non sono riservati, decisione del 6 ottobre 2026): lo legge il workflow o il Worker, con un account di servizio Google le cui credenziali stanno nei Secrets
+- [x] ~~Valutare se sostituire il Google Form con un endpoint del Worker~~ (fatto in altro modo: dal 18 ottobre 2026 "Assegna" scrive nel foglio passando dal server, solo per gli ufficiali; resta aperta la domanda della fase 8a sul Form pubblico)
 
 Già dalle fasi 1–7 vale una regola: niente dati strategici nel repo. Lo Sheet si legge per URL configurabile, così passare alla fase 8 non richiede di riscrivere l'app.
 
@@ -339,6 +342,15 @@ Un plugin EDMC dello Squadrone, sul modello di [EDMC-Canonn](https://github.com/
 | canonn-tools, Canonn-Scripts | GPL-3.0 | Come Canonn-GCloud |
 | canonn_colony_finder | nessuna licenza | Tutti i diritti riservati: solo l'idea; codice da riscrivere o con il loro permesso |
 
+### 12. Storico delle influenze (deciso e fatto il 25 ottobre 2026, versione 1.6.0-beta)
+
+Idea dal tool dei Canonn (commit `f90f4b7` del 15 ottobre e `50b2a23` del 25 ottobre di `upstream`, MIT: si può riprendere codice citando la fonte, adattandolo a una sola fazione). L'utente: "mi sembra un'ottima idea", da fare prima del Colony Plotter. I dati ci sono già: `/v1/systems/<id64>` di `acfs-server` dà lo storico delle influenze fino a 90 giorni (`?days=`), dalle osservazioni EDDN dal 18 ottobre 2026; prima di quella data non c'è storico nostro.
+
+- [x] **In tabella**: accanto all'influenza di Flotta Stellare un mini-grafico dell'andamento e la variazione in punti (freccia e numero con segno, su 7 giorni o 24 ore), ordinabile per variazione (prima chi perde di più, o chi guadagna).
+- [x] **Grafico del sistema** (clic sul mini-grafico): influenza di tutte le fazioni su 30 giorni (o 90), con medie tratteggiate, legenda per accendere e spegnere le fazioni, lettura al passaggio del mouse e con le frecce; **trascinando si ingrandisce**, con un pulsante per tornare indietro; guerre ed elezioni come **bande colorate**, e al passaggio quelle in corso con punteggio o esito (secondo le regole del punteggio di `CLAUDE.md`). Flotta Stellare in arancione, come nel grafico Fazioni.
+- [x] Indirizzo del server con lo storico di tutti i sistemi in una richiesta: `/v1/history` (`acfs-server`, `history.mjs`), solo Flotta Stellare e un punto per ogni cambio di influenza, circa 10 kB compressi per 242 sistemi il 25 ottobre 2026; il grafico usa `/v1/systems/<id64>`, che ora dà anche i conflitti di ogni osservazione. Le medie tratteggiate dei Canonn non ci sono (il nostro server non le calcola). Resta aperto quante osservazioni tenere per giorno (oggi tutte: si lega allo "Spazio sul server").
+- [x] Legenda e Guida nelle tre lingue.
+
 ## Spunti per il blog dell'utente
 
 L'utente vuole scrivere qualche articolo su questo lavoro nel suo blog (repo `skyflash.github.io`, accanto a questo, post in `it/` ed `en/`). Traccia dei temi, con dove trovare i dettagli (CHANGELOG, questa roadmap, README dei due repo):
@@ -417,7 +429,7 @@ L'utente vuole scrivere qualche articolo su questo lavoro nel suo blog (repo `sk
 
 - **Ecosistema di strumenti, sul modello dei Canonn (18 ottobre 2026).** L'utente vuole lo stesso livello di collegamento fra strumenti dei Canonn. I loro non si chiamano a vicenda: condividono due fonti, la Cloud Function (`…/query`) e il foglio del Registro Architetti con il suo modulo. Repository esaminati:
   - **[EDMC-Canonn](https://github.com/canonn-science/EDMC-Canonn)** (plugin EDMC in Python, GPL-3.0): entrando in un sistema mostra in EDMC l'architetto letto dal Registro (membro Canonn: tooltip con la fazione preferita; esterno: "No BGS without Architects Permission"; nessuno: link "click to submit" al modulo precompilato con sistema e comandante). Ha anche una "Canonn Influence Patrol" (sistemi vicini con influenza e istruzioni, anche in sovrimpressione nel gioco con EDMC-Overlay), che legge ancora da EliteBGS: è la nostra Pattuglia, ma nel gioco. **Un plugin nostro** è possibile dopo il server della fase 10, per *mostrare* (priorità, Ordini, architetto, prossimo sistema della Pattuglia) leggendo dalla nostra API; per *inviare* basta BGS-Tally. Costo: distribuzione ai piloti e aggiornamenti al cambiare di EDMC.
-  - **[canonn_colony_finder](https://github.com/canonn-science/canonn_colony_finder)**: sistemi disabitati, senza fazioni e "interessanti" (corpi rari, più di 40 corpi o voci del Codex) entro 15 anni luce da una stazione controllata, con l'indicazione "colonizza X partendo da Y". Per noi: una sezione **Colonizzazione** nel tool, partendo dalle stazioni di Flotta Stellare. Costo: legge in un passaggio l'archivio galattico di Spansh (circa 117 GB), fattibile una volta al mese sul server; alternativa da valutare, la ricerca di Spansh attorno a ogni nostra stazione. **18 ottobre 2026, decisioni dell'utente**: si fa, in un **repo separato** (es. `ed-acfs/acfs-colony-finder`; regola generale dell'utente: "ogni pezzetto è un repo"), con codice nostro (il loro repo non ha licenza). Il disco del server (45 GB) non basta per l'archivio da 117 GB: prima prova con la ricerca di Spansh attorno alle stazioni di Flotta Stellare; l'archivio completo solo allargando il disco su Oracle (gratis fino a 200 GB). Risultato: un JSON pubblicato dal server e una sezione "Colonizzazione" nel tool. Viene dopo "Accedi con Discord" (fase 8b). **Obiettivo della settimana dal 26 ottobre 2026** (indicazione dell'utente del 20 ottobre): il **Colony Plotter**, ispirato a quello dei Canonn e appoggiato alla nostra API (`acfs-server`). Prima di cominciare, valutare se gli serve leggere eventi di BGS-Tally (vedi "Stati e influenze anche dai salti di BGS-Tally" nella fase 10).
+  - **[canonn_colony_finder](https://github.com/canonn-science/canonn_colony_finder)**: sistemi disabitati, senza fazioni e "interessanti" (corpi rari, più di 40 corpi o voci del Codex) entro 15 anni luce da una stazione controllata, con l'indicazione "colonizza X partendo da Y". Per noi: una sezione **Colonizzazione** nel tool, partendo dalle stazioni di Flotta Stellare. Costo: legge in un passaggio l'archivio galattico di Spansh (circa 117 GB), fattibile una volta al mese sul server; alternativa da valutare, la ricerca di Spansh attorno a ogni nostra stazione. **18 ottobre 2026, decisioni dell'utente**: si fa, in un **repo separato** (es. `ed-acfs/acfs-colony-finder`; regola generale dell'utente: "ogni pezzetto è un repo"), con codice nostro (il loro repo non ha licenza). Il disco del server (45 GB) non basta per l'archivio da 117 GB: prima prova con la ricerca di Spansh attorno alle stazioni di Flotta Stellare; l'archivio completo solo allargando il disco su Oracle (gratis fino a 200 GB). Risultato: un JSON pubblicato dal server e una sezione "Colonizzazione" nel tool. Viene dopo "Accedi con Discord" (fase 8b). **Obiettivo della settimana dal 26 ottobre 2026** (indicazione dell'utente del 20 ottobre; il 25 ottobre l'utente ha confermato il **repo a parte** e ha messo prima lo storico delle influenze, fase 12): il **Colony Plotter**, ispirato a quello dei Canonn e appoggiato alla nostra API (`acfs-server`). Prima di cominciare, valutare se gli serve leggere eventi di BGS-Tally (vedi "Stati e influenze anche dai salti di BGS-Tally" nella fase 10).
   - **[canonn-signals](https://github.com/canonn-science/canonn-signals)** (Angular, MIT): esplorazione (corpi, segnali, orbite, risorse), non BGS. Al massimo un link "Apri in Canonn Signals" nel riquadro del sistema.
   - **[canonn-tools](https://github.com/canonn-science/canonn-tools)**: strumenti di ricerca (Codex, Thargoid, glifi), non utili per noi.
   - Ordine proposto: server (fase 10), Colony Finder nel tool, plugin EDMC, link a Canonn Signals quando capita.
@@ -427,6 +439,14 @@ L'utente vuole scrivere qualche articolo su questo lavoro nel suo blog (repo `sk
   - **Font**: Euro Caps è quello dei titoli del gioco ed è "100% Free" su dafont, quindi utilizzabile; Eurostile e Century Gothic sono commerciali (Monotype/Linotype), da non usare. Oggi il tool usa Roboto, che all'utente piace: Euro Caps eventualmente solo per titoli.
   - Le immagini ufficiali restano proprietà di Frontier: vanno usate come contenuto di fan, citando la fonte.
   - In arrivo dall'utente: emoji in immagine, per esempio un'icona del Retreat diversa dal ⚠️ della forbice.
+
+- **Altre novità del tool dei Canonn (controllate il 25 ottobre 2026, da fare più avanti; l'utente: "ci sono cose molto interessanti").** Dal loro `main` fra il 15 e il 25 ottobre 2026 (MIT):
+  - **Link condivisibili**: un link che riapre la stessa vista (filtri, ordinamento, pagina; `bdfa799`), uno che apre la scheda di priorità di un sistema (`?priority=`, `4de5f86`) e uno che apre "Assegna" (`?assign=`, `012c3b2`). Per noi: link ai sistemi negli Ordini e su Discord. Costo basso; si può fare insieme allo storico.
+  - **Scheda "perché conta"** (`632fdc9`, `c25c440`): per ogni sistema con priorità spiega a regole perché conta, cosa aiuta adesso (in guerra conta solo il combattimento, in elezione solo l'economia; una fazione senza stazioni guadagna solo con missioni e taglie), il percorso verso il controllo pieno (margine sano 15-20 punti), la pressione del Powerplay e la storia con le fazioni rivali. Per noi molto utile ai piloti che non conoscono il BGS; lavoro grosso (circa 1.900 righe) e le regole vanno riviste con l'utente prima di scriverle.
+  - **Colony Census / Faction Atlas** (`839373b`, `9025467`, `21f4ac4`): statistiche dal vivo su architetti, successo delle fazioni preferite, tipi di stazione, distribuzione dell'influenza, rivali. Da valutare insieme al Colony Plotter.
+  - **Freschezza in ore** per un dato di oggi ("4 ore" invece di "oggi", `6295be0`): dopo il tick "oggi" non dice se il dato è di prima o dopo. Costo molto basso.
+  - **Membri dello Squadrone nella ricerca di "Assegna"** (`6111520`, loro da un foglio dei membri): per noi dai ruoli Discord, che il server conosce già.
+  - Non utili per noi: schede nella pagina iniziale, aggiornamento automatico della tabella tolto, tooltip del conflitto col punteggio (la nostra scheda del punteggio fa di più).
 
 ## Domande aperte
 

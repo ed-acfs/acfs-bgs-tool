@@ -69,6 +69,9 @@ import { readYourName } from '../your-name';
 import { version } from '../../../package.json';
 import { I18nService } from '../i18n.service';
 import { ConflictScoreCardComponent } from '../conflict-score-card/conflict-score-card.component';
+import { InfluenceTrendComponent } from '../influence-trend/influence-trend.component';
+import { InfluenceChartDialogComponent, InfluenceChartDialogData } from '../influence-chart-dialog/influence-chart-dialog.component';
+import { InfluenceTrend } from '../../core/influence-history';
 import { AccountComponent } from '../account/account.component';
 import { AuthService } from '../auth.service';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
@@ -90,6 +93,7 @@ type Mode = 'paged' | 'distance' | 'column';
 type SortColumn =
   | 'systemName'
   | 'influence'
+  | 'trend'
   | 'margin'
   | 'controllingFaction'
   | 'architect'
@@ -126,6 +130,10 @@ function columnValue(row: BgsRow, column: SortColumn): string | number | null {
       return row.systemName;
     case 'influence':
       return row.factionInfluence;
+    case 'trend':
+      // Never reached: the trend lives outside the row (see BgsTableComponent.trends) and is
+      // sorted in sortRows; TypeScript needs this case for exhaustiveness.
+      return null;
     case 'margin':
       return row.margin?.points ?? null;
     case 'controllingFaction':
@@ -219,6 +227,7 @@ function toAnchorPoint(system: TypeaheadSystem): AnchorPoint {
     AcfsLogoComponent,
     LanguageSwitcherComponent,
     ConflictScoreCardComponent,
+    InfluenceTrendComponent,
     AccountComponent,
   ],
   templateUrl: './bgs-table.component.html',
@@ -340,6 +349,10 @@ export class BgsTableComponent implements OnDestroy {
 
   /** Every system, fetched once needed for a 'distance' or 'column' sort; reused for later re-sorts. */
   private readonly fullDataset = signal<BgsRow[] | null>(null);
+  /** The sample trend drawn in the Legend: a loss over the week. */
+  protected readonly legendTrend: InfluenceTrend = { systemAddress: '', values: [52, 51, 49.5, 48], latestAt: 0, change: { points: -4, days: 7, direction: 'down' } };
+  /** Our influence trend by lowercased system name, from the server's history (empty until it answers, or if it doesn't). */
+  private readonly trends = signal<ReadonlyMap<string, InfluenceTrend>>(new Map());
 
   // --- system search box ------------------------------------------------------------------
   protected readonly systemSearchControl = new FormControl(HOME_SYSTEM);
@@ -509,6 +522,10 @@ export class BgsTableComponent implements OnDestroy {
         if (column === 'priority') {
           return [...base].sort((a, b) => comparePriorityRows(a, b, direction, this.now()));
         }
+        if (column === 'trend') {
+          const change = (row: BgsRow): number | null => this.trendFor(row)?.change?.points ?? null;
+          return [...base].sort((a, b) => compareColumnValues(change(a), change(b), direction));
+        }
         return [...base].sort((a, b) => compareColumnValues(columnValue(a, column), columnValue(b, column), direction));
       }
       default:
@@ -566,6 +583,7 @@ export class BgsTableComponent implements OnDestroy {
         // Same: the counter just stays hidden.
       },
     );
+    void this.bgsService.getInfluenceTrends().then(trends => this.trends.set(trends));
     void this.loadArchitectFilterNames();
     this.architectFilterControl.setValue(readYourName());
 
@@ -1209,6 +1227,27 @@ export class BgsTableComponent implements OnDestroy {
       autoFocus: 'first-tabbable',
       restoreFocus: true,
       maxWidth: 'min(1168px, 90vw)',
+    });
+  }
+
+  /** The sparkline and change under our influence, if the server has a history for the system. */
+  protected trendFor(row: BgsRow): InfluenceTrend | null {
+    return this.trends().get(row.systemName.toLowerCase()) ?? null;
+  }
+
+  /** Opens the system's influence chart, from the trend under our influence. */
+  protected openInfluenceChart(row: BgsRow): void {
+    const trend = this.trendFor(row);
+    if (!trend) {
+      return;
+    }
+    const data: InfluenceChartDialogData = { systemName: row.systemName, systemAddress: trend.systemAddress };
+    this.dialog.open(InfluenceChartDialogComponent, {
+      data,
+      autoFocus: 'first-tabbable',
+      restoreFocus: true,
+      width: 'min(900px, 94vw)',
+      maxWidth: '94vw',
     });
   }
 

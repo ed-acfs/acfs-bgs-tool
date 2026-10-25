@@ -19,6 +19,8 @@ export interface ServerConflict {
   type: string | null;
   /** "pending", "active" or "ended" (finished, with its final score). */
   status: string;
+  /** Whether our faction is one of the sides (then it is `faction1`). */
+  involves_us?: boolean;
   faction1: ServerConflictSide;
   faction2: ServerConflictSide;
 }
