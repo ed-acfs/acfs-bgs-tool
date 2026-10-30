@@ -64,16 +64,34 @@ const FLEET_CARRIER_FACTION = 'FleetCarrier';
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUTPUT_PATH = path.join(repoRoot, 'public', 'data', 'bgs.json');
 
-async function request(url, init = {}) {
-  const response = await fetch(url, {
-    ...init,
-    headers: { 'User-Agent': USER_AGENT, ...(init.headers ?? {}) },
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
-  if (!response.ok) {
-    throw new Error(`${init.method ?? 'GET'} ${url}: HTTP ${response.status}`);
+/** Pauses before each retry: Spansh answered 502 on 28 Oct 2026 and timed out on 17 Oct, then worked again within minutes. */
+const RETRY_DELAYS_MS = [2_000, 6_000];
+
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+/** Network failures, timeouts and 5xx are worth retrying; a 4xx (bad request, not found) won't change. */
+function isTransient(error) {
+  return error.status === undefined || error.status >= 500;
+}
+
+export async function request(url, init = {}, { fetchFn = fetch, delaysMs = RETRY_DELAYS_MS } = {}) {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      const response = await fetchFn(url, {
+        ...init,
+        headers: { 'User-Agent': USER_AGENT, ...(init.headers ?? {}) },
+        signal: AbortSignal.timeout(TIMEOUT_MS),
+      });
+      if (!response.ok) {
+        throw Object.assign(new Error(`${init.method ?? 'GET'} ${url}: HTTP ${response.status}`), { status: response.status });
+      }
+      return await response.json();
+    } catch (error) {
+      if (attempt >= delaysMs.length || !isTransient(error)) throw error;
+      console.warn(`${error.message}: retrying (${attempt + 1}/${delaysMs.length})`);
+      await sleep(delaysMs[attempt]);
+    }
   }
-  return response.json();
 }
 
 /**
