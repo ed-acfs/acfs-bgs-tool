@@ -51,3 +51,8 @@ Thumbs.db
 
 # Report del SEO Monitor (locale, rigenerato ogni settimana)
 SEO-REPORT.md
+
+# Segreti locali (URL di webhook Discord e simili): mai nel repo
+.env
+.env.local
+.strumenti-ids.json

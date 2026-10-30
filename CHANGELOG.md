@@ -15,6 +15,11 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 - **Riquadro «Usciti di recente»**: quando Flotta Stellare esce da un sistema, Spansh lo toglie e la riga sparisce dalla tabella. Per 7 giorni il sistema resta ricordato in un riquadro sopra la tabella, con la data dell'uscita e chi lo controlla ora (dagli eventi `faction_left` del server). Se siamo rientrati non compare. Spiegato in Legenda e Guida, nelle tre lingue. Il riquadro è nascosto quando non c'è nessuna uscita (il 30 ottobre non ce n'erano).
 - Il server non risponde: la tabella si apre come prima, con i dati del file.
 
+### Canale Discord #strumenti
+
+- **Testi e script per il canale #strumenti** (`scripts/strumenti-messaggi.mjs`, `scripts/publish-strumenti.mjs`): cinque messaggi in italiano con presentazione del tool, i tre passi per installare EDMC e BGS-Tally, generare la chiave ed attivare l'invio a EDDN, e una nota sulla privacy. Si pubblicano con un webhook (URL in `.env.local`, ignorato da git) e si possono aggiornare sul posto; `--prod` è necessario per scrivere sul server vero. Aggiungere uno strumento nuovo vuol dire aggiungere un messaggio all'elenco.
+- **Finestra della chiave BGS-Tally**: il testo sulla privacy dice ora che il server tiene «solo ciò che serve al BGS di Flotta Stellare: il tuo lavoro per la Flotta e i dati dei sistemi in cui è presente», perché i salti dei piloti vengono conservati; prima diceva solo «il lavoro per Flotta Stellare». Aggiornato nelle tre lingue.
+
 ## [1.7.1-beta] - 2026-10-25 — Salti di BGS-Tally come seconda fonte
 
 Versione di prova (`-beta`): l'editor degli Ordini non è ancora definitivo, e il Colony Plotter è appena nato.
