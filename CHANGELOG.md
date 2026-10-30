@@ -2,6 +2,12 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
+## [1.7.2-beta] - 2026-10-30 — Tentativi ripetuti verso Spansh
+
+### Pubblicazione
+
+- **Lo scarico da Spansh ritenta prima di arrendersi**: `fetch-bgs.mjs` (e la sua copia `spansh.mjs` sul server) ripetono fino a due volte, con pause di 2 e 6 secondi, una richiesta fallita per errore di rete, timeout o risposta 5xx; un 4xx non si ripete. Prima il primo errore fermava il workflow: su 200 esecuzioni dal 5 al 30 ottobre 2026 tre erano fallite, due per Spansh (502 il 28 ottobre, timeout il 17). Il sito non si rompeva (restava l'ultimo `bgs.json`), ma l'esecuzione compariva in rosso. Con test per i tre casi (riuscita dopo gli errori, resa dopo i tentativi, nessun tentativo sul 4xx).
+
 ## [1.7.1-beta] - 2026-10-25 — Salti di BGS-Tally come seconda fonte
 
 Versione di prova (`-beta`): l'editor degli Ordini non è ancora definitivo, e il Colony Plotter è appena nato.

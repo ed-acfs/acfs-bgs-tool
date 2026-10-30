@@ -6,6 +6,7 @@ import {
   fetchConflictScores,
   fetchLastTick,
   fetchServiceTypes,
+  request,
   serviceSystems,
   slimSystem,
 } from './fetch-bgs.mjs';
@@ -260,4 +261,32 @@ test('keeps the services as unknown kinds when the station search fails', async 
   const systems = [{ name: 'Zandu', assets: [{ name: 'Hub', material_trader: 'unknown' }] }];
   applyServiceTypes(systems, types);
   assert.equal(systems[0].assets[0].material_trader, 'unknown');
+});
+
+const reply = (status, body = {}) => ({ ok: status < 400, status, json: async () => body });
+
+test('request retries a 5xx or a network failure and then succeeds', async () => {
+  const answers = [reply(502), new TypeError('fetch failed'), reply(200, { ok: true })];
+  let calls = 0;
+  const fetchFn = async () => {
+    const next = answers[calls++];
+    if (next instanceof Error) throw next;
+    return next;
+  };
+  assert.deepEqual(await request('http://x', {}, { fetchFn, delaysMs: [0, 0] }), { ok: true });
+  assert.equal(calls, 3);
+});
+
+test('request gives up after the retries and reports the last error', async () => {
+  let calls = 0;
+  const fetchFn = async () => (calls++, reply(502));
+  await assert.rejects(request('http://x', {}, { fetchFn, delaysMs: [0, 0] }), /HTTP 502/);
+  assert.equal(calls, 3);
+});
+
+test('request does not retry a 4xx', async () => {
+  let calls = 0;
+  const fetchFn = async () => (calls++, reply(404));
+  await assert.rejects(request('http://x', {}, { fetchFn, delaysMs: [0, 0] }), /HTTP 404/);
+  assert.equal(calls, 1);
 });
