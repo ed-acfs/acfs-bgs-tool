@@ -60,7 +60,7 @@ function serverPage(page: number): BgsPage {
 describe('BgsTableComponent', () => {
   let fixture: ComponentFixture<BgsTableComponent>;
   let component: BgsTableComponent;
-  let service: { getPage: ReturnType<typeof vi.fn>; prefetchPage: ReturnType<typeof vi.fn>; getArchitectRegistry: ReturnType<typeof vi.fn>; getDatasetInfo: ReturnType<typeof vi.fn>; getAllRows: ReturnType<typeof vi.fn>; getInfluenceTrends: ReturnType<typeof vi.fn> };
+  let service: { getPage: ReturnType<typeof vi.fn>; prefetchPage: ReturnType<typeof vi.fn>; getArchitectRegistry: ReturnType<typeof vi.fn>; getDatasetInfo: ReturnType<typeof vi.fn>; getAllRows: ReturnType<typeof vi.fn>; getInfluenceTrends: ReturnType<typeof vi.fn>; getRecentExits: ReturnType<typeof vi.fn> };
   /** What the service's getAllRows hands the table: every system, as the single data file has them. */
   let allRows: BgsRow[];
   /** What the service's getInfluenceTrends hands the table: none, unless a test sets some. */
@@ -90,6 +90,7 @@ describe('BgsTableComponent', () => {
       getDatasetInfo: vi.fn().mockResolvedValue({ generatedAt: '2026-10-04T21:28:47Z', tickAt: '2026-10-04T16:06:50Z', count: 500, conflictScoresAvailable: true }),
       getAllRows: vi.fn(() => Promise.resolve(allRows)),
       getInfluenceTrends: vi.fn(() => Promise.resolve(trends)),
+      getRecentExits: vi.fn(() => Promise.resolve([])),
     };
     trends = new Map();
 
@@ -197,6 +198,21 @@ describe('BgsTableComponent', () => {
     await fixture.whenStable();
     expect(headerText()).toBe('Legenda');
     localStorage.removeItem('acfs-bgs:lang');
+  });
+
+  it('shows the systems we left in the last week above the table, and nothing when there are none', async () => {
+    const host: HTMLElement = fixture.nativeElement;
+    expect(host.querySelector('.bgs-exits')).toBeNull();
+
+    service.getRecentExits.mockResolvedValue([{ name: 'Misir', at: '2026-10-29T10:00:00Z', controllingFaction: 'Other' }]);
+    fixture = TestBed.createComponent(BgsTableComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const box = (fixture.nativeElement as HTMLElement).querySelector('.bgs-exits');
+    expect(box?.textContent).toContain('Misir');
+    expect(box?.textContent).toContain('Other');
   });
 
   it('opens and closes the legend panel from the header button', async () => {

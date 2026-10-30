@@ -117,3 +117,108 @@ export function withServerData(record: BgsSystemRecord, server: ServerData): Bgs
   }
   return result;
 }
+
+/** One entry of the server's `/v1/site`: base data (coordinates, population) merged from Spansh and EDDN, whichever is fresher. */
+export interface SiteSystem {
+  system_address: string;
+  name: string;
+  x: number | null;
+  y: number | null;
+  z: number | null;
+  population: number | null;
+  /** False when the server's listener saw our faction leave the system. */
+  present: boolean;
+  /** Where the base data (coordinates, population…) comes from: 'eddn' means it is fresher than Spansh's. */
+  base_source: 'spansh' | 'eddn' | null;
+}
+
+export interface SiteResponse {
+  systems: SiteSystem[];
+}
+
+/**
+ * The dataset's systems with the server's base data folded in, plus the systems only the server
+ * knows (a new colony or an expansion, seen by the listener before Spansh):
+ * - population and coordinates from the server when it has them fresher than Spansh's (EDDN);
+ * - a system missing from the dataset is added when the server has its coordinates, still has our
+ *   faction there and has seen its factions (those come through {@link withServerData}).
+ * Stations and services always stay Spansh's: a new system shows none until Spansh lists it.
+ */
+export function withSiteData(records: BgsSystemRecord[], site: SiteResponse, server: ServerData | null): BgsSystemRecord[] {
+  const byName = new Map((site.systems ?? []).map(s => [s.name.toLowerCase(), s]));
+  const known = new Set<string>();
+  const merged = records.map(record => {
+    const key = record.name.toLowerCase();
+    known.add(key);
+    const entry = byName.get(key);
+    if (entry?.base_source !== 'eddn') {
+      return record;
+    }
+    return {
+      ...record,
+      population: entry.population ?? record.population,
+      x: entry.x ?? record.x,
+      y: entry.y ?? record.y,
+      z: entry.z ?? record.z,
+    };
+  });
+  const added: BgsSystemRecord[] = [];
+  for (const [key, entry] of byName) {
+    const hasFactions = Boolean(server?.systems.get(key)?.factions?.length);
+    if (known.has(key) || entry.present === false || !hasFactions || entry.x === null || entry.y === null || entry.z === null) {
+      continue;
+    }
+    added.push({
+      name: entry.name,
+      controlling_minor_faction: server?.systems.get(key)?.controlling_faction ?? null,
+      x: entry.x,
+      y: entry.y,
+      z: entry.z,
+      updated_at: null,
+      population: entry.population,
+    });
+  }
+  return [...merged, ...added];
+}
+
+/** How long a system we left stays in the "recently left" box. */
+export const RECENT_EXIT_DAYS = 7;
+
+/** An event of the server's `/v1/events`. */
+export interface ServerEvent {
+  /** ISO 8601 game time. */
+  ts: string;
+  system_name: string;
+  type: string;
+}
+
+/** A system our faction left in the last {@link RECENT_EXIT_DAYS} days. */
+export interface RecentExit {
+  name: string;
+  /** ISO 8601 time the server saw us gone. */
+  at: string;
+  /** Who controls the system now, if the server knows. */
+  controllingFaction: string | null;
+}
+
+/**
+ * The systems we left recently, newest first, from the server's `faction_left` events. Spansh drops
+ * a system once we're gone, so the table has no row for it; this keeps a trace for a week. A system
+ * where we are back (the server's latest observation lists us) is left out.
+ */
+export function recentExitsFrom(events: ServerEvent[], server: ServerData | null, faction: string, nowMs: number): RecentExit[] {
+  const limitMs = nowMs - RECENT_EXIT_DAYS * 24 * 60 * 60 * 1000;
+  const exits = new Map<string, RecentExit>();
+  for (const event of events) {
+    const atMs = parseUpdatedAt(event.ts);
+    if (event.type !== 'faction_left' || atMs === null || atMs < limitMs || exits.has(event.system_name.toLowerCase())) {
+      continue;
+    }
+    const system = server?.systems.get(event.system_name.toLowerCase());
+    if (system?.factions?.some(f => f.name === faction)) {
+      continue;
+    }
+    exits.set(event.system_name.toLowerCase(), { name: event.system_name, at: event.ts, controllingFaction: system?.controlling_faction ?? null });
+  }
+  return [...exits.values()].sort((a, b) => b.at.localeCompare(a.at));
+}

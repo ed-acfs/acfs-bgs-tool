@@ -348,6 +348,7 @@
           <li><span class="bgs-legend-key"><span class="bgs-legend-sample bgs-margin--gap bgs-margin--risk">⚠️ −{{ i18n.decimal(4.1) }}</span></span><span>{{ t('legend.marginGapRisk', { points: conflictMarginPoints }) }}</span></li>
           <li><span class="bgs-legend-key"><span class="bgs-legend-sample bgs-legend-sample--accent">{{ i18n.percent(12.5) }}</span></span><span>{{ t('legend.influenceElsewhere') }}</span></li>
           <li><span class="bgs-legend-key"><app-influence-trend [trend]="legendTrend" /></span><span>{{ t('legend.trend', { faction: factionName }) }}</span></li>
+          <li><span class="bgs-legend-key"><span class="bgs-legend-sample bgs-legend-sample--muted">{{ t('legend.exitsKey') }}</span></span><span>{{ t('legend.exits', { faction: factionName }) }}</span></li>
           <li><span class="bgs-legend-key"><span class="bgs-legend-sample bgs-legend-sample--accent">⚠️ {{ i18n.percent(6) }}</span></span><span>{{ t('legend.closeFaction', { points: conflictMarginPoints }) }}</span></li>
           <li><span class="bgs-legend-key"><span class="bgs-legend-sample bgs-legend-sample--muted">−{{ i18n.decimal(8.4) }}</span></span><span>{{ t('legend.marginGap') }}</span></li>
         </ul>
@@ -386,6 +387,21 @@
           <li><span class="bgs-legend-key"><span class="bgs-legend-muted">{{ t('legend.grey') }}</span></span><span>{{ t('legend.derivedPreferred') }}</span></li>
         </ul>
       </div>
+    </section>
+  }
+
+  @if (recentExits().length > 0) {
+    <section class="bgs-exits" [attr.aria-label]="t('exits.title')">
+      <h2 class="bgs-exits-title">{{ t('exits.title') }}</h2>
+      <p class="bgs-exits-note">{{ t('exits.note', { faction: factionName }) }}</p>
+      <ul>
+        @for (exit of recentExits(); track exit.name) {
+          <li>
+            <strong>{{ exit.name }}</strong>:
+            {{ exit.controllingFaction ? t('exits.itemControlled', { date: exitDate(exit.at), controller: exit.controllingFaction }) : t('exits.item', { date: exitDate(exit.at) }) }}
+          </li>
+        }
+      </ul>
     </section>
   }
 

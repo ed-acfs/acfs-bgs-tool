@@ -40,6 +40,7 @@ import {
   rowWithAssignment,
   systemServices,
 } from '../../core/bgs';
+import { RecentExit } from '../../core/server-data';
 import { CONFLICT_MARGIN_POINTS, FACTION_NAME, HOME_SYSTEM, RETREAT_INFLUENCE_PERCENT, SEMAPHORE_THRESHOLDS } from '../../core/config';
 import { influenceSemaphore, marginSemaphore, Semaphore } from '../../core/semaphore';
 import { orderLineForName } from '../../core/orders-text';
@@ -353,6 +354,13 @@ export class BgsTableComponent implements OnDestroy {
   protected readonly legendTrend: InfluenceTrend = { systemAddress: '', values: [52, 51, 49.5, 48], latestAt: 0, change: { points: -4, days: 7, direction: 'down' } };
   /** Our influence trend by lowercased system name, from the server's history (empty until it answers, or if it doesn't). */
   private readonly trends = signal<ReadonlyMap<string, InfluenceTrend>>(new Map());
+  /** Systems our faction left in the last week, for the box above the table (empty when none, or if the server doesn't answer). */
+  protected readonly recentExits = signal<readonly RecentExit[]>([]);
+
+  /** "28/10" style short date of an exit, in the interface language. */
+  protected exitDate(iso: string): string {
+    return new Date(iso).toLocaleDateString(this.i18n.lang(), { day: 'numeric', month: 'numeric' });
+  }
 
   // --- system search box ------------------------------------------------------------------
   protected readonly systemSearchControl = new FormControl(HOME_SYSTEM);
@@ -584,6 +592,7 @@ export class BgsTableComponent implements OnDestroy {
       },
     );
     void this.bgsService.getInfluenceTrends().then(trends => this.trends.set(trends));
+    void this.bgsService.getRecentExits().then(exits => this.recentExits.set(exits));
     void this.loadArchitectFilterNames();
     this.architectFilterControl.setValue(readYourName());
 

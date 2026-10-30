@@ -7,6 +7,7 @@ import {
   ARCHITECT_FORM_ACTION,
   ARCHITECTS_SHEET_URL,
   BGS_DATA_URL,
+  FACTION_NAME,
   SERVER_API_URL,
   STORAGE_PREFIX,
   TYPEAHEAD_URL,
@@ -15,7 +16,7 @@ import {
 import { InfluenceTrend, ServerHistoryPoint, ServerHistoryResponse, trendsFrom } from '../core/influence-history';
 import { logger } from '../core/logger';
 import { PriorityWatchlistEntry, buildWatchlistMap, parseWatchlistTsv, watchlistFirst } from '../core/priority-watchlist';
-import { ServerData, ServerSystemsResponse, serverDataFrom, withServerData } from '../core/server-data';
+import { RECENT_EXIT_DAYS, RecentExit, ServerData, ServerEvent, ServerSystemsResponse, SiteResponse, recentExitsFrom, serverDataFrom, withServerData, withSiteData } from '../core/server-data';
 
 /**
  * The published sheets ({@link ARCHITECTS_SHEET_URL}, {@link WATCHLIST_SHEET_URL}) are
@@ -132,6 +133,8 @@ export class BgsService {
   private trendsPromise?: Promise<Map<string, InfluenceTrend>>;
   /** Whether the squadron server answered this session. */
   private serverConflictsAvailable = false;
+  /** The server's systems as last loaded, for the recent-exits box (who controls a system we left). */
+  private serverData: ServerData | null = null;
   private readonly pagePromises = new Map<number, Promise<BgsPage>>();
   private registryPromise?: Promise<ArchitectRegistryRow[]>;
   /** The resolved registry, once loaded — what {@link recordAssignment} appends to. */
@@ -312,10 +315,14 @@ export class BgsService {
    */
   private getDataset(): Promise<BgsDataset> {
     if (!this.datasetPromise) {
-      this.datasetPromise = Promise.all([this.resilientGet<BgsDataset>(BGS_DATA_URL), this.loadServerData()])
-        .then(([dataset, server]) =>
-          server ? { ...dataset, results: dataset.results.map(record => withServerData(record, server)) } : dataset,
-        )
+      this.datasetPromise = Promise.all([this.resilientGet<BgsDataset>(BGS_DATA_URL), this.loadServerData(), this.loadSiteData()])
+        .then(([dataset, server, site]) => {
+          if (!server) {
+            return dataset;
+          }
+          const records = site ? withSiteData(dataset.results, site, server) : dataset.results;
+          return { ...dataset, results: records.map(record => withServerData(record, server)) };
+        })
         .catch(error => {
           this.datasetPromise = undefined;
           throw error;
@@ -354,6 +361,42 @@ export class BgsService {
     return (JSON.parse(text) as { history?: ServerHistoryPoint[] }).history ?? [];
   }
 
+  /**
+   * The systems our faction left in the last week, from the server's events (empty if the server is off
+   * or didn't answer: the box just stays hidden, never throws).
+   */
+  async getRecentExits(): Promise<RecentExit[]> {
+    if (!SERVER_API_URL) {
+      return [];
+    }
+    try {
+      const since = new Date(Date.now() - RECENT_EXIT_DAYS * 24 * 60 * 60 * 1000).toISOString();
+      const url = `${SERVER_API_URL}/v1/events?type=faction_left&ours=1&since=${encodeURIComponent(since)}&limit=100`;
+      const [text] = await Promise.all([this.fetchTextOnce(url, SERVER_API_TIMEOUT_MS), this.getDataset().catch(() => undefined)]);
+      return recentExitsFrom((JSON.parse(text) as { events?: ServerEvent[] }).events ?? [], this.serverData, FACTION_NAME, Date.now());
+    } catch (error) {
+      logger.warn('Squadron server unavailable; no recent exits this session.', error);
+      return [];
+    }
+  }
+
+  /**
+   * The server's base data (`/v1/site`: coordinates and population from Spansh or EDDN, whichever is
+   * fresher, and the systems only the listener has seen), or null if it's not configured or didn't
+   * answer in time (never throws).
+   */
+  private async loadSiteData(): Promise<SiteResponse | null> {
+    if (!SERVER_API_URL) {
+      return null;
+    }
+    try {
+      return JSON.parse(await this.fetchTextOnce(`${SERVER_API_URL}/v1/site`, SERVER_API_TIMEOUT_MS)) as SiteResponse;
+    } catch (error) {
+      logger.warn('Squadron server base data unavailable; population and systems come from the dataset only.', error);
+      return null;
+    }
+  }
+
   /** The server's systems, or null if it's not configured or didn't answer in time (never throws). */
   private async loadServerData(): Promise<ServerData | null> {
     if (!SERVER_API_URL) {
@@ -363,6 +406,7 @@ export class BgsService {
       const text = await this.fetchTextOnce(`${SERVER_API_URL}/v1/systems`, SERVER_API_TIMEOUT_MS);
       const data = serverDataFrom(JSON.parse(text) as ServerSystemsResponse);
       this.serverConflictsAvailable = true;
+      this.serverData = data;
       return data;
     } catch (error) {
       logger.warn('Squadron server unavailable; states and conflict scores come from the dataset only.', error);

@@ -2,11 +2,18 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
-## [1.7.2-beta] - 2026-10-30 — Tentativi ripetuti verso Spansh
+## [1.7.2-beta] - 2026-10-30 — Tentativi ripetuti verso Spansh e sistemi dal server
 
 ### Pubblicazione
 
 - **Lo scarico da Spansh ritenta prima di arrendersi**: `fetch-bgs.mjs` (e la sua copia `spansh.mjs` sul server) ripetono fino a due volte, con pause di 2 e 6 secondi, una richiesta fallita per errore di rete, timeout o risposta 5xx; un 4xx non si ripete. Prima il primo errore fermava il workflow: su 200 esecuzioni dal 5 al 30 ottobre 2026 tre erano fallite, due per Spansh (502 il 28 ottobre, timeout il 17). Il sito non si rompeva (restava l'ultimo `bgs.json`), ma l'esecuzione compariva in rosso. Con test per i tre casi (riuscita dopo gli errori, resa dopo i tentativi, nessun tentativo sul 4xx).
+
+### Dati dal server
+
+- **Sistemi nuovi prima di Spansh**: il tool legge anche `/v1/site` del server. Un sistema in cui Flotta Stellare compare e che Spansh non ha ancora (una colonia nuova, un'espansione riuscita) entra in tabella con le fazioni viste dal server, senza stazioni né servizi finché non li elenca Spansh. Serve che il server abbia le coordinate, che noi siamo ancora nel sistema e che ne abbia visto le fazioni.
+- **Popolazione e coordinate più fresche**: quando il dato di base del server viene da EDDN e batte quello di Spansh, la tabella usa il suo (il 30 ottobre 2026 valeva per due sistemi: Col 285 Sector MY-Q c5-22 e Tascheter Sector EV-Y a4). Stazioni e servizi restano di Spansh.
+- **Riquadro «Usciti di recente»**: quando Flotta Stellare esce da un sistema, Spansh lo toglie e la riga sparisce dalla tabella. Per 7 giorni il sistema resta ricordato in un riquadro sopra la tabella, con la data dell'uscita e chi lo controlla ora (dagli eventi `faction_left` del server). Se siamo rientrati non compare. Spiegato in Legenda e Guida, nelle tre lingue. Il riquadro è nascosto quando non c'è nessuna uscita (il 30 ottobre non ce n'erano).
+- Il server non risponde: la tabella si apre come prima, con i dati del file.
 
 ## [1.7.1-beta] - 2026-10-25 — Salti di BGS-Tally come seconda fonte
 
