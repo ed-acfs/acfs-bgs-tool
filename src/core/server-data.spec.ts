@@ -1,5 +1,5 @@
 import { BgsSystemRecord, EbgsConflicts } from './bgs';
-import { ServerSystem, serverDataFrom, withServerData } from './server-data';
+import { ServerSystem, SiteResponse, SiteSystem, recentExitsFrom, serverDataFrom, withServerData, withSiteData } from './server-data';
 
 const side = (name: string, wonDays: number, stake: string | null = null) => ({ name, stake, won_days: wonDays });
 
@@ -86,5 +86,60 @@ describe('withServerData', () => {
 
     expect(withServerData(original, server)).toBe(original);
     expect(withServerData(original, serverDataFrom({ systems: [] }))).toBe(original);
+  });
+});
+
+describe('withSiteData', () => {
+  const site = (systems: Partial<SiteSystem>[]): SiteResponse => ({
+    systems: systems.map(s => ({ system_address: '1', name: 'Misir', x: 1, y: 2, z: 3, population: 5000, present: true, base_source: 'spansh', ...s }) as SiteSystem),
+  });
+  const server = serverDataFrom({ systems: [serverSystem('2026-10-18T09:00:00Z')] });
+
+  it("takes population and coordinates from the server only when its base data comes from EDDN, fresher than Spansh's", () => {
+    expect(withSiteData([record(null)], site([{ base_source: 'spansh' }]), server)[0].population).toBe(1000);
+    const result = withSiteData([record(null)], site([{ base_source: 'eddn' }]), server)[0];
+    expect(result.population).toBe(5000);
+    expect([result.x, result.y, result.z]).toEqual([1, 2, 3]);
+  });
+
+  it("adds a system only the server knows when it has coordinates, our faction and the system's factions", () => {
+    const result = withSiteData([], site([{ name: 'Misir' }]), server);
+    expect(result.map(r => r.name)).toEqual(['Misir']);
+    expect(result[0].updated_at).toBeNull();
+    // Then withServerData gives it its factions.
+    expect(withServerData(result[0], server).minor_faction_presences?.length).toBe(2);
+  });
+
+  it('does not add a system whose coordinates are missing, that we have left, or whose factions the server has not seen', () => {
+    expect(withSiteData([], site([{ x: null }]), server)).toEqual([]);
+    expect(withSiteData([], site([{ present: false }]), server)).toEqual([]);
+    expect(withSiteData([], site([{ name: 'Altrove' }]), server)).toEqual([]);
+    expect(withSiteData([], site([{}]), null)).toEqual([]);
+  });
+
+  it('does not duplicate a system already in the dataset', () => {
+    expect(withSiteData([record(null)], site([{}]), server).length).toBe(1);
+  });
+});
+
+describe('recentExitsFrom', () => {
+  const now = Date.parse('2026-10-30T12:00:00Z');
+  const left = (name: string, ts: string) => ({ ts, system_name: name, type: 'faction_left' });
+  const server = serverDataFrom({ systems: [serverSystem('2026-10-29T09:00:00Z', { name: 'Misir', factions: [{ name: 'Other', influence: 1, active_states: [], pending_states: [], recovering_states: [], government: null, allegiance: null }], controlling_faction: 'Other' })] });
+
+  it('lists the systems we left in the last 7 days, newest first, with who controls them now', () => {
+    const result = recentExitsFrom([left('Alfa', '2026-10-29T10:00:00Z'), left('Misir', '2026-10-30T08:00:00Z')], server, 'Flotta Stellare', now);
+    expect(result).toEqual([
+      { name: 'Misir', at: '2026-10-30T08:00:00Z', controllingFaction: 'Other' },
+      { name: 'Alfa', at: '2026-10-29T10:00:00Z', controllingFaction: null },
+    ]);
+  });
+
+  it('drops exits older than 7 days, other event types, repeated systems and systems where we are back', () => {
+    const back = serverDataFrom({ systems: [serverSystem('2026-10-30T09:00:00Z')] });
+    expect(recentExitsFrom([left('Vecchio', '2026-10-22T11:00:00Z')], server, 'Flotta Stellare', now)).toEqual([]);
+    expect(recentExitsFrom([{ ts: '2026-10-30T08:00:00Z', system_name: 'X', type: 'faction_arrived' }], server, 'Flotta Stellare', now)).toEqual([]);
+    expect(recentExitsFrom([left('Misir', '2026-10-30T08:00:00Z'), left('Misir', '2026-10-28T08:00:00Z')], server, 'Flotta Stellare', now).length).toBe(1);
+    expect(recentExitsFrom([left('Misir', '2026-10-30T08:00:00Z')], back, 'Flotta Stellare', now)).toEqual([]);
   });
 });
