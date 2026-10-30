@@ -13,7 +13,7 @@ export const en: Dictionary = {
   'account.logout': 'Sign out',
   'account.tallyKey': 'BGS-Tally key',
   'tallyKey.title': 'BGS-Tally key',
-  'tallyKey.intro': 'With the EDMC plugin BGS-Tally, your work for Flotta Stellare reaches the squadron server on its own. The server keeps only the work for Flotta Stellare; nothing else is requested or stored.',
+  'tallyKey.intro': 'With the EDMC plugin BGS-Tally, your work for Flotta Stellare reaches the squadron server on its own. The server keeps only what the BGS of Flotta Stellare needs: your work for the Flotta and the data of the systems where it is present; nothing else is requested or stored.',
   'tallyKey.version': 'You need BGS-Tally 5.6.1 or later: in 5.6 an interface bug stops the connection to the server from completing. The version is shown in EDMC → File → Settings → BGS-Tally.',
   'tallyKey.eddn': 'With your key active, every jump you make into a Flotta Stellare system also updates the tool within seconds, even where nobody else flies. While you are there, in EDMC → File → Settings → EDDN tick “Send system and scan data to the Elite Dangerous Data Network”: your jumps then reach Spansh and the other tools that read EDDN too.',
   'tallyKey.name': 'Key name',

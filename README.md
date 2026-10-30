@@ -69,6 +69,7 @@ npm run fetch-data
 | `npm run build` | Build di produzione in `dist/acfs-bgs-tool/browser/` |
 | `npm run build:pages` | Lo stesso build, per il sito pubblicato sotto `/acfs-bgs-tool/` |
 | `npm test` | Test dell'app ([Vitest](https://vitest.dev/)) |
+| `node scripts/publish-strumenti.mjs` | Pubblica o aggiorna i messaggi del canale Discord #strumenti (testi in `scripts/strumenti-messaggi.mjs`, webhook in `.env.local`; senza `--prod` scrive solo sul server di prova, `--dry-run` mostra i testi) |
 | `npm run test:scripts` | Test degli script e controllo che `src/core/` non dipenda da Angular (`node --test`) |
 
 ## Pubblicazione

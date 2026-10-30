@@ -16,7 +16,7 @@ export const de: Dictionary = {
   'account.logout': 'Abmelden',
   'account.tallyKey': 'BGS-Tally-Schlüssel',
   'tallyKey.title': 'BGS-Tally-Schlüssel',
-  'tallyKey.intro': 'Mit dem EDMC-Plugin BGS-Tally kommt deine Arbeit für Flotta Stellare von selbst beim Server der Staffel an. Der Server behält nur die Arbeit für Flotta Stellare; alles andere wird weder angefragt noch gespeichert.',
+  'tallyKey.intro': 'Mit dem EDMC-Plugin BGS-Tally kommt deine Arbeit für Flotta Stellare von selbst beim Server der Staffel an. Der Server behält nur, was für das BGS von Flotta Stellare nötig ist: deine Arbeit für die Flotte und die Daten der Systeme, in denen sie präsent ist; nichts anderes wird angefragt oder gespeichert.',
   'tallyKey.version': 'Erforderlich ist BGS-Tally 5.6.1 oder neuer: In Version 5.6 verhindert ein Fehler der Oberfläche, dass die Verbindung zum Server abgeschlossen wird. Die Version steht in EDMC → File → Settings → BGS-Tally.',
   'tallyKey.eddn': 'Mit aktivem Schlüssel aktualisiert auch jeder deiner Sprünge in ein System von Flotta Stellare das Tool in wenigen Sekunden, auch dort, wo sonst niemand vorbeikommt. Wenn du schon dabei bist: Aktiviere in EDMC → File → Settings → EDDN das Senden der Systemdaten („Send system and scan data to the Elite Dangerous Data Network“). Dann erreichen deine Sprünge auch Spansh und die anderen Werkzeuge, die EDDN lesen.',
   'tallyKey.name': 'Name des Schlüssels',
