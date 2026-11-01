@@ -4,7 +4,7 @@ Tool BGS per lo Squadrone **Alto Comando Flotta Stellare** (ACFS) e per la sua P
 
 La domanda a cui il tool deve rispondere ogni giorno dopo il tick: **dove dobbiamo lavorare oggi?**
 
-## Stato in breve (aggiornato il 25 ottobre 2026, sera)
+## Stato in breve (aggiornato il 2 novembre 2026)
 
 Da leggere prima di proporre qualcosa o di dire che è "da fare", e da aggiornare a ogni modifica che cambia lo stato di una fase (vedi `CLAUDE.md`). I dettagli stanno nelle fasi più sotto.
 
