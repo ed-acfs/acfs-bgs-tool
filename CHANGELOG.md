@@ -2,6 +2,12 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
+## [1.7.3-beta] - 2026-11-04 — Tabella più compatta
+
+### Interfaccia
+
+- **La tabella sta di nuovo nei margini orizzontali**: con le ultime colonne e icone (appunti, matita dell'Architetto) sborda su uno schermo di circa 1200 px. Padding delle celle da 10 a 6 px, larghezza massima dei nomi lunghi (fazione di controllo, Architetto, fazione preferita) da 150 a 110 px, grafico Fazioni da 100 a 84 px. Nessun testo nuovo: Legenda e Guida invariate.
+
 ## [1.7.2-beta] - 2026-10-30 — Tentativi ripetuti verso Spansh e sistemi dal server
 
 ### Pubblicazione

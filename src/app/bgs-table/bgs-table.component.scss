@@ -365,7 +365,7 @@
 
   th,
   td {
-    padding: 10px 10px;
+    padding: 10px 6px;
     text-align: left;
     white-space: nowrap;
   }
@@ -374,7 +374,7 @@
   // most likely to push the table wider than the viewport — wrapping them onto a second
   // line keeps every column visible without horizontal scrolling on a typical screen.
   .bgs-col-wrap {
-    max-width: 150px;
+    max-width: 110px;
     white-space: normal;
     overflow-wrap: break-word;
   }
@@ -499,7 +499,7 @@
 }
 
 .bgs-col-factions {
-  width: 110px;
+  width: 92px;
 }
 
 .bgs-faction-chart {
@@ -507,7 +507,7 @@
   align-items: flex-end;
   gap: 2px;
   height: 28px;
-  width: 100px;
+  width: 84px;
 }
 
 .bgs-faction-bar {
