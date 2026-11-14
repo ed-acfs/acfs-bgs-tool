@@ -1,0 +1,88 @@
+:host {
+  display: block;
+}
+
+.info-title {
+  color: var(--color-accent);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+mat-dialog-content {
+  min-width: min(560px, 80vw);
+  max-height: 70vh;
+}
+
+.home-intro,
+.home-ours {
+  margin: 0 0 10px;
+  line-height: 1.5;
+}
+
+.home-ours {
+  font-weight: 600;
+}
+
+.home-chart {
+  display: grid;
+  grid-template-columns: minmax(8em, max-content) 1fr auto;
+  gap: 6px 10px;
+  align-items: center;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+// Ogni riga usa le tre colonne della griglia del grafico: nome, barra, numeri.
+.home-row {
+  display: contents;
+}
+
+.home-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-bar-track {
+  height: 14px;
+  border-radius: 3px;
+  background-color: var(--color-surface-2);
+}
+
+.home-bar {
+  display: block;
+  height: 100%;
+  min-width: 2px;
+  border-radius: 3px;
+  background-color: var(--color-text-2);
+}
+
+.home-count {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+// Flotta Stellare in arancione, come negli altri grafici del tool.
+.home-row--ours {
+  .home-name,
+  .home-count {
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+
+  .home-bar {
+    background-color: var(--color-accent);
+  }
+}
+
+.home-row--muted .home-name {
+  font-style: italic;
+}
+
+@media (max-width: 520px) {
+  .home-chart {
+    grid-template-columns: minmax(6em, 40%) 1fr auto;
+    font-size: 0.9em;
+  }
+}

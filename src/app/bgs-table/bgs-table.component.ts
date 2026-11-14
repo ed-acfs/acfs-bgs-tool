@@ -17,7 +17,9 @@ import {
   faCircleInfo,
   faCircleQuestion,
   faClipboardList,
+  faLink,
   faListUl,
+  faChartBar,
   faPen,
   faCopy,
   faDownload,
@@ -80,6 +82,9 @@ import { PriorityReason } from '../../core/priority';
 import { isMessageKey } from '../../core/i18n';
 import { readGlobalStates } from '../../core/global-states';
 import { RETREAT_ICON } from '../../core/state-icons';
+import { ShareView, readShareParams, shareUrl } from '../../core/share-link';
+import { pageBaseUrl } from '../page-base-url';
+import { HomeControlDialogComponent, HomeControlDialogData } from '../home-control-dialog/home-control-dialog.component';
 
 /**
  * How the table is currently ordered:
@@ -264,6 +269,8 @@ export class BgsTableComponent implements OnDestroy {
   protected readonly faScaleBalanced = faScaleBalanced;
   protected readonly faCircleQuestion = faCircleQuestion;
   protected readonly faListUl = faListUl;
+  protected readonly faLink = faLink;
+  protected readonly faChartBar = faChartBar;
   /** The release, from package.json, next to the title: the published site says which version it runs. */
   protected readonly version = version;
   /** The squadron's faction, named in the ACFS column header's tooltip and highlighted orange in the Factions chart. */
@@ -292,6 +299,9 @@ export class BgsTableComponent implements OnDestroy {
   /** The system name last copied to the clipboard, shown as a brief checkmark on its row. */
   protected readonly copiedSystem = signal<string | null>(null);
   private copiedResetHandle: ReturnType<typeof setTimeout> | undefined;
+  /** Shows "Link copiato" on the Copy link button for a moment after a click. */
+  protected readonly linkCopied = signal(false);
+  private linkCopiedHandle: ReturnType<typeof setTimeout> | undefined;
   protected readonly errorMessage = signal<string | null>(null);
   /** Set while fetching every page for a full-dataset sort; null the rest of the time. */
   protected readonly loadProgress = signal<{ loaded: number; total: number } | null>(null);
@@ -624,6 +634,8 @@ export class BgsTableComponent implements OnDestroy {
         void this.ensureFullDataset();
       }
     });
+
+    void this.applyLinkFromUrl();
   }
 
   ngOnDestroy(): void {
@@ -631,6 +643,7 @@ export class BgsTableComponent implements OnDestroy {
       clearTimeout(this.suggestionDebounceTimer);
     }
     clearTimeout(this.copiedResetHandle);
+    clearTimeout(this.linkCopiedHandle);
     clearInterval(this.nowTimerHandle);
     window.removeEventListener('focus', this.onWindowFocus);
   }
@@ -645,6 +658,92 @@ export class BgsTableComponent implements OnDestroy {
     this.copiedSystem.set(systemName);
     clearTimeout(this.copiedResetHandle);
     this.copiedResetHandle = setTimeout(() => this.copiedSystem.set(null), 1500);
+  }
+
+  /** The table as it is now, as a shareable link sees it (see core/share-link). */
+  private currentShareView(): ShareView {
+    const mode = this.mode();
+    const column = this.sortColumn();
+    const architectMode = this.architectFilterMode();
+    const factionMode = this.factionFilterMode();
+    return {
+      sort: mode === 'distance' ? null : column ? { column, direction: this.sortDirection() } : null,
+      distanceFrom: this.selectedAnchor()?.systemName ?? null,
+      warElection: this.warElectionOnly(),
+      needsRecon: this.needsReconOnly(),
+      services: this.servicesOnly() ? { kinds: [...this.serviceKinds()], traders: [...this.traderKinds()] } : null,
+      architect: architectMode === 'all' ? null : architectMode === 'name' ? { mode: 'name', name: this.architectFilterName() } : { mode: architectMode },
+      faction: factionMode === 'all' ? null : factionMode === 'name' ? { mode: 'name', name: this.factionFilterName() } : { mode: factionMode },
+      pageSize: this.pageSize(),
+      system: null,
+    };
+  }
+
+  /** Copies a link that reopens the table as it is now: sort, "Distanza da", quick filters, page size. */
+  protected async copyViewLink(): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(shareUrl(pageBaseUrl(), this.currentShareView()));
+    } catch {
+      return;
+    }
+    this.linkCopied.set(true);
+    clearTimeout(this.linkCopiedHandle);
+    this.linkCopiedHandle = setTimeout(() => this.linkCopied.set(false), 2000);
+  }
+
+  /**
+   * Opening a shared link: applies the view it describes, then takes the parameters off the
+   * address bar, so a later reload opens the table as usual and doesn't bring back a view the
+   * user has since changed. With `system=`, also opens that system's details.
+   */
+  private async applyLinkFromUrl(): Promise<void> {
+    const view = readShareParams(new URLSearchParams(window.location.search));
+    if (!view) {
+      return;
+    }
+    history.replaceState(history.state, '', window.location.pathname + window.location.hash);
+    if (view.pageSize !== null) {
+      this.setPageSize(view.pageSize);
+    }
+    this.warElectionOnly.set(view.warElection);
+    this.needsReconOnly.set(view.needsRecon);
+    if (view.services) {
+      this.serviceKinds.set(new Set(view.services.kinds));
+      this.traderKinds.set(new Set(view.services.traders));
+      this.servicesOnly.set(true);
+    }
+    if (view.architect?.mode === 'name') {
+      this.architectFilterControl.setValue(view.architect.name);
+      this.applyArchitectFilterName();
+    } else if (view.architect) {
+      this.setArchitectFilterMode(view.architect.mode);
+    }
+    if (view.faction?.mode === 'name') {
+      this.factionFilterControl.setValue(view.faction.name);
+      this.applyFactionFilterName();
+    } else if (view.faction) {
+      this.setFactionFilterMode(view.faction.mode);
+    }
+    if (view.distanceFrom) {
+      // Sets the anchor and sorts by distance; a column sort, if the link has one, goes back on top.
+      await this.searchBySystemName(view.distanceFrom);
+    }
+    if (view.sort) {
+      this.sortColumn.set(view.sort.column);
+      this.sortDirection.set(view.sort.direction);
+      this.mode.set('column');
+    }
+    this.pageIndex.set(0);
+    if (view.system) {
+      await this.ensureFullDataset();
+      const key = view.system.toLowerCase();
+      const row = this.fullDataset()?.find(r => r.systemName.toLowerCase() === key);
+      if (row) {
+        this.openWatchlistDialog(row);
+      } else {
+        this.searchError.set(this.t('share.systemNotFound', { name: view.system }));
+      }
+    }
   }
 
   /** Exports every row matching the current quick filters (regardless of sort/page) as a JSON file. */
@@ -1229,6 +1328,20 @@ export class BgsTableComponent implements OnDestroy {
 
   protected toggleLegend(): void {
     this.legendOpen.update(open => !open);
+  }
+
+  /** Opens "Chi controlla i nostri sistemi", on every system (not just the filtered ones). */
+  protected async openHomeControl(): Promise<void> {
+    let rows = this.fullDataset() ?? this.coverageRows();
+    if (!rows) {
+      try {
+        rows = await this.bgsService.getAllRows();
+      } catch {
+        return;
+      }
+    }
+    const data: HomeControlDialogData = { rows };
+    this.dialog.open(HomeControlDialogComponent, { data, autoFocus: 'first-tabbable', restoreFocus: true, maxWidth: 'min(760px, 94vw)' });
   }
 
   protected openHelpDialog(): void {
