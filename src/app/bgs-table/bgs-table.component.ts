@@ -17,7 +17,6 @@ import {
   faCircleInfo,
   faCircleQuestion,
   faClipboardList,
-  faLink,
   faListUl,
   faChartBar,
   faPen,
@@ -82,8 +81,7 @@ import { PriorityReason } from '../../core/priority';
 import { isMessageKey } from '../../core/i18n';
 import { readGlobalStates } from '../../core/global-states';
 import { RETREAT_ICON } from '../../core/state-icons';
-import { ShareView, readShareParams, shareUrl } from '../../core/share-link';
-import { pageBaseUrl } from '../page-base-url';
+import { readShareParams } from '../../core/share-link';
 import { HomeControlDialogComponent, HomeControlDialogData } from '../home-control-dialog/home-control-dialog.component';
 
 /**
@@ -269,7 +267,6 @@ export class BgsTableComponent implements OnDestroy {
   protected readonly faScaleBalanced = faScaleBalanced;
   protected readonly faCircleQuestion = faCircleQuestion;
   protected readonly faListUl = faListUl;
-  protected readonly faLink = faLink;
   protected readonly faChartBar = faChartBar;
   /** The release, from package.json, next to the title: the published site says which version it runs. */
   protected readonly version = version;
@@ -299,9 +296,6 @@ export class BgsTableComponent implements OnDestroy {
   /** The system name last copied to the clipboard, shown as a brief checkmark on its row. */
   protected readonly copiedSystem = signal<string | null>(null);
   private copiedResetHandle: ReturnType<typeof setTimeout> | undefined;
-  /** Shows "Link copiato" on the Copy link button for a moment after a click. */
-  protected readonly linkCopied = signal(false);
-  private linkCopiedHandle: ReturnType<typeof setTimeout> | undefined;
   protected readonly errorMessage = signal<string | null>(null);
   /** Set while fetching every page for a full-dataset sort; null the rest of the time. */
   protected readonly loadProgress = signal<{ loaded: number; total: number } | null>(null);
@@ -643,7 +637,6 @@ export class BgsTableComponent implements OnDestroy {
       clearTimeout(this.suggestionDebounceTimer);
     }
     clearTimeout(this.copiedResetHandle);
-    clearTimeout(this.linkCopiedHandle);
     clearInterval(this.nowTimerHandle);
     window.removeEventListener('focus', this.onWindowFocus);
   }
@@ -660,39 +653,9 @@ export class BgsTableComponent implements OnDestroy {
     this.copiedResetHandle = setTimeout(() => this.copiedSystem.set(null), 1500);
   }
 
-  /** The table as it is now, as a shareable link sees it (see core/share-link). */
-  private currentShareView(): ShareView {
-    const mode = this.mode();
-    const column = this.sortColumn();
-    const architectMode = this.architectFilterMode();
-    const factionMode = this.factionFilterMode();
-    return {
-      sort: mode === 'distance' ? null : column ? { column, direction: this.sortDirection() } : null,
-      distanceFrom: this.selectedAnchor()?.systemName ?? null,
-      warElection: this.warElectionOnly(),
-      needsRecon: this.needsReconOnly(),
-      services: this.servicesOnly() ? { kinds: [...this.serviceKinds()], traders: [...this.traderKinds()] } : null,
-      architect: architectMode === 'all' ? null : architectMode === 'name' ? { mode: 'name', name: this.architectFilterName() } : { mode: architectMode },
-      faction: factionMode === 'all' ? null : factionMode === 'name' ? { mode: 'name', name: this.factionFilterName() } : { mode: factionMode },
-      pageSize: this.pageSize(),
-      system: null,
-    };
-  }
-
-  /** Copies a link that reopens the table as it is now: sort, "Distanza da", quick filters, page size. */
-  protected async copyViewLink(): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(shareUrl(pageBaseUrl(), this.currentShareView()));
-    } catch {
-      return;
-    }
-    this.linkCopied.set(true);
-    clearTimeout(this.linkCopiedHandle);
-    this.linkCopiedHandle = setTimeout(() => this.linkCopied.set(false), 2000);
-  }
-
   /**
-   * Opening a shared link: applies the view it describes, then takes the parameters off the
+   * Opening a shared link (today the system link from its details, `?system=`; the parameters
+   * for a whole view are still read, for links made by hand): applies the view it describes, then takes the parameters off the
    * address bar, so a later reload opens the table as usual and doesn't bring back a view the
    * user has since changed. With `system=`, also opens that system's details.
    */

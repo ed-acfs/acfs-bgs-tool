@@ -61,9 +61,6 @@ export const en: Dictionary = {
   'header.exportAria': 'Export the data',
   'header.exportJson': 'Export as JSON',
   'header.exportCsv': 'Export as CSV',
-  'header.copyLink': "Copy link",
-  'header.copyLinkAria': "Copy a link to this view of the table",
-  'header.linkCopied': "Link copied",
   'header.homeControl': "Our systems",
   'header.homeControlAria': "Who controls our systems",
   'header.language': 'Language',
@@ -365,7 +362,7 @@ export const en: Dictionary = {
   'help.top1':
     'Below the title: when Spansh updated the data, the time of the last tick and how many systems (and how many P1-P2) have been updated since. Spansh lags behind the game: a system is updated when someone flies through it, so the data of a system not updated since the last tick may already have changed. The title resets the table to how it opens; Export downloads the data as JSON or CSV; the flags switch language. You can help: with your BGS-Tally key (from the menu with your name, after signing in with Discord) every jump you make into a {faction} system updates the tool within seconds; sending to EDDN does the same, even without BGS-Tally (in EDMC → File → Settings → EDDN tick “Send system and scan data to the Elite Dangerous Data Network”), and also brings the data to Spansh. Data sent only to Inara reaches Inara, not the tool.',
   'help.top2':
-    "Copy link copies the address of the table as you see it: sort order, “Distance from”, filters and rows per page. Whoever opens it gets the same view, with the data of that moment. In a system's details, the button next to its name copies a link that opens those details directly: handy on Discord.",
+    "In a system's details, the button next to its name copies a link that opens the tool with those details already open: handy on Discord.",
   'help.top3':
     "Our systems shows who controls the colonised systems that are ours: those with {faction} as the preferred faction in the Architect Registry, plus those colonised by a member of the Squadron who gave no preferred faction. One bar per faction, {faction} first and in orange: the others are systems where control is still to be won.",
   'help.details': 'System details',

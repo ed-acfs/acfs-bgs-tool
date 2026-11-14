@@ -66,9 +66,6 @@ export const it = {
   'header.exportAria': 'Esporta i dati',
   'header.exportJson': 'Esporta in JSON',
   'header.exportCsv': 'Esporta in CSV',
-  'header.copyLink': "Copia link",
-  'header.copyLinkAria': "Copia il link a questa vista della tabella",
-  'header.linkCopied': "Link copiato",
   'header.homeControl': "Nostri sistemi",
   'header.homeControlAria': "Chi controlla i nostri sistemi",
   'header.language': 'Lingua',
@@ -370,7 +367,7 @@ export const it = {
   'help.top1':
     "Sotto il titolo: quando Spansh ha aggiornato i dati, l'ora dell'ultimo tick e quanti sistemi (e quanti P1-P2) sono aggiornati da allora. Spansh è indietro rispetto al gioco: un sistema si aggiorna quando qualcuno ci passa, quindi il dato di un sistema non aggiornato dall'ultimo tick potrebbe essere già cambiato. Il titolo riporta la tabella com'è all'apertura; Esporta scarica i dati in JSON o CSV; le bandierine cambiano lingua. Puoi aiutare: con la tua chiave BGS-Tally (dal menu con il tuo nome, dopo l'accesso con Discord) ogni tuo salto in un sistema di {faction} aggiorna il tool in pochi secondi; lo stesso fa, anche senza BGS-Tally, l'invio a EDDN (in EDMC → File → Impostazioni → EDDN spunta «Send system and scan data to the Elite Dangerous Data Network»), che porta i dati anche a Spansh. Chi invia i dati solo a Inara li fa vedere a Inara, non al tool.",
   'help.top2':
-    "Copia link copia l'indirizzo della tabella così come la vedi: ordinamento, «Distanza da», filtri e righe per pagina. Chi lo apre trova la stessa vista, con i dati di quel momento. Nei dettagli di un sistema, il pulsante accanto al nome copia il link che apre direttamente quella scheda: comodo negli Ordini e su Discord.",
+    "Nei dettagli di un sistema, il pulsante accanto al nome copia un link che apre il tool con quella scheda già aperta: comodo negli Ordini e su Discord.",
   'help.top3':
     "Nostri sistemi mostra chi controlla i sistemi colonizzati che sono nostri: quelli con {faction} come fazione preferita nel Registro Architetti, più quelli colonizzati da un membro dello Squadrone che non ha indicato una fazione preferita. Una barra per fazione, {faction} per prima e in arancione: le altre sono i sistemi dove il controllo è ancora da conquistare.",
   'help.details': 'Dettagli del sistema',

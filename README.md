@@ -18,7 +18,7 @@ Risponde a una domanda: **dove dobbiamo lavorare oggi?** Mostra in una tabella t
 - all'apertura i sistemi sono ordinati per **priorità**, dalla P1; i sistemi della **Watchlist** stanno sempre in cima, con qualunque ordinamento;
 - stazioni con **Material Trader** o **Technology Broker**, con il loro tipo, e un filtro per trovarle;
 - stazioni con **Interstellar Factors**, fra i servizi del filtro "Servizi": i sistemi compaiono dal più vicino a quello del box "Distanza da", con un link alla stessa ricerca su Inara per tutta la galassia;
-- **link condivisibili**: "Copia link" copia l'indirizzo della vista (ordinamento, filtri, righe per pagina), e nei dettagli di un sistema un link apre direttamente quella scheda (`?system=Nome`);
+- **link a un sistema**: nei dettagli di un sistema, un pulsante copia il link che apre direttamente quella scheda (`?system=Nome`);
 - **Nostri sistemi**: chi controlla i sistemi colonizzati che sono nostri, una barra per fazione.
 
 Il tool è pubblicato su **https://flottastellare.it/acfs-bgs-tool/** e controlla i dati ogni 30 minuti.

@@ -42,10 +42,6 @@
         <fa-icon [icon]="faChartBar" aria-hidden="true"></fa-icon>
         {{ t('header.homeControl') }}
       </button>
-      <button mat-stroked-button type="button" (click)="copyViewLink()" [attr.aria-label]="t('header.copyLinkAria')" [title]="t('header.copyLinkAria')">
-        <fa-icon [icon]="linkCopied() ? faCheck : faLink" aria-hidden="true"></fa-icon>
-        {{ linkCopied() ? t('header.linkCopied') : t('header.copyLink') }}
-      </button>
       <mat-menu #exportMenu="matMenu">
         <button mat-menu-item type="button" (click)="exportJson()">{{ t('header.exportJson') }}</button>
         <button mat-menu-item type="button" (click)="exportCsv()">{{ t('header.exportCsv') }}</button>

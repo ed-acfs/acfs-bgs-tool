@@ -64,9 +64,6 @@ export const de: Dictionary = {
   'header.exportAria': 'Daten exportieren',
   'header.exportJson': 'Als JSON exportieren',
   'header.exportCsv': 'Als CSV exportieren',
-  'header.copyLink': "Link kopieren",
-  'header.copyLinkAria': "Link zu dieser Ansicht der Tabelle kopieren",
-  'header.linkCopied': "Link kopiert",
   'header.homeControl': "Unsere Systeme",
   'header.homeControlAria': "Wer unsere Systeme kontrolliert",
   'header.language': 'Sprache',
@@ -368,7 +365,7 @@ export const de: Dictionary = {
   'help.top1':
     'Unter dem Titel: wann Spansh die Daten aktualisiert hat, die Uhrzeit des letzten Ticks und wie viele Systeme (und wie viele P1-P2) seitdem aktualisiert wurden. Spansh hinkt dem Spiel hinterher: Ein System wird aktualisiert, wenn jemand hindurchfliegt, die Daten eines seit dem letzten Tick nicht aktualisierten Systems können sich also schon geändert haben. Der Titel setzt die Tabelle auf den Zustand beim Öffnen zurück; Exportieren lädt die Daten als JSON oder CSV herunter; die Flaggen wechseln die Sprache. Du kannst helfen: Mit deinem BGS-Tally-Schlüssel (im Menü mit deinem Namen, nach der Anmeldung mit Discord) aktualisiert jeder deiner Sprünge in ein System von {faction} das Tool in wenigen Sekunden; dasselbe tut, auch ohne BGS-Tally, das Senden an EDDN (in EDMC → File → Settings → EDDN „Send system and scan data to the Elite Dangerous Data Network“ aktivieren), das die Daten auch zu Spansh bringt. Wer seine Daten nur an Inara sendet, macht sie nur für Inara sichtbar, nicht für das Tool.',
   'help.top2':
-    "„Link kopieren“ kopiert die Adresse der Tabelle so, wie du sie siehst: Sortierung, „Entfernung von“, Filter und Zeilen pro Seite. Wer ihn öffnet, sieht dieselbe Ansicht mit den Daten dieses Moments. In den Details eines Systems kopiert die Schaltfläche neben dem Namen einen Link, der genau diese Details öffnet: praktisch auf Discord.",
+    "In den Details eines Systems kopiert die Schaltfläche neben dem Namen einen Link, der das Tool mit genau diesen Details öffnet: praktisch auf Discord.",
   'help.top3':
     "„Unsere Systeme“ zeigt, wer die kolonisierten Systeme kontrolliert, die zu uns gehören: die mit {faction} als bevorzugter Fraktion im Architektenregister, dazu die von einem Mitglied der Staffel kolonisierten ohne angegebene bevorzugte Fraktion. Ein Balken pro Fraktion, {faction} zuerst und in Orange: die anderen sind Systeme, deren Kontrolle noch zu gewinnen ist.",
   'help.details': 'Details des Systems',

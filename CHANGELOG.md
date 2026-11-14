@@ -2,7 +2,7 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
-## [1.8.0] - 2026-11-14 — Fuori dalla beta; link condivisibili e "Nostri sistemi"
+## [1.8.0] - 2026-11-14 — Fuori dalla beta; link a un sistema e "Nostri sistemi"
 
 ### Fuori dalla beta
 
@@ -10,8 +10,7 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
 ### Novità
 
-- **Copia link**, in alto: copia l'indirizzo della tabella così come la vedi (ordinamento, "Distanza da", filtri rapidi, righe per pagina). Chi lo apre trova la stessa vista, con i dati di quel momento; dopo l'apertura i parametri spariscono dalla barra dell'indirizzo, così un ricaricamento riapre la tabella come al solito. Nel link vanno solo le scelte diverse da quelle iniziali, così resta corto.
-- **Link a un sistema**: nei dettagli di un sistema, il pulsante accanto al nome copia un link (`?system=Nome`) che apre il tool con quella scheda già aperta, comodo negli Ordini e su Discord. Se il sistema non è in tabella, lo dice il messaggio sotto "Distanza da".
+- **Link a un sistema**: nei dettagli di un sistema, il pulsante accanto al nome copia un link (`?system=Nome`) che apre il tool con quella scheda già aperta, comodo negli Ordini e su Discord. Se il sistema non è in tabella, lo dice il messaggio sotto "Distanza da". Dopo l'apertura il parametro sparisce dalla barra dell'indirizzo, così un ricaricamento riapre la tabella come al solito. Un pulsante per copiare il link dell'intera vista (ordinamento e filtri) è stato provato e tolto: poco utile e l'intestazione diventava affollata (decisione dell'utente); il tool legge comunque anche quei parametri.
 - **Nostri sistemi**, in alto: chi controlla i sistemi colonizzati che sono nostri (Flotta Stellare come fazione preferita nel Registro Architetti, più quelli colonizzati da un membro dello Squadrone senza fazione preferita indicata). Una barra per fazione, Flotta Stellare per prima e in arancione; oltre la decima, le altre fazioni stanno in una barra sola. La fazione preferita ricavata dal controllo non conta, altrimenti ogni sistema risulterebbe nostro per definizione.
 - Idee dal tool dei Canonn (commit `bdfa799`, `4de5f86` e `8f783bc` di `upstream`, MIT), riscritte per i nostri filtri e per una sola fazione. Guida aggiornata nelle tre lingue.
 
