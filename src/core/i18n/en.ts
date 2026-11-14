@@ -308,6 +308,11 @@ export const en: Dictionary = {
   'info.summaryAria': 'System summary',
   'info.copyLink': "Copy a link that opens these details",
   'info.linkCopied': "Link copied",
+  'news.title': "What's new in 1.8.0",
+  'news.item1': "The tool is out of beta.",
+  'news.item2': "Our systems, at the top: who controls the colonised systems that are ours.",
+  'news.item3': "In a system's details, the 🔗 next to its name copies a link that opens those details directly.",
+  'news.ok': "Ok",
   'home.title': "Who controls our systems",
   'home.intro': "{total} colonised systems are ours: {preference} with {faction} as the preferred faction in the Architect Registry and {architect} colonised by a member of the Squadron without a preferred faction on record.",
   'home.ours': "{faction} controls {count} of {total} ({percent}).",
@@ -365,6 +370,8 @@ export const en: Dictionary = {
     "In a system's details, the button next to its name copies a link that opens the tool with those details already open: handy on Discord.",
   'help.top3':
     "Our systems shows who controls the colonised systems that are ours: those with {faction} as the preferred faction in the Architect Registry, plus those colonised by a member of the Squadron who gave no preferred faction. One bar per faction, {faction} first and in orange: the others are systems where control is still to be won.",
+  'help.top4':
+    "After an important update, the first time you open the tool a small window sums up what's new; once closed it won't come back until the next news.",
   'help.details': 'System details',
   'help.details1':
     'Summary, stations with their services, any Watchlist reason and the factions table. Next to the influence: ⚠️ for factions within {points} points of {faction} (a conflict is possible), the Retreat icon (solid if already in Retreat, dashed at {threshold} or less) and an N for native factions, which cannot go into Retreat.',

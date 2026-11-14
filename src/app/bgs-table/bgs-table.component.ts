@@ -82,6 +82,7 @@ import { isMessageKey } from '../../core/i18n';
 import { readGlobalStates } from '../../core/global-states';
 import { RETREAT_ICON } from '../../core/state-icons';
 import { readShareParams } from '../../core/share-link';
+import { NewsDialogComponent, markNewsSeen, newsPending } from '../news-dialog/news-dialog.component';
 import { HomeControlDialogComponent, HomeControlDialogData } from '../home-control-dialog/home-control-dialog.component';
 
 /**
@@ -629,7 +630,19 @@ export class BgsTableComponent implements OnDestroy {
       }
     });
 
+    // Un link a un sistema apre la sua scheda: le novità aspettano la prossima apertura.
+    if (!readShareParams(new URLSearchParams(window.location.search)) && newsPending()) {
+      this.openNews();
+    }
     void this.applyLinkFromUrl();
+  }
+
+  /** La finestra Novità: vista comunque sia chiusa (Ok, clic fuori, Esc). */
+  private openNews(): void {
+    this.dialog
+      .open(NewsDialogComponent, { autoFocus: 'first-tabbable', restoreFocus: true, maxWidth: 'min(560px, 92vw)' })
+      .afterClosed()
+      .subscribe(() => markNewsSeen());
   }
 
   ngOnDestroy(): void {

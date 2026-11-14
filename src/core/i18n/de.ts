@@ -311,6 +311,11 @@ export const de: Dictionary = {
   'info.summaryAria': 'Übersicht des Systems',
   'info.copyLink': "Link kopieren, der diese Details öffnet",
   'info.linkCopied': "Link kopiert",
+  'news.title': "Neu in 1.8.0",
+  'news.item1': "Das Tool ist nicht mehr in der Beta.",
+  'news.item2': "„Unsere Systeme“, oben: wer die kolonisierten Systeme kontrolliert, die zu uns gehören.",
+  'news.item3': "In den Details eines Systems kopiert der 🔗 neben dem Namen einen Link, der genau diese Details öffnet.",
+  'news.ok': "Ok",
   'home.title': "Wer unsere Systeme kontrolliert",
   'home.intro': "{total} kolonisierte Systeme gehören zu uns: {preference} mit {faction} als bevorzugter Fraktion im Architektenregister und {architect}, die ein Mitglied der Staffel ohne angegebene bevorzugte Fraktion kolonisiert hat.",
   'home.ours': "{faction} kontrolliert {count} von {total} ({percent}).",
@@ -368,6 +373,8 @@ export const de: Dictionary = {
     "In den Details eines Systems kopiert die Schaltfläche neben dem Namen einen Link, der das Tool mit genau diesen Details öffnet: praktisch auf Discord.",
   'help.top3':
     "„Unsere Systeme“ zeigt, wer die kolonisierten Systeme kontrolliert, die zu uns gehören: die mit {faction} als bevorzugter Fraktion im Architektenregister, dazu die von einem Mitglied der Staffel kolonisierten ohne angegebene bevorzugte Fraktion. Ein Balken pro Fraktion, {faction} zuerst und in Orange: die anderen sind Systeme, deren Kontrolle noch zu gewinnen ist.",
+  'help.top4':
+    "Nach einem wichtigen Update fasst beim ersten Öffnen ein kleines Fenster die Neuerungen zusammen; einmal geschlossen, erscheint es erst bei den nächsten Neuerungen wieder.",
   'help.details': 'Details des Systems',
   'help.details1':
     'Übersicht, Stationen mit ihren Diensten, ein etwaiger Watchlist-Grund und die Tabelle der Fraktionen. Neben dem Einfluss: ⚠️ für Fraktionen, die {points} Punkte oder weniger von {faction} entfernt sind (ein Konflikt ist möglich), das Retreat-Symbol (ausgefüllt, wenn schon im Retreat, gestrichelt bei {threshold} oder weniger) und ein N für einheimische Fraktionen, die nicht in Retreat gehen können.',

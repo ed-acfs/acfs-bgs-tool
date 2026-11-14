@@ -6,6 +6,7 @@ import { FACTION_NAME, HOME_SYSTEM } from '../../core/config';
 import { InfluenceTrend } from '../../core/influence-history';
 import { BgsPage, BgsService } from '../bgs.service';
 import { BgsTableComponent, comparePriorityRows } from './bgs-table.component';
+import { NEWS_ID, NEWS_SEEN_KEY } from '../../core/news';
 
 /** A minimal, fully-populated row — only `systemName` varies between rows in these tests. */
 function row(systemName: string): BgsRow {
@@ -83,6 +84,8 @@ describe('BgsTableComponent', () => {
   }
 
   beforeEach(async () => {
+    // La finestra Novità coprirebbe la tabella: nei test è già vista (il suo test è a parte).
+    localStorage.setItem(NEWS_SEEN_KEY, NEWS_ID);
     service = {
       getPage: vi.fn((page: number) => Promise.resolve(serverPage(page))),
       prefetchPage: vi.fn(),

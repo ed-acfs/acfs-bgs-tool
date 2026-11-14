@@ -1,0 +1,38 @@
+:host {
+  display: block;
+}
+
+.news-title {
+  color: var(--color-accent);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+mat-dialog-content {
+  max-width: 520px;
+}
+
+.news-list {
+  margin: 0;
+  padding-left: 1.2em;
+
+  li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.news-actions {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.news-signoff {
+  padding-left: 8px;
+  color: var(--color-text-2);
+  font-style: italic;
+}

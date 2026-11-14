@@ -313,6 +313,11 @@ export const it = {
   'info.summaryAria': 'Riepilogo del sistema',
   'info.copyLink': "Copia il link che apre questa scheda",
   'info.linkCopied': "Link copiato",
+  'news.title': "Novità della 1.8.0",
+  'news.item1': "Il tool esce dalla beta, e con lui la pagina Attività.",
+  'news.item2': "Nostri sistemi, in alto: chi controlla i sistemi colonizzati che sono nostri.",
+  'news.item3': "Nei dettagli di un sistema, la 🔗 accanto al nome copia il link che apre direttamente quella scheda.",
+  'news.ok': "Ok",
   'home.title': "Chi controlla i nostri sistemi",
   'home.intro': "{total} sistemi colonizzati sono nostri: {preference} con {faction} come fazione preferita nel Registro Architetti e {architect} colonizzati da un membro dello Squadrone senza una fazione preferita indicata.",
   'home.ours': "{faction} ne controlla {count} su {total} ({percent}).",
@@ -370,6 +375,8 @@ export const it = {
     "Nei dettagli di un sistema, il pulsante accanto al nome copia un link che apre il tool con quella scheda già aperta: comodo negli Ordini e su Discord.",
   'help.top3':
     "Nostri sistemi mostra chi controlla i sistemi colonizzati che sono nostri: quelli con {faction} come fazione preferita nel Registro Architetti, più quelli colonizzati da un membro dello Squadrone che non ha indicato una fazione preferita. Una barra per fazione, {faction} per prima e in arancione: le altre sono i sistemi dove il controllo è ancora da conquistare.",
+  'help.top4':
+    "Dopo un aggiornamento importante, la prima volta che apri il tool una piccola finestra riassume le novità; una volta chiusa non ricompare fino alle novità successive.",
   'help.details': 'Dettagli del sistema',
   'help.details1':
     "Riepilogo, stazioni con i loro servizi, eventuale motivo della Watchlist e la tabella delle fazioni. Accanto all'influenza: ⚠️ per le fazioni a {points} punti o meno da {faction} (possibile conflitto), l'icona del Retreat (piena se già in Retreat, tratteggiata se al {threshold} o meno) e una N per le fazioni native, che non possono andare in Retreat.",
