@@ -2,30 +2,26 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
-## [1.9.0] - 2026-11-14 — Avanzamento del Registro Architetti
+## [1.8.1] - 2026-11-14 — Fuori dalla beta, Statistiche e link a un sistema
 
-### Novità
-
-- **Statistiche**, in alto, al posto del pulsante "Nostri sistemi", che diventa una delle sue due voci.
-- **Avanzamento del Registro**: quanti sistemi della tabella hanno già una risposta nel Registro Architetti (architetto, fazione preferita o "non è una colonia"), quanti mancano, quante risposte arrivano a settimana (media delle ultime 4 settimane complete) e quando finiremmo a questo ritmo. Due grafici: i sistemi ancora da registrare nel tempo, con una linea tratteggiata "a questo ritmo" fino alla fine prevista, e i sistemi registrati per settimana, divisi per fazione preferita. Ogni sistema conta una volta, nella settimana della sua prima risposta. **Senza scadenza** (decisione dell'utente: prima si vede come va; una scadenza potrà servire per un gameplay); il calcolo la accetta già, se servirà.
-- Idea dal tool dei Canonn (commit `5b9ce63` di `upstream`, MIT), riscritta per noi. Guida aggiornata nelle tre lingue.
-
-### Dati
-
-- Il tool legge anche la colonna "Informazioni cronologiche" del Registro (le date del modulo, come `04/10/2026 23.22.47`). La copia salvata nel browser cambia chiave (`architects-cache:v3`), così si riscarica una volta con le date.
-
-## [1.8.0] - 2026-11-14 — Fuori dalla beta; link a un sistema e "Nostri sistemi"
+La giornata è stata pubblicata in due passi: la 1.8.0 (fuori dalla beta, link a un sistema, Nostri sistemi, finestra Novità) e poi la 1.8.1 (menu Statistiche e Avanzamento del Registro).
 
 ### Fuori dalla beta
 
-- Il tool e la pagina **Attività** non sono più in beta (decisione dell'utente): il titolo mostra 1.8.0 e il menu dell'account, la Guida e gli Ordini dicono solo "Attività". Il Colony Plotter resta in beta.
+- Il tool e la pagina **Attività** non sono più in beta (decisione dell'utente): il titolo non dice più "beta" e il menu dell'account, la Guida e gli Ordini dicono solo "Attività". Il Colony Plotter resta in beta.
 
 ### Novità
 
 - **Link a un sistema**: nei dettagli di un sistema, il pulsante accanto al nome copia un link (`?system=Nome`) che apre il tool con quella scheda già aperta, comodo negli Ordini e su Discord. Se il sistema non è in tabella, lo dice il messaggio sotto "Distanza da". Dopo l'apertura il parametro sparisce dalla barra dell'indirizzo, così un ricaricamento riapre la tabella come al solito. Un pulsante per copiare il link dell'intera vista (ordinamento e filtri) è stato provato e tolto: poco utile e l'intestazione diventava affollata (decisione dell'utente); il tool legge comunque anche quei parametri.
-- **Nostri sistemi**, in alto: chi controlla i sistemi colonizzati che sono nostri (Flotta Stellare come fazione preferita nel Registro Architetti, più quelli colonizzati da un membro dello Squadrone senza fazione preferita indicata). Una barra per fazione, Flotta Stellare per prima e in arancione; oltre la decima, le altre fazioni stanno in una barra sola. La fazione preferita ricavata dal controllo non conta, altrimenti ogni sistema risulterebbe nostro per definizione.
+- **Statistiche**, in alto (dalla 1.8.1; nella 1.8.0 c'era solo il pulsante "Nostri sistemi"), con due voci:
+  - **Nostri sistemi**: chi controlla i sistemi colonizzati che sono nostri (Flotta Stellare come fazione preferita nel Registro Architetti, più quelli colonizzati da un membro dello Squadrone senza fazione preferita indicata). Una barra per fazione, Flotta Stellare per prima e in arancione; oltre la decima, le altre fazioni stanno in una barra sola. La fazione preferita ricavata dal controllo non conta, altrimenti ogni sistema risulterebbe nostro per definizione.
+  - **Avanzamento del Registro**: quanti sistemi della tabella hanno già una risposta nel Registro Architetti (architetto, fazione preferita o "non è una colonia"), quanti mancano, quante risposte arrivano a settimana (media delle ultime 4 settimane complete) e quando finiremmo a questo ritmo. Due grafici: i sistemi ancora da registrare nel tempo, con una linea tratteggiata "a questo ritmo" fino alla fine prevista, e i sistemi registrati per settimana, divisi per fazione preferita. Ogni sistema conta una volta, nella settimana della sua prima risposta. **Senza scadenza** (decisione dell'utente: prima si vede come va; una scadenza potrà servire per un gameplay); il calcolo la accetta già, se servirà.
 - **Finestra Novità**: la prima volta che si apre il tool dopo un aggiornamento importante, una piccola finestra riassume le novità in poche righe ("Fly safe cmdr, o7"). Chiusa in qualunque modo, non ricompare fino alla finestra successiva: lo ricorda il browser (`localStorage`, chiave `acfs-bgs:novita-viste`), quindi ogni dispositivo la mostra una volta; su iPhone l'app della schermata Home e Safari contano a parte. Non compare se si apre il link a un sistema. Testi in `news.*` dei dizionari, identificativo in `src/core/news.ts`.
-- Idee dal tool dei Canonn (commit `bdfa799`, `4de5f86` e `8f783bc` di `upstream`, MIT), riscritte per i nostri filtri e per una sola fazione. Guida aggiornata nelle tre lingue.
+- Idee dal tool dei Canonn (commit `bdfa799`, `4de5f86`, `8f783bc` e `5b9ce63` di `upstream`, MIT), riscritte per i nostri filtri e per una sola fazione. Guida aggiornata nelle tre lingue.
+
+### Dati
+
+- Il tool legge anche la colonna "Informazioni cronologiche" del Registro (le date del modulo, come `04/10/2026 23.22.47`). La copia salvata nel browser cambia chiave (`architects-cache:v3`), così si riscarica una volta con le date.
 
 ## [1.7.3-beta] - 2026-11-04 — Tabella più compatta
 

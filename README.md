@@ -117,7 +117,7 @@ Il tool usa il service worker di Angular (`@angular/service-worker`), configurat
 
 ## Crediti e licenza
 
-Il codice deriva da [canonn-colony-operations](https://github.com/canonn-science/canonn-colony-operations) del Canonn Research Group, distribuito con licenza MIT. Il procedimento per scaricare i dati da Spansh segue la loro Cloud Function `canonnbgs` ([Canonn-GCloud](https://github.com/canonn-science/Canonn-GCloud)). Il mini-grafico e il grafico dello storico dell'influenza (1.6.0) riprendono idea, disegno e parte del codice dal loro tool (stessa licenza MIT); dallo stesso tool vengono le idee dei link condivisibili e dei grafici "Nostri sistemi" (1.8.0) e "Avanzamento del Registro" (1.9.0).
+Il codice deriva da [canonn-colony-operations](https://github.com/canonn-science/canonn-colony-operations) del Canonn Research Group, distribuito con licenza MIT. Il procedimento per scaricare i dati da Spansh segue la loro Cloud Function `canonnbgs` ([Canonn-GCloud](https://github.com/canonn-science/Canonn-GCloud)). Il mini-grafico e il grafico dello storico dell'influenza (1.6.0) riprendono idea, disegno e parte del codice dal loro tool (stessa licenza MIT); dallo stesso tool vengono le idee dei link condivisibili e dei grafici "Nostri sistemi" (1.8.0) e "Avanzamento del Registro" (1.8.1).
 
 Le icone degli stati delle fazioni (Boom, Bust, Expansion, Lockdown, Retreat) in `public/icons/states/` sono quelle del gioco, di proprietà di Frontier Developments, usate come contenuto di fan. Elite Dangerous è un marchio di Frontier Developments plc.
 
