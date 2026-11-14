@@ -2,7 +2,11 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
-## [1.8.0-beta] - 2026-11-14 — Link condivisibili e "Nostri sistemi"
+## [1.8.0] - 2026-11-14 — Fuori dalla beta; link condivisibili e "Nostri sistemi"
+
+### Fuori dalla beta
+
+- Il tool e la pagina **Attività** non sono più in beta (decisione dell'utente): il titolo mostra 1.8.0 e il menu dell'account, la Guida e gli Ordini dicono solo "Attività". Il Colony Plotter resta in beta.
 
 ### Novità
 

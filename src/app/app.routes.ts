@@ -23,7 +23,7 @@ export const routes: Routes = [
     component: OrdersReaderComponent,
   },
   {
-    // Lavoro BGS-Tally per pilota, per membri e ufficiali (ruolo controllato dal server), in beta.
+    // Lavoro BGS-Tally per pilota, per membri e ufficiali (ruolo controllato dal server); uscita dalla beta il 14 novembre 2026.
     path: 'activity',
     component: WorkPageComponent,
   },
