@@ -37,6 +37,8 @@ export class App {
 
   constructor() {
     // The browser tab names the release too, like the page title (index.html has no version to keep in sync).
-    inject(Title).setTitle(`ACFS BGS Tool ${version}`);
+    // The rest matches the <title> in index.html: search engines read the title after the app starts.
+    // Always Italian, like lang="it", whatever language the page is shown in.
+    inject(Title).setTitle(`ACFS BGS Tool ${version} – strumento BGS per Elite Dangerous`);
   }
 }
