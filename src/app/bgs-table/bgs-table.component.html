@@ -38,10 +38,14 @@
         <fa-icon [icon]="faDownload" aria-hidden="true"></fa-icon>
         {{ exporting() ? t('header.exporting') : t('header.export') }}
       </button>
-      <button mat-stroked-button type="button" (click)="openHomeControl()" [attr.aria-label]="t('header.homeControlAria')" [title]="t('header.homeControlAria')">
+      <button mat-stroked-button type="button" [matMenuTriggerFor]="statsMenu" [attr.aria-label]="t('header.statsAria')">
         <fa-icon [icon]="faChartBar" aria-hidden="true"></fa-icon>
-        {{ t('header.homeControl') }}
+        {{ t('header.stats') }}
       </button>
+      <mat-menu #statsMenu="matMenu">
+        <button mat-menu-item type="button" (click)="openHomeControl()">{{ t('header.homeControl') }}</button>
+        <button mat-menu-item type="button" (click)="openArchitectProgress()">{{ t('header.progress') }}</button>
+      </mat-menu>
       <mat-menu #exportMenu="matMenu">
         <button mat-menu-item type="button" (click)="exportJson()">{{ t('header.exportJson') }}</button>
         <button mat-menu-item type="button" (click)="exportCsv()">{{ t('header.exportCsv') }}</button>

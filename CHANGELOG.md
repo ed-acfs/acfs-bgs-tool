@@ -2,6 +2,18 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
+## [1.9.0] - 2026-11-14 — Avanzamento del Registro Architetti
+
+### Novità
+
+- **Statistiche**, in alto, al posto del pulsante "Nostri sistemi", che diventa una delle sue due voci.
+- **Avanzamento del Registro**: quanti sistemi della tabella hanno già una risposta nel Registro Architetti (architetto, fazione preferita o "non è una colonia"), quanti mancano, quante risposte arrivano a settimana (media delle ultime 4 settimane complete) e quando finiremmo a questo ritmo. Due grafici: i sistemi ancora da registrare nel tempo, con una linea tratteggiata "a questo ritmo" fino alla fine prevista, e i sistemi registrati per settimana, divisi per fazione preferita. Ogni sistema conta una volta, nella settimana della sua prima risposta. **Senza scadenza** (decisione dell'utente: prima si vede come va; una scadenza potrà servire per un gameplay); il calcolo la accetta già, se servirà.
+- Idea dal tool dei Canonn (commit `5b9ce63` di `upstream`, MIT), riscritta per noi. Guida aggiornata nelle tre lingue.
+
+### Dati
+
+- Il tool legge anche la colonna "Informazioni cronologiche" del Registro (le date del modulo, come `04/10/2026 23.22.47`). La copia salvata nel browser cambia chiave (`architects-cache:v3`), così si riscarica una volta con le date.
+
 ## [1.8.0] - 2026-11-14 — Fuori dalla beta; link a un sistema e "Nostri sistemi"
 
 ### Fuori dalla beta

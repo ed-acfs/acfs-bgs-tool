@@ -69,6 +69,11 @@ export function translate(lang: Lang, key: MessageKey, params?: MessageParams): 
 }
 
 /** A number with one decimal in the language's style: "42,5" in Italian and German, "42.5" in English. */
+/** A short day and month, with the year: "12 feb 2027", "Feb 12, 2027", "12. Feb. 2027" (UTC). */
+export function formatShortDate(lang: Lang, ms: number): string {
+  return new Date(ms).toLocaleDateString(LOCALES[lang], { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+}
+
 export function formatDecimal(lang: Lang, value: number): string {
   return value.toLocaleString(LOCALES[lang], { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 }

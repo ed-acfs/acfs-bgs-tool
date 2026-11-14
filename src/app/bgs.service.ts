@@ -39,7 +39,8 @@ const HTTP_RETRY_COUNT = 2;
 const FORM_SUBMIT_TIMEOUT_MS = 15000;
 
 /** localStorage key the architect registry is persisted under. */
-const ARCHITECTS_CACHE_KEY = `${STORAGE_PREFIX}architects-cache:v2`;
+// v3: the rows carry their timestamp (`at`), for the Registry progress chart (1.9.0).
+const ARCHITECTS_CACHE_KEY = `${STORAGE_PREFIX}architects-cache:v3`;
 /** How long the architect registry is cached before it's refetched — short, so a new assignment shows up soon. */
 const ARCHITECTS_CACHE_DURATION_MS = 15 * 60 * 1000;
 
@@ -268,6 +269,7 @@ export class BgsService {
       architect: submission.architect,
       affiliation: submission.affiliation,
       preferredFaction: submission.preferredFaction,
+      at: Date.now(),
     };
 
     if (this.registryRows) {

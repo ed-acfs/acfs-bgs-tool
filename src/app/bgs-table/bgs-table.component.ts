@@ -60,7 +60,7 @@ import {
   PriorityWatchlistDialogData,
 } from '../priority-watchlist-dialog/priority-watchlist-dialog.component';
 import { AFFILIATION_SQUADRON_MEMBER, ArchitectSubmission } from '../../core/architect-form';
-import { architectNames, architectsWithAffiliation, suggestArchitects } from '../../core/architect-registry';
+import { ArchitectRegistryRow, architectNames, architectsWithAffiliation, suggestArchitects } from '../../core/architect-registry';
 import { distanceLy } from '../../core/distance';
 import { exportRowsToCsv, exportRowsToJson } from '../export-download';
 import { FreshnessInfo, computeFreshness } from '../../core/freshness';
@@ -84,6 +84,7 @@ import { RETREAT_ICON } from '../../core/state-icons';
 import { readShareParams } from '../../core/share-link';
 import { NewsDialogComponent, markNewsSeen, newsPending } from '../news-dialog/news-dialog.component';
 import { HomeControlDialogComponent, HomeControlDialogData } from '../home-control-dialog/home-control-dialog.component';
+import { ArchitectProgressDialogComponent, ArchitectProgressDialogData } from '../architect-progress-dialog/architect-progress-dialog.component';
 
 /**
  * How the table is currently ordered:
@@ -1318,6 +1319,20 @@ export class BgsTableComponent implements OnDestroy {
     }
     const data: HomeControlDialogData = { rows };
     this.dialog.open(HomeControlDialogComponent, { data, autoFocus: 'first-tabbable', restoreFocus: true, maxWidth: 'min(760px, 94vw)' });
+  }
+
+  /** Opens "Avanzamento del Registro": every system in the table against the Architect Registry's dated answers. */
+  protected async openArchitectProgress(): Promise<void> {
+    let rows = this.fullDataset() ?? this.coverageRows();
+    let registry: readonly ArchitectRegistryRow[];
+    try {
+      rows ??= await this.bgsService.getAllRows();
+      registry = await this.bgsService.getArchitectRegistry();
+    } catch {
+      return;
+    }
+    const data: ArchitectProgressDialogData = { rows, registry };
+    this.dialog.open(ArchitectProgressDialogComponent, { data, autoFocus: 'first-tabbable', restoreFocus: true, maxWidth: 'min(820px, 94vw)' });
   }
 
   protected openHelpDialog(): void {

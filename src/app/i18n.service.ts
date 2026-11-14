@@ -8,6 +8,7 @@ import {
   formatDecimal,
   formatInteger,
   formatPercent,
+  formatShortDate,
   formatUtcTime,
   pickLanguage,
   translate,
@@ -57,4 +58,5 @@ export class I18nService {
   readonly integer = (value: number): string => formatInteger(this.lang(), value);
   readonly percent = (value: number): string => formatPercent(this.lang(), value);
   readonly utcTime = (ms: number): string => formatUtcTime(this.lang(), ms);
+  readonly shortDate = (ms: number): string => formatShortDate(this.lang(), ms);
 }

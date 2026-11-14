@@ -81,7 +81,7 @@ describe('BgsService dataset loading', () => {
     const system1 = page.rows.find(row => row.systemName === 'System 1')!;
 
     expect(await service.getArchitectRegistry()).toEqual([
-      { systemName: 'System 1', architect: 'Habba-Nero', affiliation: 'Not an ACFS Member', preferredFaction: 'Flotta Stellare' },
+      { systemName: 'System 1', architect: 'Habba-Nero', affiliation: 'Not an ACFS Member', preferredFaction: 'Flotta Stellare', at: Date.UTC(2026, 9, 4, 21) },
     ]);
     expect(system1.architect).toBe('Habba-Nero');
     expect(system1.preferredFaction).toBe('Flotta Stellare');

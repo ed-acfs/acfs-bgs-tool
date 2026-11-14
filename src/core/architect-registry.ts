@@ -15,6 +15,12 @@ export interface ArchitectRegistryRow {
   /** The "ACFS Architect" answer — one of the `AFFILIATION_*` values, or '' if unanswered. */
   affiliation: string;
   preferredFaction: string;
+  /**
+   * When the answer was recorded (epoch ms), from the form's "Informazioni cronologiche" column;
+   * null if the sheet has no such column or the cell isn't a date. Read as UTC: the sheet gives
+   * no time zone, and an hour or two doesn't matter for the weekly progress chart.
+   */
+  at?: number | null;
 }
 
 /** What the registry records about a system: the columns the table's Architect/Preferred Faction show. */

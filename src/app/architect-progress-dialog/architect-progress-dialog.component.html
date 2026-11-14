@@ -1,0 +1,93 @@
+<h2 mat-dialog-title class="info-title">{{ t('progress.title') }}</h2>
+
+<mat-dialog-content>
+  <section class="pr-stats" [attr.aria-label]="t('progress.summaryAria')">
+    <div class="pr-stat">
+      <span class="pr-stat-label">{{ t('progress.recorded') }}</span>
+      <span class="pr-stat-value">{{ p.recorded }} / {{ p.total }}</span>
+    </div>
+    <div class="pr-stat">
+      <span class="pr-stat-label">{{ t('progress.remaining') }}</span>
+      <span class="pr-stat-value">{{ p.remaining }}</span>
+    </div>
+    <div class="pr-stat">
+      <span class="pr-stat-label">{{ t('progress.rate', { weeks: p.recentWeeks }) }}</span>
+      <span class="pr-stat-value">{{ rate() }}</span>
+    </div>
+    <div class="pr-stat">
+      <span class="pr-stat-label">{{ t('progress.finish') }}</span>
+      <span class="pr-stat-value">{{ p.remaining === 0 ? t('progress.done') : p.projectedFinish === null ? '—' : i18n.shortDate(p.projectedFinish) }}</span>
+    </div>
+  </section>
+
+  @if (p.burndown.length > 0) {
+    <section class="pr-card">
+      <h3 class="pr-heading">{{ t('progress.burnTitle') }}</h3>
+      <svg class="pr-chart" [attr.viewBox]="'0 0 ' + W + ' ' + H" role="img" [attr.aria-label]="t('progress.burnAria', { remaining: p.remaining })">
+        @for (tick of burnTicks; track $index) {
+          <line class="pr-grid" [attr.x1]="pad.left" [attr.x2]="W - pad.right" [attr.y1]="y(tick)" [attr.y2]="y(tick)" />
+          <text class="pr-axis" [attr.x]="pad.left - 6" [attr.y]="y(tick) + 4" text-anchor="end">{{ tick }}</text>
+        }
+        <path class="pr-burn" [attr.d]="burnPath" />
+        @if (projection; as pj) {
+          <line class="pr-projection" [attr.x1]="pj.x1" [attr.y1]="pj.y1" [attr.x2]="pj.x2" [attr.y2]="pj.y2" />
+        }
+        @for (b of p.burndown; track b.at) {
+          <circle class="pr-dot" [attr.cx]="x(b.at)" [attr.cy]="y(b.remaining)" r="4">
+            <title>{{ t('progress.burnPoint', { date: i18n.shortDate(b.at), remaining: b.remaining }) }}</title>
+          </circle>
+        }
+        <text class="pr-axis" [attr.x]="pad.left" [attr.y]="H - 6">{{ i18n.shortDate(p.burndown[0].at) }}</text>
+        <text class="pr-axis" [attr.x]="x(now)" [attr.y]="H - 6" [attr.text-anchor]="projection ? 'middle' : 'end'">{{ t('progress.today') }}</text>
+        @if (projection; as pj) {
+          <text class="pr-axis" [attr.x]="pj.x2" [attr.y]="H - 6" text-anchor="end">{{ i18n.shortDate(p.projectedFinish!) }}</text>
+        }
+      </svg>
+      <p class="pr-note">
+        @if (projection) {
+          <span class="pr-key pr-key--solid"></span> {{ t('progress.burnKey') }}
+          <span class="pr-key pr-key--dashed"></span> {{ t('progress.projectionKey') }}
+        } @else {
+          {{ t('progress.burnKey') }}
+        }
+      </p>
+    </section>
+
+    <section class="pr-card">
+      <h3 class="pr-heading">{{ t('progress.weeksTitle') }}</h3>
+      <ul class="pr-legend">
+        @for (g of groups; track g) {
+          <li><span class="pr-swatch" [style.background-color]="colors[g]"></span>{{ groupLabel(g) }}</li>
+        }
+      </ul>
+      <svg class="pr-chart" [attr.viewBox]="'0 0 ' + W + ' ' + H" role="img" [attr.aria-label]="t('progress.weeksAria')">
+        @for (tick of barTicks; track $index) {
+          <line class="pr-grid" [attr.x1]="pad.left" [attr.x2]="W - pad.right" [attr.y1]="barY(tick)" [attr.y2]="barY(tick)" />
+          <text class="pr-axis" [attr.x]="pad.left - 6" [attr.y]="barY(tick) + 4" text-anchor="end">{{ tick }}</text>
+        }
+        @for (week of p.weeks; track week.start; let i = $index) {
+          <g class="pr-week" [class.pr-week--partial]="week.partial">
+            <title>{{ weekTitle(i) }}</title>
+            @for (s of segments(i); track s.group) {
+              <rect [attr.x]="s.x" [attr.y]="s.y" [attr.width]="barWidth" [attr.height]="s.h" rx="2" [attr.fill]="colors[s.group]" />
+            }
+            <rect class="pr-hit" [attr.x]="s0x(i)" [attr.y]="pad.top" [attr.width]="slotWidth" [attr.height]="H - pad.top - pad.bottom" />
+          </g>
+        }
+        <text class="pr-axis" [attr.x]="pad.left" [attr.y]="H - 6">{{ i18n.shortDate(p.weeks[0].start) }}</text>
+        <text class="pr-axis" [attr.x]="W - pad.right" [attr.y]="H - 6" text-anchor="end">{{ t('progress.thisWeek') }}</text>
+      </svg>
+      <p class="pr-note">{{ t('progress.weeksNote') }}</p>
+    </section>
+  } @else {
+    <p>{{ t('progress.noDates') }}</p>
+  }
+
+  @if (p.undated > 0) {
+    <p class="pr-note">{{ t('progress.undated', { count: p.undated }) }}</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-flat-button color="primary" type="button" mat-dialog-close>{{ t('info.close') }}</button>
+</mat-dialog-actions>
