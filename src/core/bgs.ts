@@ -450,6 +450,8 @@ export function parseArchitectsTsv(text: string): ArchitectRegistryRow[] {
   const preferredFactionIndex = header.indexOf('Preferred Faction');
   // Optional: the Cloud Function's copy of the data has it, but it's not load-bearing for the table.
   const affiliationIndex = header.indexOf('ACFS Architect');
+  // Optional too: the form's timestamp, only for the Registry progress chart.
+  const timestampIndex = header.findIndex(name => name === 'Informazioni cronologiche' || name === 'Timestamp');
   if (systemNameIndex === -1 || architectNameIndex === -1 || preferredFactionIndex === -1) {
     return rows;
   }
@@ -465,9 +467,26 @@ export function parseArchitectsTsv(text: string): ArchitectRegistryRow[] {
       architect: cells[architectNameIndex]?.trim() ?? '',
       affiliation: affiliationIndex === -1 ? '' : (cells[affiliationIndex]?.trim() ?? ''),
       preferredFaction: cells[preferredFactionIndex]?.trim() ?? '',
+      at: timestampIndex === -1 ? null : parseSheetTimestamp(cells[timestampIndex] ?? ''),
     });
   }
   return rows;
+}
+
+/**
+ * A Google Form timestamp as the sheet publishes it, day first: `04/10/2026 23.22.47` (Italian
+ * locale, dots in the time) or `04/10/2026 23:22:47`. Epoch ms read as UTC, or null.
+ */
+export function parseSheetTimestamp(value: string): number | null {
+  const m = /^\s*(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2})[.:](\d{2})(?:[.:](\d{2}))?)?\s*$/.exec(value);
+  if (!m) {
+    return null;
+  }
+  const [day, month, year, hour, minute, second] = [m[1], m[2], m[3], m[4] ?? '0', m[5] ?? '0', m[6] ?? '0'].map(Number);
+  if (month < 1 || month > 12 || day < 1 || day > 31 || hour > 23 || minute > 59 || second > 59) {
+    return null;
+  }
+  return Date.UTC(year, month - 1, day, hour, minute, second);
 }
 
 /**

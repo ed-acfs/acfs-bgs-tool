@@ -19,7 +19,7 @@ Risponde a una domanda: **dove dobbiamo lavorare oggi?** Mostra in una tabella t
 - stazioni con **Material Trader** o **Technology Broker**, con il loro tipo, e un filtro per trovarle;
 - stazioni con **Interstellar Factors**, fra i servizi del filtro "Servizi": i sistemi compaiono dal più vicino a quello del box "Distanza da", con un link alla stessa ricerca su Inara per tutta la galassia;
 - **link a un sistema**: nei dettagli di un sistema, un pulsante copia il link che apre direttamente quella scheda (`?system=Nome`);
-- **Nostri sistemi**: chi controlla i sistemi colonizzati che sono nostri, una barra per fazione.
+- **Statistiche**: "Nostri sistemi" (chi controlla i sistemi colonizzati che sono nostri, una barra per fazione) e "Avanzamento del Registro" (sistemi registrati e mancanti nel Registro Architetti, ritmo settimanale e fine prevista a questo ritmo).
 
 Il tool è pubblicato su **https://flottastellare.it/acfs-bgs-tool/** e controlla i dati ogni 30 minuti.
 
@@ -117,7 +117,7 @@ Il tool usa il service worker di Angular (`@angular/service-worker`), configurat
 
 ## Crediti e licenza
 
-Il codice deriva da [canonn-colony-operations](https://github.com/canonn-science/canonn-colony-operations) del Canonn Research Group, distribuito con licenza MIT. Il procedimento per scaricare i dati da Spansh segue la loro Cloud Function `canonnbgs` ([Canonn-GCloud](https://github.com/canonn-science/Canonn-GCloud)). Il mini-grafico e il grafico dello storico dell'influenza (1.6.0) riprendono idea, disegno e parte del codice dal loro tool (stessa licenza MIT); dallo stesso tool vengono le idee dei link condivisibili e del grafico "Nostri sistemi" (1.8.0).
+Il codice deriva da [canonn-colony-operations](https://github.com/canonn-science/canonn-colony-operations) del Canonn Research Group, distribuito con licenza MIT. Il procedimento per scaricare i dati da Spansh segue la loro Cloud Function `canonnbgs` ([Canonn-GCloud](https://github.com/canonn-science/Canonn-GCloud)). Il mini-grafico e il grafico dello storico dell'influenza (1.6.0) riprendono idea, disegno e parte del codice dal loro tool (stessa licenza MIT); dallo stesso tool vengono le idee dei link condivisibili e dei grafici "Nostri sistemi" (1.8.0) e "Avanzamento del Registro" (1.8.1).
 
 Le icone degli stati delle fazioni (Boom, Bust, Expansion, Lockdown, Retreat) in `public/icons/states/` sono quelle del gioco, di proprietà di Frontier Developments, usate come contenuto di fan. Elite Dangerous è un marchio di Frontier Developments plc.
 

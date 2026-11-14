@@ -1,0 +1,153 @@
+:host {
+  display: block;
+}
+
+.info-title {
+  color: var(--color-accent);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: min(620px, 82vw);
+  max-height: 72vh;
+}
+
+.pr-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.pr-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border-muted);
+  border-radius: 8px;
+  background-color: var(--color-surface-2);
+}
+
+.pr-stat-label {
+  color: var(--color-text-2);
+  font-size: 0.72em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pr-stat-value {
+  color: var(--color-accent);
+  font-size: 1.3em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.pr-card {
+  padding: 12px 14px;
+  border: 1px solid var(--color-border-muted);
+  border-radius: 8px;
+  background-color: var(--color-surface-2);
+}
+
+.pr-heading {
+  margin: 0 0 8px;
+  font-size: 0.95em;
+  font-weight: 600;
+}
+
+.pr-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pr-grid {
+  stroke: var(--color-border-muted);
+  stroke-width: 1;
+}
+
+.pr-axis {
+  fill: var(--color-text-2);
+  font-size: 11px;
+}
+
+.pr-burn {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.pr-projection {
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  stroke-dasharray: 5 5;
+  opacity: 0.7;
+}
+
+.pr-dot {
+  fill: var(--color-accent);
+  stroke: var(--color-surface-2);
+  stroke-width: 2;
+}
+
+.pr-hit {
+  fill: transparent;
+}
+
+.pr-week--partial rect:not(.pr-hit) {
+  opacity: 0.55;
+}
+
+.pr-week:hover rect:not(.pr-hit) {
+  filter: brightness(1.15);
+}
+
+.pr-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0 0 6px;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85em;
+}
+
+.pr-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border-radius: 2px;
+  vertical-align: baseline;
+}
+
+.pr-note {
+  margin: 6px 0 0;
+  color: var(--color-text-2);
+  font-size: 0.85em;
+  line-height: 1.45;
+}
+
+.pr-key {
+  display: inline-block;
+  width: 18px;
+  margin: 0 4px 3px 0;
+  border-top: 2px solid var(--color-accent);
+  vertical-align: middle;
+}
+
+.pr-key--dashed {
+  margin-left: 12px;
+  border-top-style: dashed;
+}
+
+@media (max-width: 560px) {
+  .pr-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
