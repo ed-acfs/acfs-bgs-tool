@@ -17,7 +17,9 @@ Risponde a una domanda: **dove dobbiamo lavorare oggi?** Mostra in una tabella t
 - distanza da un sistema a scelta: di default Wong Sher, la capitale;
 - all'apertura i sistemi sono ordinati per **priorità**, dalla P1; i sistemi della **Watchlist** stanno sempre in cima, con qualunque ordinamento;
 - stazioni con **Material Trader** o **Technology Broker**, con il loro tipo, e un filtro per trovarle;
-- stazioni con **Interstellar Factors**, fra i servizi del filtro "Servizi": i sistemi compaiono dal più vicino a quello del box "Distanza da", con un link alla stessa ricerca su Inara per tutta la galassia.
+- stazioni con **Interstellar Factors**, fra i servizi del filtro "Servizi": i sistemi compaiono dal più vicino a quello del box "Distanza da", con un link alla stessa ricerca su Inara per tutta la galassia;
+- **link a un sistema**: nei dettagli di un sistema, un pulsante copia il link che apre direttamente quella scheda (`?system=Nome`);
+- **Nostri sistemi**: chi controlla i sistemi colonizzati che sono nostri, una barra per fazione.
 
 Il tool è pubblicato su **https://flottastellare.it/acfs-bgs-tool/** e controlla i dati ogni 30 minuti.
 
@@ -31,9 +33,9 @@ Il progetto è in sviluppo. Le fasi, le decisioni prese e le domande aperte sono
 
 Il tool si consulta senza accesso. Il pulsante **Accedi con Discord** (nella riga con le bandiere delle lingue) serve ad abilitare gli strumenti riservati: il server dello Squadrone ([`acfs-server`](https://github.com/ed-acfs/acfs-server), servizio `auth`) legge i ruoli nel server Discord ACFS e tiene la sessione in un suo cookie. Livelli: **collegato** (chiunque sia nel server Discord), **membro** (Membro Flotta, Cadetto), **ufficiale** (Ammiraglio, Vice Ammiraglio, Contrammiraglio). Nel menu dell'account, solo in italiano, i membri trovano Attività, gli ufficiali anche l'editor degli Ordini (la pagina degli Ordini per i membri è sospesa dalla 1.5.6-beta). Chiunque sia collegato trova nel menu anche **Chiave BGS-Tally** (`src/app/tally-key-dialog/`): si genera, rigenera, rinomina o revoca la chiave per il plugin BGS-Tally (`/auth/tally-key` del server, che ne salva solo l'impronta); il nome della chiave, ricavato dal nome Discord, ne è anche l'inizio. La finestra avverte che serve BGS-Tally 5.6.1 o successiva (con la 5.6 la connessione non si completa) e invita ad attivare in EDMC l'invio a EDDN, che fa arrivare i salti al server anche senza BGS-Tally. Gli ufficiali hanno anche **Chiavi dei piloti** (`src/app/pilot-keys-dialog/`, solo in italiano), con l'elenco di tutte le chiavi e la revoca (`/auth/tally-keys`). Il servizio che chiede chi è collegato è `src/app/auth.service.ts`; il pulsante e il menu sono `src/app/account/`.
 
-## Attività dello Squadrone (beta)
+## Attività dello Squadrone
 
-La pagina `/activity` (nel menu dell'account per membri e ufficiali e dal pulsante **Attività (beta)** negli Ordini, solo in italiano) mostra il lavoro BGS per Flotta Stellare che i piloti mandano con BGS-Tally al server dello Squadrone, per tick, sistema e pilota. È riservata ai membri dello Squadrone (dal 20 ottobre 2026; prima solo agli ufficiali): si entra con Discord (ruolo da membro o da ufficiale) e il controllo lo fa il server (`/v1/work` di [`acfs-server`](https://github.com/ed-acfs/acfs-server)).
+La pagina `/activity` (nel menu dell'account per membri e ufficiali e dal pulsante **Attività** negli Ordini, solo in italiano) mostra il lavoro BGS per Flotta Stellare che i piloti mandano con BGS-Tally al server dello Squadrone, per tick, sistema e pilota. È riservata ai membri dello Squadrone (dal 20 ottobre 2026; prima solo agli ufficiali): si entra con Discord (ruolo da membro o da ufficiale) e il controllo lo fa il server (`/v1/work` di [`acfs-server`](https://github.com/ed-acfs/acfs-server)).
 
 **Ordini Ufficiali** (`/ordini`, solo in italiano, per gli ufficiali secondo il ruolo Discord): dalla 1.5.6-beta un **editor di testo** (`src/app/orders/orders-text-editor.component.ts`, logica in `src/core/orders-text.ts`), con l'anteprima come su Discord, le emoji vere al posto dei codici (le emoji del server, come `:acfs:`, restano col nome), una barra delle emoji e la ricerca di un sistema che ne scrive il nome. Il testo è libero: nulla viene preso dai dati della tabella. La bozza è condivisa sul server (`/auth/orders/draft`, `src/app/orders/orders.store.ts`): si salva da sola ed è la stessa per tutti gli ufficiali e su ogni computer; se un altro ufficiale l'ha cambiata nel frattempo, la pagina chiede quale versione tenere. Il vecchio editor a moduli resta su `/ordini/moduli`. La pagina di lettura per i membri (`/ordini/pubblicati`, `src/app/orders-reader/`) è **sospesa** mentre si prova il nuovo editor.
 
@@ -115,7 +117,7 @@ Il tool usa il service worker di Angular (`@angular/service-worker`), configurat
 
 ## Crediti e licenza
 
-Il codice deriva da [canonn-colony-operations](https://github.com/canonn-science/canonn-colony-operations) del Canonn Research Group, distribuito con licenza MIT. Il procedimento per scaricare i dati da Spansh segue la loro Cloud Function `canonnbgs` ([Canonn-GCloud](https://github.com/canonn-science/Canonn-GCloud)). Il mini-grafico e il grafico dello storico dell'influenza (1.6.0) riprendono idea, disegno e parte del codice dal loro tool (stessa licenza MIT).
+Il codice deriva da [canonn-colony-operations](https://github.com/canonn-science/canonn-colony-operations) del Canonn Research Group, distribuito con licenza MIT. Il procedimento per scaricare i dati da Spansh segue la loro Cloud Function `canonnbgs` ([Canonn-GCloud](https://github.com/canonn-science/Canonn-GCloud)). Il mini-grafico e il grafico dello storico dell'influenza (1.6.0) riprendono idea, disegno e parte del codice dal loro tool (stessa licenza MIT); dallo stesso tool vengono le idee dei link condivisibili e del grafico "Nostri sistemi" (1.8.0).
 
 Le icone degli stati delle fazioni (Boom, Bust, Expansion, Lockdown, Retreat) in `public/icons/states/` sono quelle del gioco, di proprietà di Frontier Developments, usate come contenuto di fan. Elite Dangerous è un marchio di Frontier Developments plc.
 

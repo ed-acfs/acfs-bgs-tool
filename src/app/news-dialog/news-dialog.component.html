@@ -1,0 +1,14 @@
+<h2 mat-dialog-title class="news-title">{{ t('news.title') }}</h2>
+
+<mat-dialog-content>
+  <ul class="news-list">
+    @for (item of items; track item) {
+      <li>{{ t(item) }}</li>
+    }
+  </ul>
+</mat-dialog-content>
+
+<mat-dialog-actions class="news-actions">
+  <span class="news-signoff">Fly safe cmdr, o7</span>
+  <button mat-flat-button color="primary" type="button" mat-dialog-close>{{ t('news.ok') }}</button>
+</mat-dialog-actions>

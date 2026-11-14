@@ -1,4 +1,18 @@
-<h2 mat-dialog-title class="info-title">{{ row.systemName }}</h2>
+<h2 mat-dialog-title class="info-title">
+  {{ row.systemName }}
+  <button
+    type="button"
+    class="info-link-button"
+    (click)="copyLink()"
+    [title]="linkCopied() ? t('info.linkCopied') : t('info.copyLink')"
+    [attr.aria-label]="t('info.copyLink')"
+  >
+    <fa-icon [icon]="linkCopied() ? faCheck : faLink" aria-hidden="true"></fa-icon>
+  </button>
+  @if (linkCopied()) {
+    <span class="info-link-copied" role="status">{{ t('info.linkCopied') }}</span>
+  }
+</h2>
 
 <mat-dialog-content>
   @if (entries.length > 0) {

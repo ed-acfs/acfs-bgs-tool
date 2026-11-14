@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faCheck, faLink } from '@fortawesome/free-solid-svg-icons';
 import { BgsRow, FactionDetail, StationService } from '../../core/bgs';
 import { CloseFaction, conflictRisks } from '../../core/close-factions';
 import { FACTION_NAME, RETREAT_INFLUENCE_PERCENT } from '../../core/config';
@@ -8,6 +10,8 @@ import { isNativeFaction } from '../../core/home-systems';
 import { GlobalStateReading, isGlobalState } from '../../core/global-states';
 import { RETREAT_ICON, STATE_EMOJI, stateIcon } from '../../core/state-icons';
 import { I18nService } from '../i18n.service';
+import { DEFAULT_SHARE_VIEW, shareUrl } from '../../core/share-link';
+import { pageBaseUrl } from '../page-base-url';
 
 /** The system whose info the dialog shows. */
 export interface PriorityWatchlistDialogData {
@@ -34,17 +38,38 @@ interface StateItem {
  */
 @Component({
   selector: 'app-priority-watchlist-dialog',
-  imports: [MatButtonModule, MatDialogModule],
+  imports: [MatButtonModule, MatDialogModule, FaIconComponent],
   templateUrl: './priority-watchlist-dialog.component.html',
   styleUrl: './priority-watchlist-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PriorityWatchlistDialogComponent {
+export class PriorityWatchlistDialogComponent implements OnDestroy {
   private readonly data = inject<PriorityWatchlistDialogData>(MAT_DIALOG_DATA);
   protected readonly i18n = inject(I18nService);
   protected readonly t = this.i18n.t;
 
   protected readonly row = this.data.row;
+  protected readonly faLink = faLink;
+  protected readonly faCheck = faCheck;
+  /** True for a moment after the link button is clicked. */
+  protected readonly linkCopied = signal(false);
+  private linkCopiedHandle: ReturnType<typeof setTimeout> | undefined;
+
+  /** Copies a link that opens the table with these details already open (see core/share-link). */
+  protected async copyLink(): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(shareUrl(pageBaseUrl(), { ...DEFAULT_SHARE_VIEW, system: this.row.systemName }));
+    } catch {
+      return;
+    }
+    this.linkCopied.set(true);
+    clearTimeout(this.linkCopiedHandle);
+    this.linkCopiedHandle = setTimeout(() => this.linkCopied.set(false), 2000);
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.linkCopiedHandle);
+  }
   protected readonly entries = this.data.row.watchlist;
   protected readonly retreatIcon = RETREAT_ICON;
   /** The game's icon for a state, when we have one (see `core/state-icons.ts`). */

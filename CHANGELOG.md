@@ -2,6 +2,19 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
+## [1.8.0] - 2026-11-14 — Fuori dalla beta; link a un sistema e "Nostri sistemi"
+
+### Fuori dalla beta
+
+- Il tool e la pagina **Attività** non sono più in beta (decisione dell'utente): il titolo mostra 1.8.0 e il menu dell'account, la Guida e gli Ordini dicono solo "Attività". Il Colony Plotter resta in beta.
+
+### Novità
+
+- **Link a un sistema**: nei dettagli di un sistema, il pulsante accanto al nome copia un link (`?system=Nome`) che apre il tool con quella scheda già aperta, comodo negli Ordini e su Discord. Se il sistema non è in tabella, lo dice il messaggio sotto "Distanza da". Dopo l'apertura il parametro sparisce dalla barra dell'indirizzo, così un ricaricamento riapre la tabella come al solito. Un pulsante per copiare il link dell'intera vista (ordinamento e filtri) è stato provato e tolto: poco utile e l'intestazione diventava affollata (decisione dell'utente); il tool legge comunque anche quei parametri.
+- **Nostri sistemi**, in alto: chi controlla i sistemi colonizzati che sono nostri (Flotta Stellare come fazione preferita nel Registro Architetti, più quelli colonizzati da un membro dello Squadrone senza fazione preferita indicata). Una barra per fazione, Flotta Stellare per prima e in arancione; oltre la decima, le altre fazioni stanno in una barra sola. La fazione preferita ricavata dal controllo non conta, altrimenti ogni sistema risulterebbe nostro per definizione.
+- **Finestra Novità**: la prima volta che si apre il tool dopo un aggiornamento importante, una piccola finestra riassume le novità in poche righe ("Fly safe cmdr, o7"). Chiusa in qualunque modo, non ricompare fino alla finestra successiva: lo ricorda il browser (`localStorage`, chiave `acfs-bgs:novita-viste`), quindi ogni dispositivo la mostra una volta; su iPhone l'app della schermata Home e Safari contano a parte. Non compare se si apre il link a un sistema. Testi in `news.*` dei dizionari, identificativo in `src/core/news.ts`.
+- Idee dal tool dei Canonn (commit `bdfa799`, `4de5f86` e `8f783bc` di `upstream`, MIT), riscritte per i nostri filtri e per una sola fazione. Guida aggiornata nelle tre lingue.
+
 ## [1.7.3-beta] - 2026-11-04 — Tabella più compatta
 
 ### Interfaccia

@@ -1,0 +1,27 @@
+<h2 mat-dialog-title class="info-title">{{ t('home.title') }}</h2>
+
+<mat-dialog-content>
+  @if (stats.total === 0) {
+    <p>{{ t('home.empty') }}</p>
+  } @else {
+    <p class="home-intro">
+      {{ t('home.intro', { total: stats.total, preference: stats.byPreference, architect: stats.byArchitect, faction: factionName }) }}
+    </p>
+    <p class="home-ours">{{ t('home.ours', { faction: factionName, count: ours, total: stats.total, percent: share(ours) }) }}</p>
+    <ul class="home-chart" [attr.aria-label]="t('home.chartAria')">
+      @for (c of stats.controllers; track c.faction + '|' + c.others) {
+        <li class="home-row" [class.home-row--ours]="c.faction === factionName" [class.home-row--muted]="c.others || c.faction === null">
+          <span class="home-name">{{ label(c.faction, c.others) }}</span>
+          <span class="home-bar-track">
+            <span class="home-bar" [style.width]="width(c.count)"></span>
+          </span>
+          <span class="home-count">{{ c.count }} · {{ share(c.count) }}</span>
+        </li>
+      }
+    </ul>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-flat-button color="primary" type="button" mat-dialog-close>{{ t('info.close') }}</button>
+</mat-dialog-actions>
