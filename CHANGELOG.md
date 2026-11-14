@@ -11,6 +11,7 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 ### Motori di ricerca (14 novembre 2026)
 
 - **Sitemap del tool** (`public/sitemap.xml`, pubblicata su `/acfs-bgs-tool/sitemap.xml`): un solo URL, la pagina principale del tool, che finora mancava dalla sitemap del dominio. Il `robots.txt` del sito la segnala con una riga `Sitemap:` (repo `ed-acfs.github.io`). Le altre pagine (Ordini, Attività, Colony Plotter) restano fuori: chiedono il ruolo Discord o, aperte direttamente, rispondono 404 su GitHub Pages. Indicizzazione chiesta anche in Search Console.
+- **Titolo, canonical e anteprime social** (`src/index.html`): il titolo diventa «ACFS BGS Tool – strumento BGS per Elite Dangerous», anche quello che l'app imposta all'avvio (con la versione, «ACFS BGS Tool 1.7.3-beta – strumento BGS per Elite Dangerous»), sempre in italiano come la pagina, qualunque sia la lingua scelta. Aggiunti `rel="canonical"` verso `https://flottastellare.it/acfs-bgs-tool/` e i meta Open Graph e Twitter, con uno screenshot del tool come immagine (`public/assets/og-image.png`, lo stesso del post sul blog).
 
 ## [1.7.2-beta] - 2026-10-30 — Tentativi ripetuti verso Spansh e sistemi dal server
 
