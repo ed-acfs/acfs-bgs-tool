@@ -465,10 +465,10 @@
   @if (selected(); as t) {
     <div class="cp-overlay" (click)="close()">
       <section class="cp-card" role="dialog" aria-modal="true" [attr.aria-label]="t.name" (click)="$event.stopPropagation()">
-        <header class="cp-card-header">
+        <div class="cp-card-header">
           <h2 class="cp-name-row">{{ t.name }}<ng-container *ngTemplateOutlet="copyName; context: { name: t.name }"></ng-container></h2>
           <button mat-stroked-button type="button" (click)="close()">Chiudi</button>
-        </header>
+        </div>
         <p class="cp-links cp-links--card">
           <ng-container *ngTemplateOutlet="systemLinks; context: { name: t.name, id64: t.id64 }"></ng-container>
         </p>

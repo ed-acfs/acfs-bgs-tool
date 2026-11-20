@@ -1,5 +1,6 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
+@use 'sass:map';
 @use '@angular/material' as mat;
 
 // Self-hosted Roboto (the font Angular Material's typography requests by name).
@@ -68,9 +69,11 @@ $dark-theme: mat.m2-define-dark-theme((color: (primary: mat.m2-define-palette(ma
   --color-badge-cyan: #0ff;
 
   /* Low-emphasis text/border/surface variants. */
-  --color-text-muted: #8f97a4;
+  --color-text-muted: #a0a8b4;
   --color-text-subtle: #b9bfc8;
   --color-border-muted: #3a404b;
+  /* Bordo dei campi (caselle e tendine): almeno 3:1 sul fondo, WCAG 1.4.11. */
+  --color-field-border: #6b7383;
   --color-surface-hover: #343a45;
   --color-surface-5: #2a2f37;
 
@@ -89,7 +92,9 @@ $dark-theme: mat.m2-define-dark-theme((color: (primary: mat.m2-define-palette(ma
  * ([data-theme] "light" o "dark"), anche in automatico.
  * L'arancio di accento è più scuro, per leggersi su fondo chiaro.
  * ------------------------------------------------------------------------- */
-$light-theme: mat.m2-define-light-theme((color: (primary: mat.m2-define-palette(mat.$m2-orange-palette, 800),
+// Il testo sui pulsanti pieni arancio è scuro (6.8:1); il bianco previsto da Material si ferma a 3.1:1.
+$light-orange-palette: map.merge(mat.$m2-orange-palette, (contrast: map.merge(map.get(mat.$m2-orange-palette, contrast), (800: rgba(black, 0.87)))));
+$light-theme: mat.m2-define-light-theme((color: (primary: mat.m2-define-palette($light-orange-palette, 800),
         accent: mat.m2-define-palette(mat.$m2-amber-palette, 900),
         warn: mat.m2-define-palette(mat.$m2-red-palette),
       ),
@@ -105,18 +110,19 @@ $light-theme: mat.m2-define-light-theme((color: (primary: mat.m2-define-palette(
   --color-text: #23262c;
   --color-text-2: #3a3f47;
   --color-text-bright: #111318;
-  --color-accent: #b35400;
+  --color-accent: #8f4200;
   --color-warning: #8a5a00;
-  --color-success: #2b7a3b;
+  --color-success: #1f642c;
   --color-danger: #c92a2a;
   --color-info: #1864ab;
   --color-watchlist: #6741d9;
   --color-gem: #0b7285;
   --color-link: #a14d00;
   --color-link-hover: #7a3a00;
-  --color-text-muted: #565d67;
+  --color-text-muted: #4f5660;
   --color-text-subtle: #4a4f57;
   --color-border-muted: #bfc5cd;
+  --color-field-border: #757d88;
   --color-surface-hover: #d0d5db;
   --color-surface-5: #dadee3;
   @include mat.all-component-colors($light-theme);

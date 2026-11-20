@@ -17,12 +17,15 @@
     margin: 0 0 8px;
   }
 
+  // Sottolineati sempre: nel testo un link non si riconosce dal solo colore (WCAG 1.4.1).
   a {
     color: var(--color-text);
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    text-underline-offset: 2px;
 
     &:hover {
-      text-decoration: underline;
+      text-decoration-color: currentColor;
     }
   }
 }

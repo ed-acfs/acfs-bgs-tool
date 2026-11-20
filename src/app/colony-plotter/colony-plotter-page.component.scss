@@ -156,7 +156,7 @@
   input {
     min-width: 170px;
     padding: 7px 10px;
-    border: 1px solid var(--color-border-muted);
+    border: 1px solid var(--color-field-border);
     border-radius: 6px;
     background: var(--color-surface-3);
     color: var(--color-text);
@@ -185,7 +185,7 @@
 
   select {
     padding: 4px 6px;
-    border: 1px solid var(--color-border-muted);
+    border: 1px solid var(--color-field-border);
     border-radius: 6px;
     background: var(--color-surface-3);
     color: var(--color-text);
@@ -659,7 +659,8 @@
   display: inline-block;
   padding: 1px 8px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 6%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 30%, transparent);
   color: var(--color-accent);
   font-size: 0.8rem;
   font-variant-numeric: tabular-nums;
@@ -1003,4 +1004,21 @@
 
 .cp-copy-name {
   flex: none;
+}
+
+// Accessibilità (analisi axe-core del 20 novembre 2026, WCAG 2.2 AA).
+// Focus da tastiera ben visibile, uguale in tutta la pagina e nei due temi.
+.cp-container :focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+// Bersagli di almeno 24×24 px anche per le sole icone dei link (WCAG 2.5.8).
+.cp-links a,
+.cp-links .cp-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
 }
