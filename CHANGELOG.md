@@ -40,6 +40,7 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 ### Documentazione
 
 - Guida del Colony Plotter riscritta (obiettivi, filtri, Ponte, tema) e Legenda aggiornata; il Colony Plotter è solo in italiano, come Attività.
+- Finestra **Novità** della 1.9.0, nelle tre lingue: scuro ardesia, Colony Plotter fuori dalla beta con tema chiaro e Ponte, 20 righe per pagina.
 
 ## [1.8.1] - 2026-11-14 — Fuori dalla beta, Statistiche e link a un sistema
 
