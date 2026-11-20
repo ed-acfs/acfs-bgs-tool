@@ -85,10 +85,10 @@ $light-theme: mat.m2-define-light-theme((color: (primary: mat.m2-define-palette(
 
 @mixin light-tokens {
   color-scheme: light;
-  --color-surface: #ffffff;
-  --color-surface-2: #f3f4f6;
-  --color-surface-3: #ebedf0;
-  --color-surface-4: #e4e7eb;
+  --color-surface: #eceef1;
+  --color-surface-2: #e3e6ea;
+  --color-surface-3: #d9dde2;
+  --color-surface-4: #d2d6dc;
   --color-border: #9aa1ab;
   --color-text: #23262c;
   --color-text-2: #3a3f47;
@@ -101,11 +101,11 @@ $light-theme: mat.m2-define-light-theme((color: (primary: mat.m2-define-palette(
   --color-watchlist: #6741d9;
   --color-link: #a14d00;
   --color-link-hover: #7a3a00;
-  --color-text-muted: #5f6670;
+  --color-text-muted: #565d67;
   --color-text-subtle: #4a4f57;
-  --color-border-muted: #cfd4da;
-  --color-surface-hover: #e2e5e9;
-  --color-surface-5: #e9ecef;
+  --color-border-muted: #bfc5cd;
+  --color-surface-hover: #d0d5db;
+  --color-surface-5: #dadee3;
   @include mat.all-component-colors($light-theme);
 }
 
