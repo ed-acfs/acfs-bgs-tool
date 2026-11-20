@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -170,7 +170,7 @@ export class ColonyPlotterPageComponent implements OnInit, OnDestroy {
   /** Quanti filtri del riquadro "Altri filtri" sono attivi: si vede anche a riquadro chiuso. */
   protected readonly hiddenFiltersActive = computed(() => {
     const f = this.filter();
-    return [!!f.purpose, !!f.bodyType, !!f.biology, !!f.other, !!f.from.trim(), f.includeClaimed].filter(Boolean).length;
+    return [!!f.purpose, !!f.biology, !!f.other, !!f.from.trim(), f.includeClaimed].filter(Boolean).length;
   });
   protected readonly summary = computed(() => plotterSummary(this.data()?.targets ?? []));
   protected readonly bodyTypes = computed(() => bodyTypeOptions(this.data()?.targets ?? []));
@@ -275,9 +275,15 @@ export class ColonyPlotterPageComponent implements OnInit, OnDestroy {
     this.page.set(0);
   }
 
-  /** Un ordinamento nuovo riparte dal suo verso naturale (es. più corpi prima, distanze brevi prima). */
+  private readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
+
+  /**
+   * Un ordinamento nuovo riparte dal suo verso naturale (es. più corpi prima, distanze brevi prima).
+   * "Distanza dal sistema cercato" senza un sistema porta il cursore nella casella per scriverlo.
+   */
   protected setSort(sort: SortKey): void {
     this.update({ sort, direction: NATURAL_DIRECTION[sort] });
+    if (sort === 'search' && !this.search()) this.searchInput()?.nativeElement.focus();
   }
 
   /** Riporta filtri, ordinamento e "distanza da" come all'apertura (non le righe per pagina). */

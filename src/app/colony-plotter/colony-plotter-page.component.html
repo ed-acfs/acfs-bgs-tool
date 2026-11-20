@@ -128,6 +128,7 @@
           <label class="cp-field cp-field--grow">
             <span>Ordina per distanza da sistema</span>
             <input
+              #searchInput
               type="search"
               placeholder="Nome del sistema…"
               [value]="searchText()"
@@ -142,46 +143,66 @@
         </div>
         @if (searchError(); as message) {
           <p class="cp-error">{{ message }}</p>
+        } @else if (filter().sort === 'search' && !search()) {
+          <p class="cp-working">Scrivi qui sopra il sistema da cui misurare la distanza.</p>
         }
-        <div class="cp-row">
-          <label class="cp-field cp-field--narrow">
+        <!-- Come nel Colony Finder dei Canonn (indicazione dell'utente): tre campi in una riga, poi tipo di corpo e azzeramento. -->
+        <div class="cp-grid cp-grid--3">
+          <label class="cp-field">
             <span>Corpi minimi</span>
             <input type="number" min="0" placeholder="0" [value]="filter().minBodies || ''" (input)="update({ minBodies: +value($event) || 0 })" />
           </label>
-          <label class="cp-field cp-field--sort">
+          <label class="cp-field">
             <span>Ordina per</span>
             <select [value]="filter().sort" (change)="setSort($any(value($event)))">
               <option value="interest">Ragioni di interesse</option>
               <option value="bodies">Numero di corpi</option>
               <option value="distance">Distanza dalla partenza</option>
-              @if (search(); as s) {
-                <option value="search">Distanza da {{ s.name }}</option>
-              }
+              <option value="search">{{ search() ? 'Distanza da ' + search()?.name : 'Distanza dal sistema cercato' }}</option>
               @if (filter().purpose) {
                 <option value="purpose">Adatto a {{ chosenPurposeLabel() }}</option>
               }
               <option value="name">Nome</option>
             </select>
           </label>
-          <label class="cp-field cp-field--narrow">
+          <label class="cp-field">
             <span>Ordine</span>
             <select [value]="filter().direction" (change)="update({ direction: $any(value($event)) })">
               <option value="desc">Decrescente</option>
               <option value="asc">Crescente</option>
             </select>
           </label>
-          <button
-            mat-stroked-button
-            type="button"
-            class="cp-more"
-            (click)="moreFilters.set(!moreFilters())"
-            [attr.aria-expanded]="moreFilters()"
-            aria-controls="cp-more-filters"
-          >
-            <fa-icon [icon]="faFilters" aria-hidden="true"></fa-icon>
-            Altri filtri{{ hiddenFiltersActive() ? ' (' + hiddenFiltersActive() + ')' : '' }}
-          </button>
-          <button mat-stroked-button type="button" [disabled]="!filtersActive()" (click)="resetFilters()">Azzera</button>
+        </div>
+        <div class="cp-grid cp-grid--2">
+          <label class="cp-field">
+            <span>Tipo di corpo interessante</span>
+            <select [value]="filter().bodyType" (change)="update({ bodyType: value($event) })">
+              <option value="">Tutti</option>
+              <optgroup label="Pianeti">
+                @for (s of bodyTypes().planets; track s) {
+                  <option [value]="s">{{ s }}</option>
+                }
+              </optgroup>
+              <optgroup label="Stelle">
+                @for (s of bodyTypes().stars; track s) {
+                  <option [value]="s">{{ s }}</option>
+                }
+              </optgroup>
+            </select>
+          </label>
+          <div class="cp-grid-buttons">
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="moreFilters.set(!moreFilters())"
+              [attr.aria-expanded]="moreFilters()"
+              aria-controls="cp-more-filters"
+            >
+              <fa-icon [icon]="faFilters" aria-hidden="true"></fa-icon>
+              Altri filtri{{ hiddenFiltersActive() ? ' (' + hiddenFiltersActive() + ')' : '' }}
+            </button>
+            <button mat-stroked-button type="button" [disabled]="!filtersActive()" (click)="resetFilters()">Azzera i filtri</button>
+          </div>
         </div>
         @if (moreFilters()) {
           <div class="cp-row cp-more-filters" id="cp-more-filters">
@@ -192,22 +213,6 @@
                 @for (p of purposes; track p) {
                   <option [value]="p">{{ purposeLabels[p] }}</option>
                 }
-              </select>
-            </label>
-            <label class="cp-field">
-              <span>Tipo di corpo</span>
-              <select [value]="filter().bodyType" (change)="update({ bodyType: value($event) })">
-                <option value="">Tutti</option>
-                <optgroup label="Pianeti">
-                  @for (s of bodyTypes().planets; track s) {
-                    <option [value]="s">{{ s }}</option>
-                  }
-                </optgroup>
-                <optgroup label="Stelle">
-                  @for (s of bodyTypes().stars; track s) {
-                    <option [value]="s">{{ s }}</option>
-                  }
-                </optgroup>
               </select>
             </label>
             <label class="cp-field">
