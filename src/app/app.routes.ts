@@ -28,7 +28,7 @@ export const routes: Routes = [
     component: WorkPageComponent,
   },
   {
-    // Colony Plotter: obiettivi di colonizzazione, per i membri (ruolo controllato dal server), in beta.
+    // Colony Plotter: obiettivi di colonizzazione, per i membri (ruolo controllato dal server); uscito dalla beta il 20 novembre 2026.
     path: 'colony-plotter',
     component: ColonyPlotterPageComponent,
   },

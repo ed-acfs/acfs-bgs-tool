@@ -4,6 +4,10 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
 ## [1.9.0] - 2026-11-20 — Colony Plotter riordinato, Ponte e tema chiaro
 
+### Fuori dalla beta
+
+- Il **Colony Plotter** non è più in beta (decisione dell'utente): il titolo della pagina, il menu dell'account e la Guida dicono solo "Colony Plotter".
+
 ### Colony Plotter riordinato
 
 - La pagina era "confusionaria, molto tabellare" (parole dell'utente, che ha indicato come riferimento edbubbles.com): ora si apre con due **schede**, *Obiettivi entro 15 ly* e *Ponte verso un sistema lontano*.

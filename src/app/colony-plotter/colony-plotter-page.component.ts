@@ -95,7 +95,7 @@ type CardSection = 'bodies' | 'rings' | 'facts';
 const PAGE_SIZES = [25, 50, 100] as const;
 
 /**
- * "Colony Plotter (beta)": gli obiettivi di colonizzazione attorno alle stazioni di Flotta Stellare,
+ * "Colony Plotter" (fuori dalla beta dal 20 novembre 2026): gli obiettivi di colonizzazione attorno alle stazioni di Flotta Stellare,
  * calcolati dal motore (repo acfs-colony-plotter) e serviti dal server dello Squadrone. Impaginato
  * come il Colony Finder dei Canonn (preferenza dell'utente del 25 ottobre 2026): i corpi interessanti
  * in primo piano, il nome del sistema apre la scheda, sotto il nome i link a Inara, Raven Colonial,

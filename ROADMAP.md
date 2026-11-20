@@ -22,7 +22,7 @@ Da leggere prima di proporre qualcosa o di dire che è "da fare", e da aggiornar
 | 10b. Classifiche del lavoro | Decise; Attività aperta ai membri dal 20 ottobre 2026, **uscita dalla beta il 14 novembre 2026** (1.8.0) | Periodi, campagne, categorie |
 | 11. Plugin EDMC | Messo a piano | Tutto |
 | 12. Storico delle influenze | **Fatta il 25 ottobre 2026** (1.6.0-beta; `/v1/history` sul server) | Lo storico cresce da solo; in seguito eventualmente 90 giorni nel grafico |
-| 13. Colony Plotter | **Obiettivi pubblicati il 25 ottobre 2026** (1.7.0-beta, pagina `/colony-plotter` per i membri; calcolo giornaliero sul server). **Riordino della pagina, Ponte (prima versione, da Spansh) e tema chiaro fatti il 20 novembre 2026** (1.9.0, branch `feature/plotter-riordino` e `acfs-server` `feature/ponte`, da pubblicare) | Cantieri, taratura dei punteggi per scopo, indirizzo a parte, Ponte con un calcolo nostro (vedi fase 13) |
+| 13. Colony Plotter | **Obiettivi pubblicati il 25 ottobre 2026** (1.7.0-beta, pagina `/colony-plotter` per i membri; calcolo giornaliero sul server). **Riordino della pagina, Ponte (prima versione, da Spansh) e tema chiaro fatti il 20 novembre 2026, fuori dalla beta lo stesso giorno** (1.9.0, branch `feature/plotter-riordino` e `acfs-server` `feature/ponte`, da pubblicare) | Cantieri, taratura dei punteggi per scopo, indirizzo a parte, Ponte con un calcolo nostro (vedi fase 13) |
 
 **Da Spansh vengono ancora**: stazioni, popolazione e servizi, e i dati di riserva quando il server non risponde. Il tool li scarica col suo workflow (`bgs.json`); dal 23 ottobre 2026 il server li scarica anche da sé ogni ora, e da lì prende l'elenco dei sistemi da seguire.
 
