@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { App, footerParts } from './app.component';
+import { App, copyrightYears, footerParts } from './app.component';
 
 describe('App', () => {
   beforeEach(async () => {
@@ -12,6 +12,11 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
+  });
+
+  it('shows the copyright years from 2026 to the current year', () => {
+    expect(copyrightYears(2026)).toBe('2026');
+    expect(copyrightYears(2028)).toBe('2026–2028');
   });
 
   it('links the game and Frontier in the footer note, in any language', () => {

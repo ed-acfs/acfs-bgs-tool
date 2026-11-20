@@ -6,7 +6,7 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
 ### Credits
 
-- In fondo a ogni pagina, tool e Colony Plotter, i credits dell'autore con il link al suo sito, come nel sito della flotta: "Design e sviluppo di Cristian Castellari" (nelle tre lingue).
+- In fondo a ogni pagina, tool e Colony Plotter, i credits dell'autore con il link al suo sito, come nel sito della flotta: "© 2026 · Design e sviluppo di Cristian Castellari" (nelle tre lingue; l'anno finale segue il calendario, come nel sito).
 
 ### Fuori dalla beta
 

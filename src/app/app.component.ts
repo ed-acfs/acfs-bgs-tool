@@ -24,6 +24,11 @@ export function footerParts(text: string): FooterPart[] {
     .map(part => ({ text: part, href: FOOTER_LINKS[part] }));
 }
 
+/** "2026", poi "2026–2027" e così via: l'anno finale segue il calendario, come nel sito della flotta. */
+export function copyrightYears(current: number, first = 2026): string {
+  return current > first ? `${first}–${current}` : `${first}`;
+}
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
@@ -34,6 +39,8 @@ export class App {
   /** Per la nota in fondo alla pagina, nella lingua scelta. */
   protected readonly i18n = inject(I18nService);
   protected readonly disclaimer = computed(() => footerParts(this.i18n.t('footer.disclaimer')));
+  /** Anni del copyright nei credits: dal 2026, inizio del lavoro sul tool, all'anno in corso. */
+  protected readonly copyrightYears = copyrightYears(new Date().getFullYear());
 
   constructor() {
     // The browser tab names the release too, like the page title (index.html has no version to keep in sync).
