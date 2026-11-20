@@ -460,15 +460,22 @@
       display: none;
     }
 
+    // Scheda compatta (segnalazione dell'utente del 20 novembre 2026, schede troppo lunghe al telefono):
+    // nome in testa senza etichetta, il menu ⋯ in alto a destra, distanza, corpi e "Adatto a" sulla
+    // stessa riga con l'etichetta accanto al valore, gli indicatori sotto senza etichetta.
     tr {
-      display: block;
-      padding: 8px 12px;
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 2px 16px;
+      padding: 10px 44px 10px 12px;
       border-bottom: 1px solid var(--color-border);
     }
 
     td {
       display: block;
-      padding: 4px 0;
+      padding: 0;
       border: 0;
 
       &.cp-num {
@@ -477,11 +484,35 @@
 
       &[data-label]::before {
         content: attr(data-label);
-        display: block;
+        margin-right: 6px;
         color: var(--color-accent-text);
         font-size: 0.7rem;
         text-transform: uppercase;
       }
+
+      // Nome e indicatori occupano la riga intera: l'etichetta lì non serve.
+      &[data-label='Sistema'],
+      &[data-label='In evidenza'] {
+        flex: 1 1 100%;
+
+        &::before {
+          content: none;
+        }
+      }
+
+      &[data-label='In evidenza'] {
+        margin-top: 6px;
+      }
+
+      &.cp-col-actions {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+      }
+    }
+
+    .cp-pill {
+      padding-block: 0;
     }
   }
 }
