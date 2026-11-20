@@ -342,10 +342,10 @@
           </label>
           <label class="cp-field cp-field--wide">
             <span>Partenza</span>
-            <select [value]="bridgeFrom()" (change)="bridgeFrom.set(value($event))">
-              <option value="">Il nostro sistema più vicino</option>
+            <select (change)="bridgeFrom.set(value($event))">
+              <option value="" [selected]="!bridgeFrom()">Il nostro sistema più vicino</option>
               @for (a of anchorsByName(); track a.id64) {
-                <option [value]="a.name">{{ a.name }}</option>
+                <option [value]="a.name" [selected]="a.name === bridgeFrom()">{{ a.name }}</option>
               }
             </select>
           </label>
