@@ -72,6 +72,7 @@ Questo file esiste dal 5 ottobre 2026: la memoria locale di Claude accumulata pr
 - `git config core.autocrlf input` in questo repo (sta in `.git/config`, quindi non viaggia col repo): senza, i file tornano in CRLF a ogni cambio di branch.
 - Nei comandi Bash gli apostrofi italiani dentro `node -e '...'` o negli heredoc rompono le virgolette: per modifiche lunghe scrivere uno script `.cjs` nello scratchpad.
 - Per verificare le modifiche visibili si possono fare screenshot con Edge headless; sotto circa 500 px di larghezza non scende, quindi per simulare un telefono usare almeno 520 px.
+- **I test vanno lanciati dal percorso con la C maiuscola** (`C:\Users\…`, per esempio da PowerShell con `Set-Location 'C:\Users\ccast\Progetti\acfs-bgs-tool'`): la sessione di VS Code apre il progetto come `c:\Users\…`, e da lì `ng test` fallisce in tutti i file con "Vitest failed to find the runner" (scoperto il 20 novembre 2026). Non è un errore del codice.
 - GitHub sospende i workflow programmati dopo 60 giorni senza commit: se i dati del sito smettono di aggiornarsi, riattivare `pages.yml` dalla scheda Actions.
 - I cron di GitHub partono in ritardo e spesso saltano: il 5 ottobre 2026, con il cron `17,47 * * * *`, ci sono state solo 3 esecuzioni `schedule` in tutta la giornata. Controllo: `gh run list --repo ed-acfs/acfs-bgs-tool --event schedule`.
 - `gh` sul PC di lavoro è installato con scoop (6 ottobre 2026), con login fatto e `gh repo set-default` impostato.

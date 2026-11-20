@@ -36,7 +36,7 @@ import { TallyKeyDialogComponent } from '../tally-key-dialog/tally-key-dialog.co
             <a mat-menu-item routerLink="/ordini"><fa-icon [icon]="faClipboardList" aria-hidden="true"></fa-icon> Ordini</a>
           }
           <a mat-menu-item routerLink="/activity"><fa-icon [icon]="faChartColumn" aria-hidden="true"></fa-icon> Attività</a>
-          <a mat-menu-item routerLink="/colony-plotter"><fa-icon [icon]="faFlag" aria-hidden="true"></fa-icon> Colony Plotter (beta)</a>
+          <a mat-menu-item routerLink="/colony-plotter"><fa-icon [icon]="faFlag" aria-hidden="true"></fa-icon> Colony Plotter</a>
         }
         @if (session.officer && i18n.isItalian()) {
           <button mat-menu-item type="button" (click)="openPilotKeys()"><fa-icon [icon]="faUserLock" aria-hidden="true"></fa-icon> Chiavi dei piloti</button>

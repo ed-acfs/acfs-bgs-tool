@@ -2,6 +2,56 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
+## [1.9.0] - 2026-11-20 — Colony Plotter riordinato, Ponte, tema chiaro e scuro ardesia
+
+### Tabella
+
+- La tabella si apre con **20 righe** per pagina e la scelta da 10 non c'è più (restano 20, 50 e 100). Un vecchio link condiviso con 10 righe apre con 20.
+
+### Credits
+
+- In fondo a ogni pagina, tool e Colony Plotter, i credits dell'autore con il link al suo sito, come nel sito della flotta: "© 2026 · Design e sviluppo di Cristian Castellari" (nelle tre lingue; l'anno finale segue il calendario, come nel sito).
+
+### Fuori dalla beta
+
+- Il **Colony Plotter** non è più in beta (decisione dell'utente): il titolo della pagina, il menu dell'account e la Guida dicono solo "Colony Plotter".
+
+### Colony Plotter riordinato
+
+- La pagina era "confusionaria, molto tabellare" (parole dell'utente, che ha indicato come riferimento edbubbles.com): ora si apre con due **schede**, *Obiettivi entro 15 ly* e *Ponte verso un sistema lontano*.
+- In cima agli obiettivi, quattro **tessere** con un numero grande: sistemi liberi (e quanti già reclamati), con biologia, con anelli Pristine, con hotspot. Un clic applica il filtro, un secondo lo toglie. Ogni tessera ha il colore della sua icona in tabella (arancio i liberi, verde la biologia, azzurro gli anelli, ciano gli hotspot, che prima erano azzurri come gli anelli).
+- **Filtri in due livelli**: a vista, come nel Colony Finder dei Canonn, distanza da un sistema, poi corpi minimi, ordinamento e verso in una riga, tipo di corpo e **Azzera i filtri** nella seconda; il resto (compreso *Adatto a*) in **Altri filtri**, che a riquadro chiuso dice quanti ne sono attivi.
+- **Righe più leggere**: un dato per colonna (sistema con la partenza sotto, distanza, corpi, scopo più adatto) e al posto delle etichette colorate pochi segni **In evidenza** con icona e numero (i corpi più pregiati per nome, "+N rari", specie biologiche, geologia, anelli con Pristine, hotspot, stelle); passando sopra un segno, un riquadro dice quali corpi e quali specie, e un clic (o un tocco) apre la scheda del sistema già sulla parte che lo spiega, evidenziata per un momento. La scheda mostra ora anche tutte le ragioni di interesse. Cambia l'impostazione del 25 ottobre 2026, che metteva tutti i corpi interessanti nella riga come il Colony Finder dei Canonn.
+- **Scuro più leggibile**: nel Colony Plotter il fondo passa dal grigio neutro quasi nero a un ardesia leggermente bluastro (come il blog dell'utente), il bianco dei testi è più morbido, le righe della tabella si alternano appena e quella sotto il mouse si accende; niente più sottolineatura sui nomi al passaggio del mouse. Su richiesta dell'utente lo stesso scuro vale ora per **tutto il tool**: tabella, pannelli, finestre, menu e tendine.
+- **Copia del nome a fianco del nome**, come in Inara: in tabella, nelle tappe del Ponte e nella scheda l'icona sta subito dopo il nome del sistema, non più in fondo alla riga; in fondo resta il menu con gli altri siti.
+- **Nomi più nitidi**: i grassetti del Colony Plotter usano il peso 500 di Roboto, l'ultimo che il tool carica; più pesanti, il browser li fingeva ispessendo le lettere e il bianco su fondo scuro si impastava.
+- I cinque link sotto ogni nome diventano il pulsante **copia** sempre a vista e un menu **⋯** con Inara, Raven Colonial, Spansh e Canonn Signals.
+
+### Ponte
+
+- Nuova scheda **Ponte**: scritto il sistema da raggiungere, il tool sceglie il nostro sistema di partenza più vicino (o quello indicato) e chiede la catena di tappe, ognuna entro 15 ly dalla precedente, al Colonisation Plotter di Spansh attraverso il server dello Squadrone (`/v1/bridge` di `acfs-server`, solo membri). Spansh può metterci più di un minuto: la pagina aspetta e lo dice.
+- Ogni tappa ha salto, distanza dall'arrivo, corpi e stato (**nostro**, **da colonizzare**, **in costruzione**, **già colonizzato**, **stato non noto**), con il pulsante per **copiarne il nome**. In alto salti, tappe da colonizzare, distanza e **prossima tappa**, evidenziata anche nell'elenco. **Copia la rotta** copia tutti i nomi, uno per riga; **Copia il link** dà un indirizzo (`?ponte=<arrivo>&da=<partenza>`) che apre lo stesso ponte.
+- Se Spansh non trova una catena completa, la rotta si ferma al punto più vicino e un avviso lo dice.
+
+### Tema
+
+- Selettore del **tema** automatico, chiaro o scuro, come quello del blog dell'utente: per ora solo nel Colony Plotter (il resto del tool resta scuro). La scelta resta nel browser (`acfs-bgs:theme`).
+
+### Accessibilità
+
+- Analisi con **axe-core** (il motore di Lighthouse, regole WCAG 2.2 AA) del Colony Plotter nei due temi (obiettivi, Legenda, Altri filtri, scheda, Ponte) e della tabella del tool: da 4–6 regole violate per vista a **nessuna**.
+- **Contrasti**: nel tema chiaro l'arancio resta vivo, vicino a quello del logo, per titoli, icone, bordi e focus (almeno 3:1), mentre i testi piccoli che erano arancio (intestazioni della tabella, pillole, segni) passano a un neutro scuro; grigio dei testi secondari e verde un po' più scuri, fino ad almeno 4.5:1; il pulsante pieno arancio ha il testo scuro (il bianco arrivava a 3:1). Nello scuro il grigio tenue è un po' più chiaro, per leggersi anche sulle tessere colorate.
+- **Bordi di caselle e tendine** più netti nei due temi (almeno 3:1 sul fondo), per vedere dove sono i campi.
+- **Focus da tastiera** con un anello arancio uguale in tutto il Colony Plotter.
+- **Link ai servizi esterni nella scheda** (Inara, Raven Colonial, Spansh, Canonn Signals) come pulsanti a pillola con l'icona arancio: prima erano grigi e quasi invisibili.
+- Icone dei link nella scheda cliccabili su almeno 24×24 px; **link del footer** sottolineati, perché non si distinguevano dal testo per il solo colore.
+- Ogni pagina ha la sua area principale (`main`), per chi naviga con un lettore di schermo; la pillola "Aggiornato" della tabella è annunciata correttamente.
+
+### Documentazione
+
+- Guida del Colony Plotter riscritta (obiettivi, filtri, Ponte, tema) e Legenda aggiornata; il Colony Plotter è solo in italiano, come Attività.
+- Finestra **Novità** della 1.9.0, nelle tre lingue: scuro ardesia, Colony Plotter fuori dalla beta con tema chiaro e Ponte, 20 righe per pagina.
+
 ## [1.8.1] - 2026-11-14 — Fuori dalla beta, Statistiche e link a un sistema
 
 La giornata è stata pubblicata in due passi: la 1.8.0 (fuori dalla beta, link a un sistema, Nostri sistemi, finestra Novità) e poi la 1.8.1 (menu Statistiche e Avanzamento del Registro).

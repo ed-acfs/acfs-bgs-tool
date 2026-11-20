@@ -115,7 +115,8 @@ type ArchitectFilterMode = 'all' | 'none' | 'squadron' | 'name';
 type FactionFilterMode = 'all' | 'controlled' | 'name';
 
 /** Page sizes the "Page size" quick filter offers. */
-const PAGE_SIZE_OPTIONS = [10, 20, 50, 100] as const;
+// 20 righe di partenza, senza più la scelta da 10 (richiesta dell'utente del 20 novembre 2026).
+const PAGE_SIZE_OPTIONS = [20, 50, 100] as const;
 
 /** A named point in space the Distance column can be measured from. A BgsRow satisfies this too. */
 interface AnchorPoint {

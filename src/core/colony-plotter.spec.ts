@@ -7,6 +7,12 @@ import {
   bodyTypeOptions,
   filterTargets,
   interestTags,
+  BridgeStep,
+  bridgeText,
+  highlights,
+  nearestAnchor,
+  plotterSummary,
+  stepsToBuild,
 } from './colony-plotter';
 
 const body = (name: string, subtype: string, extra: Partial<InterestingBody> = {}): InterestingBody => ({
@@ -90,5 +96,49 @@ describe('colony plotter', () => {
     const claimed = target('Preso', { status: 'claimed' });
     expect(filterTargets([claimed], DEFAULT_FILTER)).toEqual([]);
     expect(filterTargets([claimed], { ...DEFAULT_FILTER, includeClaimed: true }).length).toBe(1);
+  });
+
+  it('highlights: at most two notable types by name, the other rare bodies in one, species, rings with Pristine, hotspots, stars', () => {
+    const t = target('Ricco', {
+      stars: ['A', 'B'],
+      reserve: 'Pristine',
+      rings: [{ body: 'Ricco 1', subtype: 'Class I gas giant', rings: [{ type: 'Rocky', reserve: 'Pristine', hotspots: [{ name: 'Painite', count: 1 }, { name: 'Alexandrite', count: 2 }] }] }],
+      bodies: [
+        body('Ricco 2', 'Ammonia world'),
+        body('Ricco 3', 'Ammonia world'),
+        body('Ricco 4', 'Water world'),
+        body('Ricco 5', 'Earth-like world'),
+        body('Ricco 6', 'T Tauri Star'),
+        body('Ricco 7', 'Rocky body', { biology: [{ genus: 'Tussock', species: 'Tussock Cultro' }, { genus: 'Bacterium', species: 'Bacterium Acies' }] }),
+      ],
+    });
+    expect(highlights(t).map(h => [h.kind, h.label])).toEqual([
+      ['body', 'Earth-like world'],
+      ['body', 'Water world'],
+      ['rare', '+3 rari'],
+      ['biology', '2 specie'],
+      ['rings', 'Anelli ×1 · Pristine'],
+      ['hotspots', 'Hotspot ×2'],
+      ['stars', '2 stelle'],
+    ]);
+  });
+
+  it('summary counts free targets with biology, Pristine rings and hotspots', () => {
+    const bio = target('Bio', { bodies: [body('Bio 1', 'Rocky body', { biology: [{ genus: 'Tussock', species: 'Tussock Cultro' }] })] });
+    const pristine = target('P', { reserve: 'Pristine' });
+    const claimed = target('C', { status: 'claimed', reserve: 'Pristine' });
+    expect(plotterSummary([bio, pristine, claimed])).toEqual({ free: 2, claimed: 1, biology: 1, pristine: 1, hotspots: 0 });
+  });
+
+  it('bridge: nearest anchor, steps to build and the route to copy', () => {
+    const anchors = [{ name: 'Lontano', x: 100, y: 0, z: 0 }, { name: 'Vicino', x: 10, y: 0, z: 0 }];
+    expect(nearestAnchor(anchors, { x: 0, y: 0, z: 0 })?.name).toBe('Vicino');
+    expect(nearestAnchor([], { x: 0, y: 0, z: 0 })).toBeNull();
+    const step = (name: string, state: BridgeStep['state']): BridgeStep => ({
+      name, id64: name, x: 0, y: 0, z: 0, jump_ly: 10, remaining_ly: 0, bodies: 1, state, controlling_faction: null, population: null,
+    });
+    const steps = [step('A', 'ours'), step('B', 'colonised'), step('C', 'free'), step('D', 'unknown'), step('E', 'building')];
+    expect(stepsToBuild(steps)).toBe(2);
+    expect(bridgeText(steps)).toBe(['A', 'B', 'C', 'D', 'E'].join('\n'));
   });
 });

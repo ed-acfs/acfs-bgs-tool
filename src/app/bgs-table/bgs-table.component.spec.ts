@@ -111,8 +111,8 @@ describe('BgsTableComponent', () => {
 
   it('opens sorted by priority, highest first, showing only the default display page size', () => {
     const host: HTMLElement = fixture.nativeElement;
-    expect(pageSize()).toBe(10);
-    expect(visibleRows().length).toBe(10);
+    expect(pageSize()).toBe(20);
+    expect(visibleRows().length).toBe(20);
     expect(host.querySelector<HTMLButtonElement>('button[title="Ordina per priorità"]')!.textContent).toContain('▼');
   });
 
@@ -133,7 +133,7 @@ describe('BgsTableComponent', () => {
   it('goes back to the table as it opens from the title, keeping the page size', async () => {
     const host: HTMLElement = fixture.nativeElement;
     const home = () => host.querySelector<HTMLAnchorElement>('.bgs-home-link')!;
-    component['setPageSize'](20);
+    component['setPageSize'](50);
     host.querySelector<HTMLButtonElement>('button[title="Ordina per nome del sistema"]')!.click();
     component['nextPage']();
     await fixture.whenStable();
@@ -143,7 +143,7 @@ describe('BgsTableComponent', () => {
     await fixture.whenStable();
     expect(component['pageIndex']()).toBe(0);
     expect(host.querySelector<HTMLButtonElement>('button[title="Ordina per priorità"]')!.textContent).toContain('▼');
-    expect(pageSize()).toBe(20);
+    expect(pageSize()).toBe(50);
 
     component['toggleServices']();
     component['setFactionFilterMode']('controlled');
@@ -152,7 +152,7 @@ describe('BgsTableComponent', () => {
     await fixture.whenStable();
     expect(component['servicesOnly']()).toBe(false);
     expect(component['factionFilterMode']()).toBe('all');
-    expect(visibleRows().length).toBe(20);
+    expect(visibleRows().length).toBe(50);
   });
 
   it('switches to a larger display page size and pages forward over what was already downloaded', async () => {

@@ -313,10 +313,10 @@ export const it = {
   'info.summaryAria': 'Riepilogo del sistema',
   'info.copyLink': "Copia il link che apre questa scheda",
   'info.linkCopied': "Link copiato",
-  'news.title': "Novità della 1.8.0",
-  'news.item1': "Il tool esce dalla beta, e con lui la pagina Attività.",
-  'news.item2': "Nostri sistemi, in alto: chi controlla i sistemi colonizzati che sono nostri.",
-  'news.item3': "Nei dettagli di un sistema, la 🔗 accanto al nome copia il link che apre direttamente quella scheda.",
+  'news.title': "Novità della 1.9.0",
+  'news.item1': "Un aspetto nuovo: lo scuro diventa un ardesia più morbido e leggibile.",
+  'news.item2': "Il Colony Plotter esce dalla beta, riordinato, con il tema chiaro e il Ponte per raggiungere i sistemi lontani (per i membri dello Squadrone).",
+  'news.item3': "La tabella si apre con 20 righe per pagina.",
   'news.ok': "Ok",
   'header.stats': "Statistiche",
   'header.statsAria': "Statistiche sui nostri sistemi",
@@ -417,6 +417,7 @@ export const it = {
   // Shown only in the other languages: in Italian the guide explains these tools in full.
   'help.login': 'Accesso con Discord',
   'help.login1': 'Il tool si consulta senza accesso. «Accedi con Discord», nella riga con le bandiere, serve a chi è nel server Discord ACFS: dal menu con il tuo nome generi la tua chiave BGS-Tally, per mandare il tuo lavoro per Flotta Stellare al server dello Squadrone; gli ufficiali vi trovano anche i loro strumenti. Il tool non vede la tua password di Discord: Discord gli dice solo chi sei e quali ruoli hai nel server ACFS. Serve BGS-Tally 5.6.1 o successiva: con la 5.6 la connessione al server non si completa.',
+  'footer.credits': 'Design e sviluppo di',
   'footer.disclaimer': 'ACFS BGS Tool è uno strumento non ufficiale dello Squadrone ACFS per il gioco Elite Dangerous e non è affiliato a Frontier Developments. I dati vengono da fonti pubbliche (Spansh, EDDN, EliteBGS) e dai piloti dello Squadrone: possono essere in ritardo o non del tutto esatti.',
   'help.internal': 'Strumenti dello Squadrone',
   'help.internalNote':
