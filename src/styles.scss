@@ -75,7 +75,8 @@ $dark-theme: mat.m2-define-dark-theme((color: (primary: mat.m2-define-palette(ma
 /* ---------------------------------------------------------------------------
  * Tema chiaro, per ora solo nel Colony Plotter (20 novembre 2026): la pagina mette la classe
  * `cp-themed` su <html> finché è aperta (ThemeService). Come il selettore del blog dell'utente:
- * "automatico" segue il sistema operativo, "chiaro" e "scuro" mettono [data-theme] su <html>.
+ * "automatico" segue il sistema operativo; il ThemeService mette su <html> il tema effettivo
+ * ([data-theme] "light" o "dark"), anche in automatico.
  * L'arancio di accento è più scuro, per leggersi su fondo chiaro.
  * ------------------------------------------------------------------------- */
 $light-theme: mat.m2-define-light-theme((color: (primary: mat.m2-define-palette(mat.$m2-orange-palette, 800),
@@ -129,14 +130,11 @@ html.cp-themed {
   --color-surface-5: #2a2f37;
 }
 
+// Una regola sola: anche in "automatico" è il ThemeService a mettere data-theme="light" quando il
+// sistema è in chiaro. Con una seconda regola sotto @media i colori di Material comparivano due volte
+// e il CSS iniziale superava il limite di peso della build.
 html.cp-themed[data-theme='light'] {
   @include light-tokens;
-}
-
-@media (prefers-color-scheme: light) {
-  html.cp-themed:not([data-theme='dark']) {
-    @include light-tokens;
-  }
 }
 
 html,

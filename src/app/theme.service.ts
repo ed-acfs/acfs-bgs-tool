@@ -24,14 +24,19 @@ function storedChoice(): ThemeChoice {
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
   private readonly root = inject(DOCUMENT).documentElement;
+  /** Il tema del sistema operativo, per "automatico"; manca dove matchMedia non c'è (test). */
+  private readonly systemLight = inject(DOCUMENT).defaultView?.matchMedia?.('(prefers-color-scheme: light)');
+  private readonly onSystemChange = () => this.apply(this.choice());
   readonly choice = signal<ThemeChoice>(storedChoice());
 
   enable(): void {
     this.root.classList.add(THEMED_CLASS);
+    this.systemLight?.addEventListener('change', this.onSystemChange);
     this.apply(this.choice());
   }
 
   disable(): void {
+    this.systemLight?.removeEventListener('change', this.onSystemChange);
     this.root.classList.remove(THEMED_CLASS);
     this.root.removeAttribute('data-theme');
   }
@@ -47,8 +52,9 @@ export class ThemeService {
     this.apply(choice);
   }
 
+  /** Mette sempre il tema effettivo: in "automatico" lo decide il sistema operativo. */
   private apply(choice: ThemeChoice): void {
-    if (choice === 'auto') this.root.removeAttribute('data-theme');
-    else this.root.setAttribute('data-theme', choice);
+    const theme = choice === 'auto' ? (this.systemLight?.matches ? 'light' : 'dark') : choice;
+    this.root.setAttribute('data-theme', theme);
   }
 }

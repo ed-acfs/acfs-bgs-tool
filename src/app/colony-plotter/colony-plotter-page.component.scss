@@ -1001,3 +1001,15 @@
 .cp-table tbody tr:hover {
   background: color-mix(in srgb, var(--color-accent) 6%, transparent);
 }
+
+// Nome e copia sulla stessa riga, l'icona subito dopo il nome come in Inara.
+.cp-name-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+}
+
+.cp-copy-name {
+  flex: none;
+}

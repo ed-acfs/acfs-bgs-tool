@@ -275,7 +275,7 @@
               @let f = t.from[0];
               <tr>
                 <td data-label="Sistema">
-                  <button type="button" class="cp-name" (click)="open(t)">{{ t.name }}</button>
+                  <span class="cp-name-row"><button type="button" class="cp-name" (click)="open(t)">{{ t.name }}</button><ng-container *ngTemplateOutlet="copyName; context: { name: t.name }"></ng-container></span>
                   @if (t.status === 'claimed') {
                     <span class="cp-claimed" title="Già reclamato: qualcuno lo sta costruendo">reclamato</span>
                   }
@@ -440,7 +440,7 @@
             <li class="cp-step" [class.is-next]="bridgeNext()?.id64 === s.id64">
               <span class="cp-step-index" aria-hidden="true">{{ i }}</span>
               <span class="cp-step-main">
-                <span class="cp-step-name">{{ s.name }}</span>
+                <span class="cp-name-row"><span class="cp-step-name">{{ s.name }}</span><ng-container *ngTemplateOutlet="copyName; context: { name: s.name }"></ng-container></span>
                 <span class="cp-sub">
                   @if (i === 0) {
                     partenza
@@ -466,7 +466,7 @@
     <div class="cp-overlay" (click)="close()">
       <section class="cp-card" role="dialog" aria-modal="true" [attr.aria-label]="t.name" (click)="$event.stopPropagation()">
         <header class="cp-card-header">
-          <h2>{{ t.name }}</h2>
+          <h2 class="cp-name-row">{{ t.name }}<ng-container *ngTemplateOutlet="copyName; context: { name: t.name }"></ng-container></h2>
           <button mat-stroked-button type="button" (click)="close()">Chiudi</button>
         </header>
         <p class="cp-links cp-links--card">
@@ -504,7 +504,7 @@
         @for (f of t.from; track f.name) {
           <div class="cp-source">
             <p>
-              <strong>{{ f.name }}</strong> · {{ f.distance.toFixed(2) }} ly
+              <strong>{{ f.name }}</strong><ng-container *ngTemplateOutlet="copyName; context: { name: f.name }"></ng-container> · {{ f.distance.toFixed(2) }} ly
               <span class="cp-links">
                 <ng-container *ngTemplateOutlet="systemLinks; context: { name: f.name, id64: f.id64, compact: true }"></ng-container>
               </span>
@@ -547,15 +547,20 @@
   }
 </div>
 
-<!-- Copia del nome sempre a vista; i link agli altri siti in un menu, per non affollare la riga. -->
+<!-- Copia del nome subito a fianco del nome, come in Inara (richiesta dell'utente del 20 novembre 2026):
+     chi gioca la trova senza cercarla in fondo alla riga. -->
+<ng-template #copyName let-name="name">
+  <button type="button" class="cp-icon-btn cp-copy-name" (click)="copy(name); $event.stopPropagation()" [title]="copied() === name ? 'Copiato' : 'Copia il nome'" [attr.aria-label]="'Copia il nome di ' + name">
+    <fa-icon [icon]="faCopy"></fa-icon>
+    @if (copied() === name) {
+      <span class="cp-copied">copiato</span>
+    }
+  </button>
+</ng-template>
+
+<!-- I link agli altri siti in un menu, per non affollare la riga. -->
 <ng-template #rowActions let-name="name" let-id64="id64">
   <span class="cp-row-actions">
-    <button type="button" class="cp-icon-btn" (click)="copy(name)" [title]="copied() === name ? 'Copiato' : 'Copia il nome'" [attr.aria-label]="'Copia il nome di ' + name">
-      <fa-icon [icon]="faCopy"></fa-icon>
-      @if (copied() === name) {
-        <span class="cp-copied">copiato</span>
-      }
-    </button>
     <button type="button" class="cp-icon-btn" [matMenuTriggerFor]="linksMenu" title="Apri in altri siti" [attr.aria-label]="'Apri ' + name + ' in altri siti'">
       <fa-icon [icon]="faMore"></fa-icon>
     </button>
@@ -585,7 +590,4 @@
   <a [href]="links.signals(name)" target="_blank" rel="noopener" title="Apri in Canonn Signals" aria-label="Apri in Canonn Signals"
     ><fa-icon [icon]="faSignals"></fa-icon>@if (!compact) { Canonn Signals }</a
   >
-  <button type="button" class="cp-copy" (click)="copy(name)" [title]="copied() === name ? 'Copiato' : 'Copia il nome'" aria-label="Copia il nome del sistema">
-    <fa-icon [icon]="faCopy"></fa-icon>{{ copied() === name ? ' copiato' : '' }}
-  </button>
 </ng-template>
