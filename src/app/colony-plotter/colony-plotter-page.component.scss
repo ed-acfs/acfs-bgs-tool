@@ -215,7 +215,7 @@
   th {
     padding: 10px 12px;
     border-bottom: 1px solid var(--color-border);
-    color: var(--color-accent);
+    color: var(--color-accent-text);
     font-size: 0.75rem;
     text-align: left;
     text-transform: uppercase;
@@ -286,9 +286,35 @@
     }
   }
 
+  // Nella scheda i servizi esterni sono pulsanti a pillola, ben visibili (richiesta dell'utente del
+  // 20 novembre 2026: "se non sapessi che c'erano non le avrei viste").
   &--card {
-    gap: 16px;
+    gap: 8px;
+    margin: 6px 0 14px;
     font-size: 0.85rem;
+
+    a {
+      gap: 6px;
+      padding: 4px 12px;
+      border: 1px solid var(--color-field-border);
+      border-radius: 999px;
+      background: var(--color-surface-2);
+      color: var(--color-text);
+      transition:
+        border-color 0.15s,
+        background 0.15s;
+
+      fa-icon {
+        color: var(--color-accent);
+      }
+
+      &:hover,
+      &:focus-visible {
+        border-color: var(--color-accent);
+        background: color-mix(in srgb, var(--color-accent) 12%, var(--color-surface-2));
+        color: var(--color-text-bright);
+      }
+    }
   }
 }
 
@@ -317,7 +343,7 @@
   padding: 1px 8px;
   border: 1px solid var(--color-accent);
   border-radius: 999px;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   font-size: 0.75rem;
 
   // Corpi rari in arancione, comuni neutri, biologia in verde, anelli e hotspot in azzurro.
@@ -452,7 +478,7 @@
       &[data-label]::before {
         content: attr(data-label);
         display: block;
-        color: var(--color-accent);
+        color: var(--color-accent-text);
         font-size: 0.7rem;
         text-transform: uppercase;
       }
@@ -660,8 +686,8 @@
   padding: 1px 8px;
   border-radius: 999px;
   background: color-mix(in srgb, var(--color-accent) 6%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 30%, transparent);
-  color: var(--color-accent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 45%, transparent);
+  color: var(--color-accent-text);
   font-size: 0.8rem;
   font-variant-numeric: tabular-nums;
 }
@@ -788,7 +814,7 @@
 
 .cp-working {
   margin: 0;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .cp-warning {
@@ -858,7 +884,7 @@
 
   &--ours {
     border-color: var(--color-accent);
-    color: var(--color-accent);
+    color: var(--color-accent-text);
   }
 
   &--free {
@@ -972,7 +998,7 @@
     }
 
     &.is-active {
-      background: color-mix(in srgb, var(--tile-color) 16%, var(--color-surface-2));
+      background: color-mix(in srgb, var(--tile-color) 11%, var(--color-surface-2));
       box-shadow: inset 3px 0 0 var(--tile-color);
     }
   }

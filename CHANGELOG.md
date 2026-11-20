@@ -40,9 +40,10 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 ### Accessibilità
 
 - Analisi con **axe-core** (il motore di Lighthouse, regole WCAG 2.2 AA) del Colony Plotter nei due temi (obiettivi, Legenda, Altri filtri, scheda, Ponte) e della tabella del tool: da 4–6 regole violate per vista a **nessuna**.
-- **Contrasti**: nel tema chiaro arancio di accento, grigio dei testi secondari e verde più scuri, fino ad almeno 4.5:1; il pulsante pieno arancio ha il testo scuro (il bianco arrivava a 3:1). Nello scuro il grigio tenue è un po' più chiaro, per leggersi anche sulle tessere colorate.
+- **Contrasti**: nel tema chiaro l'arancio resta vivo, vicino a quello del logo, per titoli, icone, bordi e focus (almeno 3:1), mentre i testi piccoli che erano arancio (intestazioni della tabella, pillole, segni) passano a un neutro scuro; grigio dei testi secondari e verde un po' più scuri, fino ad almeno 4.5:1; il pulsante pieno arancio ha il testo scuro (il bianco arrivava a 3:1). Nello scuro il grigio tenue è un po' più chiaro, per leggersi anche sulle tessere colorate.
 - **Bordi di caselle e tendine** più netti nei due temi (almeno 3:1 sul fondo), per vedere dove sono i campi.
 - **Focus da tastiera** con un anello arancio uguale in tutto il Colony Plotter.
+- **Link ai servizi esterni nella scheda** (Inara, Raven Colonial, Spansh, Canonn Signals) come pulsanti a pillola con l'icona arancio: prima erano grigi e quasi invisibili.
 - Icone dei link nella scheda cliccabili su almeno 24×24 px; **link del footer** sottolineati, perché non si distinguevano dal testo per il solo colore.
 - Ogni pagina ha la sua area principale (`main`), per chi naviga con un lettore di schermo; la pillola "Aggiornato" della tabella è annunciata correttamente.
 

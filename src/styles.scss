@@ -53,6 +53,8 @@ $dark-theme: mat.m2-define-dark-theme((color: (primary: mat.m2-define-palette(ma
   --color-white: #fff;
   --color-black: #000;
   --color-accent: #ff9900;
+  /* Testo piccolo in colore d'accento: nello scuro è l'arancio stesso, nel chiaro un neutro scuro. */
+  --color-accent-text: #ff9900;
   --color-warning: #fc3;
   --color-success: #51cf66;
   --color-danger: #ff6b6b;
@@ -110,7 +112,10 @@ $light-theme: mat.m2-define-light-theme((color: (primary: mat.m2-define-palette(
   --color-text: #23262c;
   --color-text-2: #3a3f47;
   --color-text-bright: #111318;
-  --color-accent: #8f4200;
+  /* Arancio vivo vicino a quello del logo (l'utente non voleva quello bruciato, 20 novembre 2026):
+     regge 3:1, che basta a titoli, icone, bordi e focus. Il testo piccolo usa --color-accent-text. */
+  --color-accent: #c45d00;
+  --color-accent-text: #23262c;
   --color-warning: #8a5a00;
   --color-success: #1f642c;
   --color-danger: #c92a2a;
