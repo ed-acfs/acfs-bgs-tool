@@ -104,20 +104,20 @@
     @if (view() === 'targets') {
       @let sum = summary();
       <section class="cp-tiles" aria-label="Riepilogo">
-        <button type="button" class="cp-tile" [class.is-active]="quickActive('free')" (click)="quick('free')" title="Tutti i sistemi liberi, senza filtri rapidi">
+        <button type="button" class="cp-tile cp-tile--free" [class.is-active]="quickActive('free')" (click)="quick('free')" title="Tutti i sistemi liberi, senza filtri rapidi">
           <span class="cp-tile-label">Liberi</span>
           <span class="cp-tile-value">{{ sum.free }}</span>
           <span class="cp-tile-sub">{{ sum.claimed }} già reclamati</span>
         </button>
-        <button type="button" class="cp-tile" [class.is-active]="quickActive('biology')" (click)="quick('biology')" title="Solo i sistemi con biologia">
+        <button type="button" class="cp-tile cp-tile--biology" [class.is-active]="quickActive('biology')" (click)="quick('biology')" title="Solo i sistemi con biologia">
           <span class="cp-tile-label"><fa-icon [icon]="highlightIcons.biology" aria-hidden="true"></fa-icon> Con biologia</span>
           <span class="cp-tile-value">{{ sum.biology }}</span>
         </button>
-        <button type="button" class="cp-tile" [class.is-active]="quickActive('pristine')" (click)="quick('pristine')" title="Solo i sistemi con riserva Pristine">
+        <button type="button" class="cp-tile cp-tile--rings" [class.is-active]="quickActive('pristine')" (click)="quick('pristine')" title="Solo i sistemi con riserva Pristine">
           <span class="cp-tile-label"><fa-icon [icon]="highlightIcons.rings" aria-hidden="true"></fa-icon> Anelli Pristine</span>
           <span class="cp-tile-value">{{ sum.pristine }}</span>
         </button>
-        <button type="button" class="cp-tile" [class.is-active]="quickActive('hotspots')" (click)="quick('hotspots')" title="Solo i sistemi con hotspot negli anelli">
+        <button type="button" class="cp-tile cp-tile--hotspots" [class.is-active]="quickActive('hotspots')" (click)="quick('hotspots')" title="Solo i sistemi con hotspot negli anelli">
           <span class="cp-tile-label"><fa-icon [icon]="highlightIcons.hotspots" aria-hidden="true"></fa-icon> Con hotspot</span>
           <span class="cp-tile-value">{{ sum.hotspots }}</span>
         </button>

@@ -54,6 +54,7 @@ $dark-theme: mat.m2-define-dark-theme((color: (primary: mat.m2-define-palette(ma
   --color-danger: #ff6b6b;
   --color-info: #4dabf7;
   --color-watchlist: #b197fc; /* the Watchlist eye: a colour nothing else in the table uses */
+  --color-gem: #3bc9db; /* Colony Plotter: gli hotspot, distinti dagli anelli */
   --color-link: #fbd7b4;
   --color-link-hover: #feeddc;
 
@@ -99,6 +100,7 @@ $light-theme: mat.m2-define-light-theme((color: (primary: mat.m2-define-palette(
   --color-danger: #c92a2a;
   --color-info: #1864ab;
   --color-watchlist: #6741d9;
+  --color-gem: #0b7285;
   --color-link: #a14d00;
   --color-link-hover: #7a3a00;
   --color-text-muted: #565d67;

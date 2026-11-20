@@ -726,9 +726,12 @@
     color: var(--color-watchlist);
   }
 
-  &--rings fa-icon,
-  &--hotspots fa-icon {
+  &--rings fa-icon {
     color: var(--color-info);
+  }
+
+  &--hotspots fa-icon {
+    color: var(--color-gem);
   }
 
   &--rare fa-icon,
@@ -937,5 +940,49 @@
   .cp-grid--3,
   .cp-grid--2 {
     grid-template-columns: 1fr;
+  }
+}
+
+// Ogni tessera nel colore della sua icona in tabella (richiesta dell'utente del 20 novembre 2026):
+// un velo di colore sul fondo, numero e icona colorati, il bordo pieno quando il filtro è attivo.
+.cp-tile {
+  &--free {
+    --tile-color: var(--color-accent);
+  }
+
+  &--biology {
+    --tile-color: var(--color-success);
+  }
+
+  &--rings {
+    --tile-color: var(--color-info);
+  }
+
+  &--hotspots {
+    --tile-color: var(--color-gem);
+  }
+
+  &--free,
+  &--biology,
+  &--rings,
+  &--hotspots {
+    border-color: color-mix(in srgb, var(--tile-color) 35%, var(--color-border-muted));
+    background: color-mix(in srgb, var(--tile-color) 9%, var(--color-surface-2));
+
+    .cp-tile-label fa-icon,
+    .cp-tile-value {
+      color: var(--tile-color);
+    }
+
+    &:hover,
+    &:focus-visible,
+    &.is-active {
+      border-color: var(--tile-color);
+    }
+
+    &.is-active {
+      background: color-mix(in srgb, var(--tile-color) 16%, var(--color-surface-2));
+      box-shadow: inset 3px 0 0 var(--tile-color);
+    }
   }
 }
