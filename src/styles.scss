@@ -37,15 +37,18 @@ $dark-theme: mat.m2-define-dark-theme((color: (primary: mat.m2-define-palette(ma
  * Canonn tools share one visual language; components reference these via
  * var(--color-*) rather than raw hex.
  * ------------------------------------------------------------------------- */
+// Scuro ardesia, leggermente bluastro, con il bianco dei testi più morbido: nato nel Colony Plotter
+// (20 novembre 2026, il grigio neutro con il bianco acceso era poco leggibile) e portato a tutto il
+// tool lo stesso giorno, su richiesta dell'utente ("più moderno ed elegante").
 :root {
-  --color-surface: #393939;
-  --color-surface-2: #2a2a2a;
-  --color-surface-3: #1c1c1c;
-  --color-surface-4: #1e1e1e;
-  --color-border: #797979;
-  --color-text: #e0e0e0;
-  --color-text-2: #d7d7d7;
-  --color-text-bright: #f2f2f2;
+  --color-surface: #2c313a;
+  --color-surface-2: #242830;
+  --color-surface-3: #1b1e24;
+  --color-surface-4: #1f2228;
+  --color-border: #5d6574;
+  --color-text: #dde1e7;
+  --color-text-2: #cfd4dc;
+  --color-text-bright: #eceff3;
   --color-white: #fff;
   --color-black: #000;
   --color-accent: #ff9900;
@@ -65,11 +68,18 @@ $dark-theme: mat.m2-define-dark-theme((color: (primary: mat.m2-define-palette(ma
   --color-badge-cyan: #0ff;
 
   /* Low-emphasis text/border/surface variants. */
-  --color-text-muted: #888;
-  --color-text-subtle: #ccc;
-  --color-border-muted: #666;
-  --color-surface-hover: #555;
-  --color-surface-5: #333;
+  --color-text-muted: #8f97a4;
+  --color-text-subtle: #b9bfc8;
+  --color-border-muted: #3a404b;
+  --color-surface-hover: #343a45;
+  --color-surface-5: #2a2f37;
+
+  // Finestre, menu e tendine di Material nello stesso ardesia (di loro sarebbero grigio #424242).
+  // Il tema chiaro del Colony Plotter li ridefinisce con un selettore più specifico.
+  @include mat.dialog-overrides((container-color: #2c313a));
+  @include mat.menu-overrides((container-color: #2c313a));
+  @include mat.select-overrides((panel-background-color: #2c313a));
+  @include mat.autocomplete-overrides((background-color: #2c313a));
 }
 
 /* ---------------------------------------------------------------------------
@@ -110,24 +120,6 @@ $light-theme: mat.m2-define-light-theme((color: (primary: mat.m2-define-palette(
   --color-surface-hover: #d0d5db;
   --color-surface-5: #dadee3;
   @include mat.all-component-colors($light-theme);
-}
-
-// Scuro del Colony Plotter (20 novembre 2026, il grigio neutro con il bianco acceso era poco
-// leggibile): ardesia leggermente bluastra come il blog dell'utente, testo bianco più morbido.
-html.cp-themed {
-  --color-surface: #2c313a;
-  --color-surface-2: #242830;
-  --color-surface-3: #1b1e24;
-  --color-surface-4: #1f2228;
-  --color-border: #5d6574;
-  --color-border-muted: #3a404b;
-  --color-text: #dde1e7;
-  --color-text-2: #cfd4dc;
-  --color-text-bright: #eceff3;
-  --color-text-muted: #8f97a4;
-  --color-text-subtle: #b9bfc8;
-  --color-surface-hover: #343a45;
-  --color-surface-5: #2a2f37;
 }
 
 // Una regola sola: anche in "automatico" è il ThemeService a mettere data-theme="light" quando il
