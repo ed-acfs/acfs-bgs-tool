@@ -111,6 +111,24 @@ $light-theme: mat.m2-define-light-theme((color: (primary: mat.m2-define-palette(
   @include mat.all-component-colors($light-theme);
 }
 
+// Scuro del Colony Plotter (20 novembre 2026, il grigio neutro con il bianco acceso era poco
+// leggibile): ardesia leggermente bluastra come il blog dell'utente, testo bianco più morbido.
+html.cp-themed {
+  --color-surface: #2c313a;
+  --color-surface-2: #242830;
+  --color-surface-3: #1b1e24;
+  --color-surface-4: #1f2228;
+  --color-border: #5d6574;
+  --color-border-muted: #3a404b;
+  --color-text: #dde1e7;
+  --color-text-2: #cfd4dc;
+  --color-text-bright: #eceff3;
+  --color-text-muted: #8f97a4;
+  --color-text-subtle: #b9bfc8;
+  --color-surface-hover: #343a45;
+  --color-surface-5: #2a2f37;
+}
+
 html.cp-themed[data-theme='light'] {
   @include light-tokens;
 }

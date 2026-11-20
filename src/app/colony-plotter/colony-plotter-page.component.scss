@@ -264,7 +264,6 @@
   &:hover,
   &:focus-visible {
     color: var(--color-accent);
-    text-decoration: underline;
   }
 }
 
@@ -695,7 +694,7 @@
   gap: 5px;
   padding: 2px 8px;
   border-radius: 6px;
-  background: var(--color-surface-3);
+  background: color-mix(in srgb, var(--color-text) 7%, transparent);
   color: var(--color-text-2);
   font-size: 0.78rem;
   white-space: nowrap;
@@ -992,4 +991,13 @@
 .cp-container strong,
 .cp-card strong {
   font-weight: 500;
+}
+
+// Righe alternate appena visibili e la riga sotto il mouse più chiara: l'occhio segue la riga.
+.cp-table tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--color-text) 3%, transparent);
+}
+
+.cp-table tbody tr:hover {
+  background: color-mix(in srgb, var(--color-accent) 6%, transparent);
 }
