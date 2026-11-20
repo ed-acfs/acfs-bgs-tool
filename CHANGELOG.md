@@ -4,6 +4,10 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
 ## [1.9.0] - 2026-11-20 — Colony Plotter riordinato, Ponte, tema chiaro e scuro ardesia
 
+### Credits
+
+- In fondo a ogni pagina, tool e Colony Plotter, i credits dell'autore con il link al suo sito, come nel sito della flotta: "Design e sviluppo di Cristian Castellari" (nelle tre lingue).
+
 ### Fuori dalla beta
 
 - Il **Colony Plotter** non è più in beta (decisione dell'utente): il titolo della pagina, il menu dell'account e la Guida dicono solo "Colony Plotter".
