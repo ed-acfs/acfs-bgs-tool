@@ -8,7 +8,7 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
 - La pagina era "confusionaria, molto tabellare" (parole dell'utente, che ha indicato come riferimento edbubbles.com): ora si apre con due **schede**, *Obiettivi entro 15 ly* e *Ponte verso un sistema lontano*.
 - In cima agli obiettivi, quattro **tessere** con un numero grande: sistemi liberi (e quanti già reclamati), con biologia, con anelli Pristine, con hotspot. Un clic applica il filtro, un secondo lo toglie.
-- **Filtri in due livelli**: a vista solo distanza da un sistema, *Adatto a* e ordinamento; il resto in **Altri filtri**, che a riquadro chiuso dice quanti ne sono attivi.
+- **Filtri in due livelli**: a vista solo distanza da un sistema, corpi minimi e ordinamento; il resto (compreso *Adatto a*) in **Altri filtri**, che a riquadro chiuso dice quanti ne sono attivi.
 - **Righe più leggere**: un dato per colonna (sistema con la partenza sotto, distanza, corpi, scopo più adatto) e al posto delle etichette colorate pochi segni **In evidenza** con icona e numero (i corpi più pregiati per nome, "+N rari", specie biologiche, geologia, anelli con Pristine, hotspot, stelle); passando sopra un segno, un riquadro dice quali corpi e quali specie, e un clic (o un tocco) apre la scheda del sistema già sulla parte che lo spiega, evidenziata per un momento. La scheda mostra ora anche tutte le ragioni di interesse. Cambia l'impostazione del 25 ottobre 2026, che metteva tutti i corpi interessanti nella riga come il Colony Finder dei Canonn.
 - I cinque link sotto ogni nome diventano il pulsante **copia** sempre a vista e un menu **⋯** con Inara, Raven Colonial, Spansh e Canonn Signals.
 

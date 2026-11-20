@@ -170,7 +170,7 @@ export class ColonyPlotterPageComponent implements OnInit, OnDestroy {
   /** Quanti filtri del riquadro "Altri filtri" sono attivi: si vede anche a riquadro chiuso. */
   protected readonly hiddenFiltersActive = computed(() => {
     const f = this.filter();
-    return [f.minBodies > 0, !!f.bodyType, !!f.biology, !!f.other, !!f.from.trim(), f.includeClaimed].filter(Boolean).length;
+    return [!!f.purpose, !!f.bodyType, !!f.biology, !!f.other, !!f.from.trim(), f.includeClaimed].filter(Boolean).length;
   });
   protected readonly summary = computed(() => plotterSummary(this.data()?.targets ?? []));
   protected readonly bodyTypes = computed(() => bodyTypeOptions(this.data()?.targets ?? []));

@@ -144,16 +144,11 @@
           <p class="cp-error">{{ message }}</p>
         }
         <div class="cp-row">
-          <label class="cp-field">
-            <span>Adatto a</span>
-            <select [value]="filter().purpose" (change)="update({ purpose: $any(value($event)) })">
-              <option value="">Qualunque scopo</option>
-              @for (p of purposes; track p) {
-                <option [value]="p">{{ purposeLabels[p] }}</option>
-              }
-            </select>
+          <label class="cp-field cp-field--narrow">
+            <span>Corpi minimi</span>
+            <input type="number" min="0" placeholder="0" [value]="filter().minBodies || ''" (input)="update({ minBodies: +value($event) || 0 })" />
           </label>
-          <label class="cp-field">
+          <label class="cp-field cp-field--sort">
             <span>Ordina per</span>
             <select [value]="filter().sort" (change)="setSort($any(value($event)))">
               <option value="interest">Ragioni di interesse</option>
@@ -190,9 +185,14 @@
         </div>
         @if (moreFilters()) {
           <div class="cp-row cp-more-filters" id="cp-more-filters">
-            <label class="cp-field cp-field--narrow">
-              <span>Corpi minimi</span>
-              <input type="number" min="0" placeholder="0" [value]="filter().minBodies || ''" (input)="update({ minBodies: +value($event) || 0 })" />
+            <label class="cp-field">
+              <span>Adatto a</span>
+              <select [value]="filter().purpose" (change)="update({ purpose: $any(value($event)) })">
+                <option value="">Qualunque scopo</option>
+                @for (p of purposes; track p) {
+                  <option [value]="p">{{ purposeLabels[p] }}</option>
+                }
+              </select>
             </label>
             <label class="cp-field">
               <span>Tipo di corpo</span>

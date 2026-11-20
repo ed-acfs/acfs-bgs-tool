@@ -485,6 +485,7 @@
     select,
     input {
       width: 100%;
+      height: 36px;
       min-width: 0;
       box-sizing: border-box;
     }
@@ -500,6 +501,11 @@
 
     &--wide {
       flex: 1 1 260px;
+    }
+
+    // Ordina per: larga quanto la voce più lunga, non tutta la riga.
+    &--sort {
+      flex: 0 1 280px;
     }
   }
 }
