@@ -4,6 +4,10 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
 ## [1.9.0] - 2026-11-20 — Colony Plotter riordinato, Ponte, tema chiaro e scuro ardesia
 
+### Tabella
+
+- La tabella si apre con **20 righe** per pagina e la scelta da 10 non c'è più (restano 20, 50 e 100). Un vecchio link condiviso con 10 righe apre con 20.
+
 ### Credits
 
 - In fondo a ogni pagina, tool e Colony Plotter, i credits dell'autore con il link al suo sito, come nel sito della flotta: "© 2026 · Design e sviluppo di Cristian Castellari" (nelle tre lingue; l'anno finale segue il calendario, come nel sito).

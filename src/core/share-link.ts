@@ -23,7 +23,8 @@ const SORT_COLUMNS: readonly ShareSortColumn[] = [
 const SERVICE_KINDS = ['material-trader', 'technology-broker', 'interstellar-factors'] as const;
 export type ShareServiceKind = (typeof SERVICE_KINDS)[number];
 const TRADER_KINDS = ['Raw', 'Manufactured', 'Encoded'] as const;
-const PAGE_SIZES = [10, 20, 50, 100];
+// Come la tabella: 20 è il predefinito e non va nel link; un vecchio link con rows=10 apre con 20.
+const PAGE_SIZES = [20, 50, 100];
 
 /** Lo stato della tabella che un link può riaprire. */
 export interface ShareView {
