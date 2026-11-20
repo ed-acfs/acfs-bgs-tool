@@ -50,7 +50,7 @@
           <li><span class="cp-legend-key"><span class="cp-hl cp-hl--hotspots"><fa-icon [icon]="highlightIcons.hotspots"></fa-icon>Hotspot ×4</span></span><span>hotspot di estrazione negli anelli</span></li>
           <li><span class="cp-legend-key"><span class="cp-hl cp-hl--stars"><fa-icon [icon]="highlightIcons.stars"></fa-icon>3 stelle</span></span><span>sistema con più stelle</span></li>
         </ul>
-        <p class="cp-sub">Il tooltip di ogni segno dice quali corpi; l'elenco completo è nella scheda del sistema.</p>
+        <p class="cp-sub">Passando sopra un segno, un riquadro dice quali corpi; un clic apre la scheda del sistema su quella parte.</p>
       </div>
       <div class="cp-legend-group">
         <h2 class="cp-legend-title">Pulsanti e link</h2>
@@ -295,7 +295,17 @@
                 <td data-label="In evidenza">
                   <span class="cp-hls">
                     @for (h of highlights(t); track $index) {
-                      <span [class]="'cp-hl cp-hl--' + h.kind" [title]="h.title"><fa-icon [icon]="highlightIcons[h.kind]" aria-hidden="true"></fa-icon>{{ h.label }}</span>
+                      <button
+                        type="button"
+                        [class]="'cp-hl cp-hl--' + h.kind"
+                        [matTooltip]="h.title"
+                        matTooltipClass="cp-tooltip"
+                        [matTooltipShowDelay]="150"
+                        [attr.aria-label]="h.label + ': apri la scheda di ' + t.name"
+                        (click)="open(t, sectionOf(h.kind))"
+                      >
+                        <fa-icon [icon]="highlightIcons[h.kind]" aria-hidden="true"></fa-icon>{{ h.label }}
+                      </button>
                     } @empty {
                       <span class="cp-sub">—</span>
                     }
@@ -457,7 +467,7 @@
         <p class="cp-links cp-links--card">
           <ng-container *ngTemplateOutlet="systemLinks; context: { name: t.name, id64: t.id64 }"></ng-container>
         </p>
-        <dl class="cp-facts">
+        <dl class="cp-facts" id="cp-sec-facts" [class.is-focus]="focusSection() === 'facts'">
           <dt>Stato</dt>
           <dd>{{ t.status === 'claimed' ? 'Già reclamato (in costruzione)' : 'Libero' }}</dd>
           <dt>Coordinate</dt>
@@ -499,7 +509,7 @@
           </div>
         }
 
-        <h3>Corpi interessanti</h3>
+        <h3 id="cp-sec-bodies" [class.is-focus]="focusSection() === 'bodies'">Corpi interessanti</h3>
         <ul class="cp-list">
           @for (line of bodyDetails(t); track $index) {
             <li>{{ line }}</li>
@@ -508,7 +518,7 @@
           }
         </ul>
         @if (t.rings.length) {
-          <h3>Anelli</h3>
+          <h3 id="cp-sec-rings" [class.is-focus]="focusSection() === 'rings'">Anelli</h3>
           <ul class="cp-list">
             @for (r of t.rings; track r.body) {
               <li>{{ ringLine(t, r) }}</li>

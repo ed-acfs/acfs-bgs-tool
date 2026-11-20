@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit, co
 import { NgTemplateOutlet } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import {
@@ -87,6 +88,9 @@ const HIGHLIGHT_ICONS: Readonly<Record<Highlight['kind'], IconDefinition>> = {
 
 /** Le scorciatoie delle tessere in cima: ognuna applica un filtro. */
 type QuickFilter = 'free' | 'biology' | 'pristine' | 'hotspots';
+
+/** La parte della scheda del sistema che spiega un segno "In evidenza". */
+type CardSection = 'bodies' | 'rings' | 'facts';
 /** Righe per pagina, come nella tabella principale. */
 const PAGE_SIZES = [25, 50, 100] as const;
 
@@ -100,7 +104,7 @@ const PAGE_SIZES = [25, 50, 100] as const;
  */
 @Component({
   selector: 'app-colony-plotter-page',
-  imports: [RouterLink, NgTemplateOutlet, MatButtonModule, MatMenuModule, FaIconComponent, AcfsLogoComponent, AccountComponent],
+  imports: [RouterLink, NgTemplateOutlet, MatButtonModule, MatMenuModule, MatTooltipModule, FaIconComponent, AcfsLogoComponent, AccountComponent],
   templateUrl: './colony-plotter-page.component.html',
   styleUrl: './colony-plotter-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -485,8 +489,23 @@ export class ColonyPlotterPageComponent implements OnInit, OnDestroy {
     this.dialog.open(HelpDialogComponent, { data, autoFocus: 'first-tabbable', restoreFocus: true, maxWidth: 'min(1168px, 90vw)' });
   }
 
-  protected open(target: ColonisationTarget): void {
+  /** La parte della scheda evidenziata per un momento, dopo il clic su un segno. */
+  protected readonly focusSection = signal<CardSection | null>(null);
+  private focusTimer: ReturnType<typeof setTimeout> | null = null;
+
+  protected sectionOf(kind: Highlight['kind']): CardSection {
+    if (kind === 'rings' || kind === 'hotspots') return 'rings';
+    return kind === 'stars' ? 'facts' : 'bodies';
+  }
+
+  /** Apre la scheda del sistema; con `section`, la porta su quella parte e la evidenzia. */
+  protected open(target: ColonisationTarget, section?: CardSection): void {
     this.selected.set(target);
+    if (this.focusTimer) clearTimeout(this.focusTimer);
+    this.focusSection.set(section ?? null);
+    if (!section) return;
+    setTimeout(() => document.getElementById(`cp-sec-${section}`)?.scrollIntoView({ block: 'start', behavior: 'smooth' }));
+    this.focusTimer = setTimeout(() => this.focusSection.set(null), 1800);
   }
 
   protected close(): void {

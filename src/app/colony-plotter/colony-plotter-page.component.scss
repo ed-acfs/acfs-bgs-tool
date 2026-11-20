@@ -681,6 +681,9 @@
 }
 
 .cp-hl {
+  border: 1px solid transparent;
+  font: inherit;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -693,6 +696,11 @@
 
   fa-icon {
     font-size: 0.75em;
+  }
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--color-accent);
   }
 
   &--body fa-icon {
@@ -762,6 +770,13 @@
 
 .cp-tags {
   margin: 0;
+}
+
+// La parte della scheda aperta da un segno "In evidenza" si accende per un momento.
+.cp-card .is-focus {
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  transition: background 0.4s;
 }
 
 // Ponte.
