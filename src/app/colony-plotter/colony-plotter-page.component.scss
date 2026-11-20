@@ -87,7 +87,7 @@
   margin: 0;
   color: var(--color-text);
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .cp-legend-key {
@@ -257,7 +257,7 @@
   background: none;
   color: var(--color-text-bright);
   font: inherit;
-  font-weight: 600;
+  font-weight: 500;
   text-align: left;
   cursor: pointer;
 
@@ -270,7 +270,7 @@
 
 .cp-from {
   color: var(--color-text-bright);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .cp-links {
@@ -641,7 +641,7 @@
 .cp-tile-value {
   color: var(--color-text-bright);
   font-size: 1.6rem;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.2;
 }
 
@@ -651,7 +651,7 @@
   align-items: baseline;
   gap: 4px 10px;
   color: var(--color-text-bright);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .cp-tile-sub {
@@ -852,7 +852,7 @@
 
 .cp-step-name {
   color: var(--color-text-bright);
-  font-weight: 600;
+  font-weight: 500;
   overflow-wrap: anywhere;
 }
 
@@ -985,4 +985,11 @@
       box-shadow: inset 3px 0 0 var(--tile-color);
     }
   }
+}
+
+// Roboto è caricato solo fino al 500: un grassetto più pesante il browser lo finge ispessendo le
+// lettere, e il bianco su fondo scuro si impasta (segnalato dall'utente il 20 novembre 2026).
+.cp-container strong,
+.cp-card strong {
+  font-weight: 500;
 }
