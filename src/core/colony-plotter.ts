@@ -373,3 +373,160 @@ export const links = {
   signals: (name: string) => `https://signals.canonn.tech/?system=${encodeURIComponent(name)}`,
   spansh: (id64: string) => `https://spansh.co.uk/system/${id64}`,
 };
+
+/**
+ * Un indicatore compatto della riga (riordino del 20 novembre 2026, richiesta dell'utente: la lista
+ * di etichette era "confusionaria, molto tabellare"): pochi segni con un numero, il dettaglio nel
+ * tooltip e nella scheda del sistema.
+ */
+export interface Highlight {
+  kind: 'body' | 'rare' | 'biology' | 'geology' | 'rings' | 'hotspots' | 'stars';
+  label: string;
+  title: string;
+}
+
+/** Quanti tipi di corpo notevoli mostrare per nome; gli altri corpi rari vanno in "+N rari". */
+const NOTABLE_SHOWN = 2;
+
+/**
+ * Gli indicatori di un obiettivo, nell'ordine: i tipi di corpo notevoli (Earth-like, Water world,
+ * Ammonia world, giganti con vita…, al massimo due, con il numero), gli altri corpi rari in uno solo,
+ * le specie biologiche, la geologia, gli anelli (con la riserva se Pristine), gli hotspot, le stelle.
+ */
+export function highlights(target: ColonisationTarget): Highlight[] {
+  const result: Highlight[] = [];
+  const bodies = target.bodies ?? [];
+  const rare = bodies.filter(b => b.rare && !COMMON_SUBTYPE.test(b.subtype));
+  const notable = new Map<string, InterestingBody[]>();
+  for (const b of rare.filter(b => NOTABLE_SUBTYPES.includes(b.subtype))) {
+    notable.set(b.subtype, [...(notable.get(b.subtype) ?? []), b]);
+  }
+  const shown = [...notable.keys()].sort((a, b) => subtypeRank(a) - subtypeRank(b)).slice(0, NOTABLE_SHOWN);
+  for (const subtype of shown) {
+    const group = notable.get(subtype)!;
+    result.push({
+      kind: 'body',
+      label: group.length > 1 ? `${group.length} ${subtype}` : subtype,
+      title: group.map(b => bodyLine(target, b)).join('\n'),
+    });
+  }
+  const others = rare.filter(b => !shown.includes(b.subtype));
+  if (others.length) {
+    result.push({
+      kind: 'rare',
+      label: `+${others.length} ${others.length === 1 ? 'raro' : 'rari'}`,
+      title: others.map(b => bodyLine(target, b)).join('\n'),
+    });
+  }
+  const species = new Set(bodies.flatMap(b => b.biology.map(x => x.species)));
+  if (species.size) {
+    result.push({
+      kind: 'biology',
+      label: `${species.size} specie`,
+      title: bodies.filter(b => b.biology.length).map(b => bodyLine(target, b)).join('\n'),
+    });
+  }
+  const geological = bodies.filter(b => b.geology.length);
+  if (geological.length) {
+    result.push({
+      kind: 'geology',
+      label: `Geologia ×${geological.length}`,
+      title: geological.map(b => `${shortBody(target, b.name)}: ${b.geology.join(', ')}`).join('\n'),
+    });
+  }
+  if (target.rings.length) {
+    result.push({
+      kind: 'rings',
+      label: `Anelli ×${target.rings.length}${target.reserve === 'Pristine' ? ' · Pristine' : ''}`,
+      title: target.rings.map(r => ringLine(target, r)).join('\n') + (target.reserve ? `\nRiserva: ${target.reserve}` : ''),
+    });
+    const hotspots = [...new Set(target.rings.flatMap(r => r.rings.flatMap(x => x.hotspots.map(h => h.name))))];
+    if (hotspots.length) {
+      result.push({ kind: 'hotspots', label: `Hotspot ×${hotspots.length}`, title: `Hotspot: ${hotspots.join(', ')}` });
+    }
+  }
+  if (target.stars.length >= 2) {
+    result.push({ kind: 'stars', label: `${target.stars.length} stelle`, title: `Stelle: ${target.stars.join(', ')}` });
+  }
+  return result;
+}
+
+/** Le tessere in cima alla pagina: quanti obiettivi liberi, con biologia, con anelli Pristine, con hotspot. */
+export interface PlotterSummary {
+  free: number;
+  claimed: number;
+  biology: number;
+  pristine: number;
+  hotspots: number;
+}
+
+export function plotterSummary(targets: readonly ColonisationTarget[]): PlotterSummary {
+  const free = targets.filter(t => t.status === 'free');
+  return {
+    free: free.length,
+    claimed: targets.length - free.length,
+    biology: free.filter(t => (t.bodies ?? []).some(b => b.biology.length)).length,
+    pristine: free.filter(t => t.reserve === 'Pristine').length,
+    hotspots: free.filter(t => matchesOther(t, 'hotspots')).length,
+  };
+}
+
+/** Il nostro sistema di partenza più vicino a un punto: la partenza proposta per un Ponte. */
+export function nearestAnchor<T extends { x: number; y: number; z: number }>(anchors: readonly T[], point: { x: number; y: number; z: number }): T | null {
+  let best: T | null = null;
+  let bestDistance = Infinity;
+  for (const anchor of anchors) {
+    const d = distance(anchor, point);
+    if (d < bestDistance) {
+      best = anchor;
+      bestDistance = d;
+    }
+  }
+  return best;
+}
+
+/** Lo stato di una tappa del Ponte, come lo dà il server (`/v1/bridge`). */
+export type BridgeStepState = 'ours' | 'colonised' | 'building' | 'free' | 'unknown';
+
+export interface BridgeStep {
+  name: string;
+  id64: string;
+  x: number;
+  y: number;
+  z: number;
+  jump_ly: number;
+  remaining_ly: number;
+  bodies: number | null;
+  state: BridgeStepState;
+  controlling_faction: string | null;
+  population: number | null;
+}
+
+export interface BridgeResult {
+  status: 'queued' | 'ok';
+  job: string;
+  from: string;
+  to: string;
+  incomplete?: boolean;
+  reason?: string | null;
+  computed_at?: string;
+  steps?: BridgeStep[];
+}
+
+export const BRIDGE_STATE_LABELS: Readonly<Record<BridgeStepState, string>> = {
+  ours: 'nostro',
+  colonised: 'già colonizzato',
+  building: 'in costruzione',
+  free: 'da colonizzare',
+  unknown: 'stato non noto',
+};
+
+/** Quante tappe restano da colonizzare (le libere, e quelle di cui Spansh non sa niente). */
+export function stepsToBuild(steps: readonly BridgeStep[]): number {
+  return steps.filter(s => s.state === 'free' || s.state === 'unknown').length;
+}
+
+/** La rotta da copiare: un sistema per riga, dalla partenza all'arrivo. */
+export function bridgeText(steps: readonly BridgeStep[]): string {
+  return steps.map(s => s.name).join('\n');
+}

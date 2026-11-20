@@ -2,6 +2,30 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
+## [1.9.0] - 2026-11-20 — Colony Plotter riordinato, Ponte e tema chiaro
+
+### Colony Plotter riordinato
+
+- La pagina era "confusionaria, molto tabellare" (parole dell'utente, che ha indicato come riferimento edbubbles.com): ora si apre con due **schede**, *Obiettivi entro 15 ly* e *Ponte verso un sistema lontano*.
+- In cima agli obiettivi, quattro **tessere** con un numero grande: sistemi liberi (e quanti già reclamati), con biologia, con anelli Pristine, con hotspot. Un clic applica il filtro, un secondo lo toglie.
+- **Filtri in due livelli**: a vista solo distanza da un sistema, *Adatto a* e ordinamento; il resto in **Altri filtri**, che a riquadro chiuso dice quanti ne sono attivi.
+- **Righe più leggere**: un dato per colonna (sistema con la partenza sotto, distanza, corpi, scopo più adatto) e al posto delle etichette colorate pochi segni **In evidenza** con icona e numero (i corpi più pregiati per nome, "+N rari", specie biologiche, geologia, anelli con Pristine, hotspot, stelle); il dettaglio resta nel tooltip e nella scheda del sistema, che ora mostra anche tutte le ragioni di interesse. Cambia l'impostazione del 25 ottobre 2026, che metteva tutti i corpi interessanti nella riga come il Colony Finder dei Canonn.
+- I cinque link sotto ogni nome diventano il pulsante **copia** sempre a vista e un menu **⋯** con Inara, Raven Colonial, Spansh e Canonn Signals.
+
+### Ponte
+
+- Nuova scheda **Ponte**: scritto il sistema da raggiungere, il tool sceglie il nostro sistema di partenza più vicino (o quello indicato) e chiede la catena di tappe, ognuna entro 15 ly dalla precedente, al Colonisation Plotter di Spansh attraverso il server dello Squadrone (`/v1/bridge` di `acfs-server`, solo membri). Spansh può metterci più di un minuto: la pagina aspetta e lo dice.
+- Ogni tappa ha salto, distanza dall'arrivo, corpi e stato (**nostro**, **da colonizzare**, **in costruzione**, **già colonizzato**, **stato non noto**), con il pulsante per **copiarne il nome**. In alto salti, tappe da colonizzare, distanza e **prossima tappa**, evidenziata anche nell'elenco. **Copia la rotta** copia tutti i nomi, uno per riga; **Copia il link** dà un indirizzo (`?ponte=<arrivo>&da=<partenza>`) che apre lo stesso ponte.
+- Se Spansh non trova una catena completa, la rotta si ferma al punto più vicino e un avviso lo dice.
+
+### Tema
+
+- Selettore del **tema** automatico, chiaro o scuro, come quello del blog dell'utente: per ora solo nel Colony Plotter (il resto del tool resta scuro). La scelta resta nel browser (`acfs-bgs:theme`).
+
+### Documentazione
+
+- Guida del Colony Plotter riscritta (obiettivi, filtri, Ponte, tema) e Legenda aggiornata; il Colony Plotter è solo in italiano, come Attività.
+
 ## [1.8.1] - 2026-11-14 — Fuori dalla beta, Statistiche e link a un sistema
 
 La giornata è stata pubblicata in due passi: la 1.8.0 (fuori dalla beta, link a un sistema, Nostri sistemi, finestra Novità) e poi la 1.8.1 (menu Statistiche e Avanzamento del Registro).

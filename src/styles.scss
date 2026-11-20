@@ -71,6 +71,54 @@ $dark-theme: mat.m2-define-dark-theme((color: (primary: mat.m2-define-palette(ma
   --color-surface-5: #333;
 }
 
+/* ---------------------------------------------------------------------------
+ * Tema chiaro, per ora solo nel Colony Plotter (20 novembre 2026): la pagina mette la classe
+ * `cp-themed` su <html> finché è aperta (ThemeService). Come il selettore del blog dell'utente:
+ * "automatico" segue il sistema operativo, "chiaro" e "scuro" mettono [data-theme] su <html>.
+ * L'arancio di accento è più scuro, per leggersi su fondo chiaro.
+ * ------------------------------------------------------------------------- */
+$light-theme: mat.m2-define-light-theme((color: (primary: mat.m2-define-palette(mat.$m2-orange-palette, 800),
+        accent: mat.m2-define-palette(mat.$m2-amber-palette, 900),
+        warn: mat.m2-define-palette(mat.$m2-red-palette),
+      ),
+    ));
+
+@mixin light-tokens {
+  color-scheme: light;
+  --color-surface: #ffffff;
+  --color-surface-2: #f3f4f6;
+  --color-surface-3: #ebedf0;
+  --color-surface-4: #e4e7eb;
+  --color-border: #9aa1ab;
+  --color-text: #23262c;
+  --color-text-2: #3a3f47;
+  --color-text-bright: #111318;
+  --color-accent: #b35400;
+  --color-warning: #8a5a00;
+  --color-success: #2b7a3b;
+  --color-danger: #c92a2a;
+  --color-info: #1864ab;
+  --color-watchlist: #6741d9;
+  --color-link: #a14d00;
+  --color-link-hover: #7a3a00;
+  --color-text-muted: #5f6670;
+  --color-text-subtle: #4a4f57;
+  --color-border-muted: #cfd4da;
+  --color-surface-hover: #e2e5e9;
+  --color-surface-5: #e9ecef;
+  @include mat.all-component-colors($light-theme);
+}
+
+html.cp-themed[data-theme='light'] {
+  @include light-tokens;
+}
+
+@media (prefers-color-scheme: light) {
+  html.cp-themed:not([data-theme='dark']) {
+    @include light-tokens;
+  }
+}
+
 html,
 body {
   height: 100%;
