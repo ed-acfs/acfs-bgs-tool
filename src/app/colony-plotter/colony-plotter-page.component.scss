@@ -119,6 +119,65 @@
   color: var(--color-danger);
 }
 
+/* Invito al server Discord per chi non è (ancora) membro: un pulsante nei colori di Discord. */
+.cp-invite {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+  margin: 16px 0;
+  padding: 20px 24px;
+  border: 1px solid var(--color-border-muted);
+  border-left: 4px solid #5865f2;
+  border-radius: 8px;
+  background: var(--color-surface-2);
+}
+
+.cp-invite-text {
+  flex: 1 1 320px;
+
+  h2 {
+    margin: 0 0 6px;
+    font-size: 1.25rem;
+  }
+
+  p {
+    margin: 0;
+    color: var(--color-text-2);
+  }
+}
+
+/* Blurple attuale di Discord (#5865f2) col testo bianco: contrasto 4,6:1. */
+.cp-invite-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 22px;
+  border-radius: 8px;
+  background: #5865f2;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+
+  fa-icon {
+    font-size: 1.35rem;
+  }
+
+  &:hover {
+    background: #4752c4;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px #5865f2;
+  }
+}
+
 .cp-panel {
   margin-bottom: 12px;
   padding: 12px 16px;

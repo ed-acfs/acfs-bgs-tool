@@ -79,14 +79,29 @@
     @if (auth.session(); as session) {
       @if (!session.member) {
         <p class="cp-note">Sei collegato come {{ session.user.display_name }}, ma il Colony Plotter è riservato ai membri dello Squadrone.</p>
+        <ng-container [ngTemplateOutlet]="discordInvite"></ng-container>
       }
     } @else if (auth.available()) {
       <p class="cp-note">
         Riservato ai membri dello Squadrone.
         <button mat-flat-button type="button" (click)="auth.login()">Accedi con Discord</button>
       </p>
+      <ng-container [ngTemplateOutlet]="discordInvite"></ng-container>
     }
   }
+
+  <ng-template #discordInvite>
+    <section class="cp-invite" aria-labelledby="cp-invite-title">
+      <div class="cp-invite-text">
+        <h2 id="cp-invite-title">Non fai ancora parte della Flotta?</h2>
+        <p>Vieni sul nostro server Discord ed entra nello Squadrone: il Colony Plotter, gli Ordini e il resto del lavoro sono lì.</p>
+      </div>
+      <a class="cp-invite-btn" [href]="discordInviteUrl" target="_blank" rel="noopener">
+        <fa-icon [icon]="faDiscord" aria-hidden="true"></fa-icon>
+        Unisciti su Discord
+      </a>
+    </section>
+  </ng-template>
   @if (error(); as message) {
     <p class="cp-error" role="alert">{{ message }}</p>
   }

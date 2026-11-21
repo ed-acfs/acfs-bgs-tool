@@ -79,3 +79,5 @@ export const WATCHLIST_SHEET_URL: string | null = config.watchlistSheetUrl;
  */
 export const ARCHITECT_FORM_ACTION: string | null = config.architectFormAction;
 
+/** The invite to the squadron Discord server, for pilots who are not members yet. */
+export const DISCORD_INVITE_URL: string = config.discordInviteUrl;
