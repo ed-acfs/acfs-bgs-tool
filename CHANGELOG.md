@@ -33,6 +33,10 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 - Ogni tappa ha salto, distanza dall'arrivo, corpi e stato (**nostro**, **da colonizzare**, **in costruzione**, **già colonizzato**, **stato non noto**), con il pulsante per **copiarne il nome**. In alto salti, tappe da colonizzare, distanza e **prossima tappa**, evidenziata anche nell'elenco. **Copia la rotta** copia tutti i nomi, uno per riga; **Copia il link** dà un indirizzo (`?ponte=<arrivo>&da=<partenza>`) che apre lo stesso ponte.
 - Se Spansh non trova una catena completa, la rotta si ferma al punto più vicino e un avviso lo dice.
 
+### Invito su Discord (21 novembre 2026)
+
+- Chi apre il Colony Plotter senza essere membro, che non abbia fatto l'accesso o che sia collegato senza il ruolo, trova sotto l'avviso un riquadro "Non fai ancora parte della Flotta?" con il pulsante **Unisciti su Discord**, nei colori e con il logo di Discord, che apre l'invito al server dello Squadrone in una nuova scheda. L'invito sta in `config.json` (`discordInviteUrl`). Aggiunto alla 1.9.0 senza cambiare versione, su indicazione dell'utente.
+
 ### Tema
 
 - Selettore del **tema** automatico, chiaro o scuro, come quello del blog dell'utente: per ora solo nel Colony Plotter (il resto del tool resta scuro). La scelta resta nel browser (`acfs-bgs:theme`).

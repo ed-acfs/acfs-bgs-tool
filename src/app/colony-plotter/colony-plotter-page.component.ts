@@ -5,6 +5,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 import {
   faArrowUpRightFromSquare,
   faBridge,
@@ -28,7 +29,7 @@ import {
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import { MatDialog } from '@angular/material/dialog';
-import { FACTION_NAME, SERVER_API_URL } from '../../core/config';
+import { DISCORD_INVITE_URL, FACTION_NAME, SERVER_API_URL } from '../../core/config';
 import {
   BRIDGE_STATE_LABELS,
   BridgeResult,
@@ -134,6 +135,8 @@ export class ColonyPlotterPageComponent implements OnInit, OnDestroy {
   protected readonly faSpansh = faRoute;
   protected readonly faCopy = faCopy;
   protected readonly faHelp = faCircleQuestion;
+  protected readonly faDiscord = faDiscord;
+  protected readonly discordInviteUrl = DISCORD_INVITE_URL;
   protected readonly faLegend = faListUl;
   protected readonly faMore = faEllipsis;
   protected readonly faFilters = faSliders;
