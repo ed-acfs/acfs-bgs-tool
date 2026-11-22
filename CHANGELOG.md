@@ -2,6 +2,13 @@
 
 Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 
+## [1.10.0] - 2026-11-22 — Colony Plotter: primo porto consigliato
+
+### Colony Plotter
+
+- La scheda del sistema dà il **primo porto consigliato**, con la regola dell'utente: di base un **Outpost**, il più veloce da costruire, che blocca presto il sistema per lo Squadrone; unica eccezione una **Coriolis** se il porto primario è in orbita su un Water world o un Earth-like world (indicati per nome e distanza dalla stella d'arrivo), da cui eredita le economie. Il gioco fissa la posizione del porto primario e Spansh non la conosce: la scheda lo ricorda. Sotto, lo scopo più adatto per le costruzioni successive, con i corpi che lo danno.
+- Guida del Colony Plotter: la regola del primo porto, nella sezione "Reclamare e costruire".
+
 ## [1.9.0] - 2026-11-20 — Colony Plotter riordinato, Ponte, tema chiaro e scuro ardesia
 
 ### Tabella

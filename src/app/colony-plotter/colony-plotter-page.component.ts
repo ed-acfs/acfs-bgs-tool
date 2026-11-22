@@ -53,6 +53,8 @@ import {
   distance,
   bridgeText,
   filterTargets,
+  firstPortAdvice,
+  portBodyLine,
   highlights,
   interestTags,
   Highlight,
@@ -129,6 +131,8 @@ export class ColonyPlotterPageComponent implements OnInit, OnDestroy {
   protected readonly links = links;
   protected readonly describeShares = describeShares;
   protected readonly ringLine = ringLine;
+  protected readonly firstPortAdvice = firstPortAdvice;
+  protected readonly portBodyLine = portBodyLine;
   protected readonly faInara = faArrowUpRightFromSquare;
   protected readonly faRaven = faRocket;
   protected readonly faSignals = faSatelliteDish;

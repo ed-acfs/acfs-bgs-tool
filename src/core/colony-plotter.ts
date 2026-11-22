@@ -355,6 +355,42 @@ export function filterTargets(targets: readonly ColonisationTarget[], filter: Pl
   return list.sort((a, b) => flip * compare[key](a, b));
 }
 
+/**
+ * Il primo porto consigliato (regola dell'utente del 22 novembre 2026): di base un **Outpost**, il
+ * più veloce da costruire, che blocca presto il sistema per lo Squadrone (ed è obbligatorio nei
+ * ponti); unica eccezione una **Coriolis** davanti a un Water world o a un Earth-like world, che
+ * le passano le loro economie (Agriculture e Tourism; l'Earth-like anche High Tech e Military).
+ * La posizione del porto primario la fissa il gioco (la bandierina nella mappa del sistema) e
+ * Spansh non la dà: l'eccezione vale solo se il porto è in orbita su uno di quei corpi.
+ */
+export interface FirstPortAdvice {
+  port: 'outpost' | 'coriolis';
+  /** Water world ed Earth-like del sistema, dal più vicino alla stella d'arrivo; vuoto per l'Outpost. */
+  bodies: InterestingBody[];
+  /** Lo scopo più adatto per le costruzioni successive, se c'è. */
+  next: { purpose: Purpose; label: string; bodies: string[] } | null;
+}
+
+const CORIOLIS_SUBTYPES = new Set(['Water world', 'Earth-like world']);
+
+export function firstPortAdvice(target: ColonisationTarget): FirstPortAdvice {
+  const bodies = (target.bodies ?? [])
+    .filter(b => CORIOLIS_SUBTYPES.has(b.subtype))
+    .sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity));
+  const best = target.bestPurpose;
+  return {
+    port: bodies.length ? 'coriolis' : 'outpost',
+    bodies,
+    next: best ? { purpose: best, label: PURPOSE_LABELS[best], bodies: target.purposes[best]?.bodies ?? [] } : null,
+  };
+}
+
+/** "LTT 1 a (Water world, 1.234 Ls)": un corpo per il consiglio sul primo porto. */
+export function portBodyLine(target: Pick<ColonisationTarget, 'name'>, body: InterestingBody): string {
+  const ls = body.distance === null ? '' : `, ${Math.round(body.distance).toLocaleString('it-IT')} Ls`;
+  return `${shortBody(target, body.name)} (${body.subtype}${ls})`;
+}
+
 /** Gli scopi per cui il sistema vale qualcosa, dal più adatto: per la scheda del sistema. */
 export function purposesOf(target: ColonisationTarget): { purpose: Purpose; label: string; score: number }[] {
   return PURPOSES.filter(p => (target.purposes[p]?.score ?? 0) > 0)

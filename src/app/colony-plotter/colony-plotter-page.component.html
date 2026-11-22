@@ -529,6 +529,25 @@
           </div>
         }
 
+        @let port = firstPortAdvice(t);
+        <h3>Primo porto consigliato</h3>
+        <div class="cp-port">
+          @if (port.port === 'coriolis') {
+            <p>
+              <strong>Coriolis</strong>, se il porto primario è in orbita su
+              @for (b of port.bodies; track b.name; let last = $last) {
+                <strong>{{ portBodyLine(t, b) }}</strong>@if (!last) { o }
+              }: ne eredita le economie. Altrimenti <strong>Outpost</strong>.
+            </p>
+            <p class="cp-sub">La posizione del porto primario la fissa il gioco (la bandierina nella mappa del sistema): si vede in gioco dopo il beacon.</p>
+          } @else {
+            <p><strong>Outpost</strong>: si costruisce in fretta e blocca presto il sistema per lo Squadrone.</p>
+          }
+          @if (port.next; as next) {
+            <p class="cp-sub">Poi, per le costruzioni successive: {{ next.label }} ({{ purposeBodies(t, next.purpose) }}).</p>
+          }
+        </div>
+
         <h3 id="cp-sec-bodies" [class.is-focus]="focusSection() === 'bodies'">Corpi interessanti</h3>
         <ul class="cp-list">
           @for (line of bodyDetails(t); track $index) {
