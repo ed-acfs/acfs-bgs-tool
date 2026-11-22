@@ -431,6 +431,43 @@ export function portBodyLine(target: Pick<ColonisationTarget, 'name'>, body: Int
   return `${shortBody(target, body.name)} (${body.subtype}${ls})`;
 }
 
+/** Nome breve di un tipo di corpo, al singolare e al plurale, per i conteggi. */
+function bodyKind(subtype: string | undefined): [string, string] {
+  if (!subtype) return ['altro', 'altri'];
+  if (subtype === 'Rocky body') return ['roccioso', 'rocciosi'];
+  if (subtype === 'Rocky Ice world') return ['Rocky ice world', 'Rocky ice world'];
+  if (subtype === 'Icy body') return ['ghiacciato', 'ghiacciati'];
+  if (subtype === 'High metal content world') return ['High metal content', 'High metal content'];
+  if (subtype === 'Metal-rich body') return ['Metal-rich', 'Metal-rich'];
+  if (/gas giant/i.test(subtype)) return ['gigante gassoso', 'giganti gassosi'];
+  if (/Star|Black Hole/.test(subtype)) return ['stella', 'stelle'];
+  return [subtype, subtype];
+}
+
+/**
+ * "11 corpi: 8 rocciosi, 3 Rocky ice world": i corpi che danno uno scopo, contati per tipo (richiesta
+ * dell'utente del 22 novembre 2026: l'elenco di sigle "A 1, A 3 b…" nel riquadro del primo porto non
+ * diceva niente). Il tipo viene dai corpi interessanti e dagli anelli; i corpi comuni senza biologia
+ * né geologia (es. ghiacciati semplici) il motore non li elenca, e contano come "altri".
+ */
+export function purposeBodySummary(target: ColonisationTarget, purpose: Purpose): string {
+  const names = target.purposes[purpose]?.bodies ?? [];
+  const subtypes = new Map<string, string>();
+  for (const r of target.rings) if (r.subtype) subtypes.set(r.body, r.subtype);
+  for (const b of target.bodies ?? []) subtypes.set(b.name, b.subtype);
+  const counts = new Map<string, { count: number; kind: [string, string] }>();
+  for (const name of names) {
+    const kind = bodyKind(subtypes.get(name));
+    const entry = counts.get(kind[0]) ?? { count: 0, kind };
+    entry.count++;
+    counts.set(kind[0], entry);
+  }
+  const parts = [...counts.values()]
+    .sort((a, b) => Number(a.kind[0] === 'altro') - Number(b.kind[0] === 'altro') || b.count - a.count)
+    .map(e => `${e.count} ${e.count === 1 ? e.kind[0] : e.kind[1]}`);
+  return `${names.length} ${names.length === 1 ? 'corpo' : 'corpi'}: ${parts.join(', ')}`;
+}
+
 /** Gli scopi per cui il sistema vale qualcosa, dal più adatto: per la scheda del sistema. */
 export function purposesOf(target: ColonisationTarget): { purpose: Purpose; label: string; score: number }[] {
   return PURPOSES.filter(p => (target.purposes[p]?.score ?? 0) > 0)

@@ -51,6 +51,7 @@
           <li><span class="cp-legend-key"><span class="cp-hl cp-hl--stars"><fa-icon [icon]="highlightIcons.stars"></fa-icon>3 stelle</span></span><span>sistema con più stelle</span></li>
         </ul>
         <p class="cp-sub">Passando sopra un segno, un riquadro dice quali corpi; un clic apre la scheda del sistema su quella parte.</p>
+        <p class="cp-sub"><strong>Nomi dei corpi</strong>, senza il nome del sistema: <strong>A 3 b</strong> è la luna b del pianeta 3 della stella A. La lettera maiuscola è la stella (A la principale; nei sistemi con una stella sola manca), il numero il pianeta, la minuscola la luna.</p>
       </div>
       <div class="cp-legend-group">
         <h2 class="cp-legend-title">Pulsanti e link</h2>
@@ -532,7 +533,7 @@
             <p><strong>{{ outpostLabels[port.outpost] }}</strong>: {{ port.why }}.</p>
           }
           @if (port.next; as next) {
-            <p>Poi, per le costruzioni successive: <strong>{{ next.label }}</strong> ({{ purposeBodies(t, next.purpose) }}).</p>
+            <p>Poi, per le costruzioni successive: <strong>{{ next.label }}</strong> ({{ purposeBodySummary(t, next.purpose) }}; l'elenco in "Adatto a").</p>
           }
           <p class="cp-sub">Un Outpost si costruisce in fretta e blocca presto il sistema per lo Squadrone. La posizione del porto primario la fissa il gioco (la bandierina nella mappa del sistema): si vede in gioco, e in Raven Colonial si prova l'effetto di ogni tipo sul sistema.</p>
         </section>

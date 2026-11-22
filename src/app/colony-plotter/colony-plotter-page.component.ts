@@ -57,6 +57,7 @@ import {
   filterTargets,
   firstPortAdvice,
   portBodyLine,
+  purposeBodySummary,
   highlights,
   interestTags,
   Highlight,
@@ -135,6 +136,7 @@ export class ColonyPlotterPageComponent implements OnInit, OnDestroy {
   protected readonly ringLine = ringLine;
   protected readonly firstPortAdvice = firstPortAdvice;
   protected readonly portBodyLine = portBodyLine;
+  protected readonly purposeBodySummary = purposeBodySummary;
   protected readonly outpostLabels = OUTPOST_LABELS;
   protected readonly faPort = faFlag;
   protected readonly faInara = faArrowUpRightFromSquare;

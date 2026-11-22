@@ -9,6 +9,7 @@ import {
   firstPortAdvice,
   interestTags,
   portBodyLine,
+  purposeBodySummary,
   BridgeStep,
   bridgeText,
   highlights,
@@ -167,5 +168,15 @@ describe('colony plotter', () => {
       bodies: [body('C 4', 'Earth-like world', { distance: 2400.4 }), body('C 2', 'Water world', { distance: 310 }), body('C 1', 'Rocky body')],
     });
     expect(firstPortAdvice(water).coriolisBodies.map(b => portBodyLine(water, b))).toEqual(['2 (Water world, 310 Ls)', '4 (Earth-like world, 2400 Ls)']);
+  });
+
+  it('counts the bodies of a purpose by type, unknown ones last', () => {
+    const t = target('D', {
+      bodies: [body('D 1', 'Rocky body'), body('D 2', 'Rocky body'), body('D 3', 'Class I gas giant')],
+      rings: [{ body: 'D 4', subtype: 'Rocky Ice world', rings: [] }],
+      purposes: { ...target('x').purposes, refinery: { score: 9, bodies: ['D 1', 'D 2', 'D 4', 'D 9'] }, hightech: { score: 1, bodies: ['D 3'] } },
+    });
+    expect(purposeBodySummary(t, 'refinery')).toBe('4 corpi: 2 rocciosi, 1 Rocky ice world, 1 altro');
+    expect(purposeBodySummary(t, 'hightech')).toBe('1 corpo: 1 gigante gassoso');
   });
 });
