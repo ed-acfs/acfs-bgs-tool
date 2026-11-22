@@ -6,12 +6,16 @@ import {
   biologyOptions,
   bodyTypeOptions,
   filterTargets,
+  firstPortAdvice,
   interestTags,
+  portBodyLine,
+  purposeBodySummary,
   BridgeStep,
   bridgeText,
   highlights,
   nearestAnchor,
   plotterSummary,
+  Purpose,
   stepsToBuild,
 } from './colony-plotter';
 
@@ -140,5 +144,39 @@ describe('colony plotter', () => {
     const steps = [step('A', 'ours'), step('B', 'colonised'), step('C', 'free'), step('D', 'unknown'), step('E', 'building')];
     expect(stepsToBuild(steps)).toBe(2);
     expect(bridgeText(steps)).toBe(['A', 'B', 'C', 'D', 'E'].join('\n'));
+  });
+
+  it('first port: the Outpost type follows the purpose; Coriolis in front of a Water world or Earth-like, nearest first', () => {
+    const plain = target('A', { bodies: [body('A 1', 'Ammonia world')] });
+    const none = firstPortAdvice(plain);
+    expect(none.outpost).toBe('commercial');
+    expect(none.coriolisBodies).toEqual([]);
+    expect(none.next).toBeNull();
+    expect(none.why).not.toContain('(');
+
+    const withBest = (purpose: Purpose) =>
+      target('B', { bestPurpose: purpose, purposes: { ...target('x').purposes, [purpose]: { score: 7, bodies: ['B 1', 'B 2'] } } });
+    const refinery = firstPortAdvice(withBest('refinery'));
+    expect(refinery.outpost).toBe('commercial');
+    expect(refinery.why).toContain('Raffineria se è un corpo roccioso');
+    expect(refinery.next).toEqual({ purpose: 'refinery', label: 'Raffineria', bodies: ['B 1', 'B 2'] });
+    expect(firstPortAdvice(withBest('industrial')).outpost).toBe('industrial');
+    expect(firstPortAdvice(withBest('hightech')).outpost).toBe('scientific');
+    expect(firstPortAdvice(withBest('extraction')).outpost).toBe('commercial');
+
+    const water = target('C', {
+      bodies: [body('C 4', 'Earth-like world', { distance: 2400.4 }), body('C 2', 'Water world', { distance: 310 }), body('C 1', 'Rocky body')],
+    });
+    expect(firstPortAdvice(water).coriolisBodies.map(b => portBodyLine(water, b))).toEqual(['2 (Water world, 310 Ls)', '4 (Earth-like world, 2400 Ls)']);
+  });
+
+  it('counts the bodies of a purpose by type, unknown ones last', () => {
+    const t = target('D', {
+      bodies: [body('D 1', 'Rocky body'), body('D 2', 'Rocky body'), body('D 3', 'Class I gas giant')],
+      rings: [{ body: 'D 4', subtype: 'Rocky Ice world', rings: [] }],
+      purposes: { ...target('x').purposes, refinery: { score: 9, bodies: ['D 1', 'D 2', 'D 4', 'D 9'] }, hightech: { score: 1, bodies: ['D 3'] } },
+    });
+    expect(purposeBodySummary(t, 'refinery')).toBe('4 corpi: 2 rocciosi, 1 Rocky ice world, 1 altro');
+    expect(purposeBodySummary(t, 'hightech')).toBe('1 corpo: 1 gigante gassoso');
   });
 });

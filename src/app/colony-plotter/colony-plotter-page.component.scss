@@ -465,15 +465,54 @@
     color: var(--color-accent);
   }
 
+  // Ogni sezione si stacca dalla precedente con una linea e un titolo nel colore d'accento
+  // (richiesta dell'utente del 22 novembre 2026: le sezioni non si distinguevano).
   h3 {
-    margin: 18px 0 6px;
-    color: var(--color-text-bright);
-    font-size: 1rem;
+    margin: 20px 0 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border-muted);
+    color: var(--color-accent);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+
+    .cp-sub {
+      text-transform: none;
+      letter-spacing: 0;
+    }
   }
 
   p {
     margin: 2px 0;
   }
+}
+
+// Il primo porto consigliato: un riquadro in evidenza subito sotto i dati del sistema.
+.cp-card .cp-port {
+  margin: 16px 0 0;
+  padding: 12px 16px;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 45%, transparent);
+  border-left: 4px solid var(--color-accent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
+
+  h3 {
+    margin: 0 0 6px;
+    padding: 0;
+    border: 0;
+    font-size: 0.85rem;
+  }
+
+  p + p {
+    margin-top: 6px;
+  }
+}
+
+// Dopo il riquadro, la prima sezione non ha bisogno della linea.
+.cp-card .cp-port + h3 {
+  border-top: 0;
+  padding-top: 0;
 }
 
 .cp-card-header {
