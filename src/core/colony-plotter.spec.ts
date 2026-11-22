@@ -14,6 +14,7 @@ import {
   highlights,
   nearestAnchor,
   plotterSummary,
+  Purpose,
   stepsToBuild,
 } from './colony-plotter';
 
@@ -144,21 +145,27 @@ describe('colony plotter', () => {
     expect(bridgeText(steps)).toBe(['A', 'B', 'C', 'D', 'E'].join('\n'));
   });
 
-  it('first port: Outpost by default, Coriolis in front of a Water world or Earth-like, nearest first; next purpose', () => {
+  it('first port: the Outpost type follows the purpose; Coriolis in front of a Water world or Earth-like, nearest first', () => {
     const plain = target('A', { bodies: [body('A 1', 'Ammonia world')] });
-    expect(firstPortAdvice(plain)).toEqual({ port: 'outpost', bodies: [], next: null });
+    const none = firstPortAdvice(plain);
+    expect(none.outpost).toBe('commercial');
+    expect(none.coriolisBodies).toEqual([]);
+    expect(none.next).toBeNull();
+    expect(none.why).not.toContain('(');
 
-    const refinery = target('B', {
-      bestPurpose: 'refinery',
-      purposes: { ...target('x').purposes, refinery: { score: 7, bodies: ['B 1', 'B 2'] } },
-    });
-    expect(firstPortAdvice(refinery).next).toEqual({ purpose: 'refinery', label: 'Raffineria', bodies: ['B 1', 'B 2'] });
+    const withBest = (purpose: Purpose) =>
+      target('B', { bestPurpose: purpose, purposes: { ...target('x').purposes, [purpose]: { score: 7, bodies: ['B 1', 'B 2'] } } });
+    const refinery = firstPortAdvice(withBest('refinery'));
+    expect(refinery.outpost).toBe('commercial');
+    expect(refinery.why).toContain('Raffineria se è un corpo roccioso');
+    expect(refinery.next).toEqual({ purpose: 'refinery', label: 'Raffineria', bodies: ['B 1', 'B 2'] });
+    expect(firstPortAdvice(withBest('industrial')).outpost).toBe('industrial');
+    expect(firstPortAdvice(withBest('hightech')).outpost).toBe('scientific');
+    expect(firstPortAdvice(withBest('extraction')).outpost).toBe('commercial');
 
     const water = target('C', {
       bodies: [body('C 4', 'Earth-like world', { distance: 2400.4 }), body('C 2', 'Water world', { distance: 310 }), body('C 1', 'Rocky body')],
     });
-    const advice = firstPortAdvice(water);
-    expect(advice.port).toBe('coriolis');
-    expect(advice.bodies.map(b => portBodyLine(water, b))).toEqual(['2 (Water world, 310 Ls)', '4 (Earth-like world, 2400 Ls)']);
+    expect(firstPortAdvice(water).coriolisBodies.map(b => portBodyLine(water, b))).toEqual(['2 (Water world, 310 Ls)', '4 (Earth-like world, 2400 Ls)']);
   });
 });

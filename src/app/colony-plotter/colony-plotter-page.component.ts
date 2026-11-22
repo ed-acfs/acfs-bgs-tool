@@ -41,6 +41,7 @@ import {
   NATURAL_DIRECTION,
   PURPOSES,
   OTHER_FILTERS,
+  OUTPOST_LABELS,
   PURPOSE_LABELS,
   PlotterFilter,
   SortKey,
@@ -133,6 +134,7 @@ export class ColonyPlotterPageComponent implements OnInit, OnDestroy {
   protected readonly ringLine = ringLine;
   protected readonly firstPortAdvice = firstPortAdvice;
   protected readonly portBodyLine = portBodyLine;
+  protected readonly outpostLabels = OUTPOST_LABELS;
   protected readonly faInara = faArrowUpRightFromSquare;
   protected readonly faRaven = faRocket;
   protected readonly faSignals = faSatelliteDish;

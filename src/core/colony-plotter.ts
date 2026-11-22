@@ -356,31 +356,71 @@ export function filterTargets(targets: readonly ColonisationTarget[], filter: Pl
 }
 
 /**
- * Il primo porto consigliato (regola dell'utente del 22 novembre 2026): di base un **Outpost**, il
- * più veloce da costruire, che blocca presto il sistema per lo Squadrone (ed è obbligatorio nei
- * ponti); unica eccezione una **Coriolis** davanti a un Water world o a un Earth-like world, che
- * le passano le loro economie (Agriculture e Tourism; l'Earth-like anche High Tech e Military).
- * La posizione del porto primario la fissa il gioco (la bandierina nella mappa del sistema) e
- * Spansh non la dà: l'eccezione vale solo se il porto è in orbita su uno di quei corpi.
+ * Il primo porto consigliato (regola dell'utente del 22 novembre 2026, con la Colonization Mega
+ * Guide e i valori di Raven Colonial): di base un **Outpost**, il più veloce da costruire, che
+ * blocca presto il sistema per lo Squadrone (ed è obbligatorio nei ponti), del tipo adatto allo
+ * scopo del sistema. La guida: se il corpo del porto primario non ha le economie volute, meglio un
+ * Outpost specializzato; quindi Industrial per l'industria e Scientific per l'High Tech, che hanno
+ * l'economia fissa. Per raffineria, estrazione, agricoltura e turismo non c'è un Outpost
+ * specializzato: il Commercial eredita l'economia del corpo e, fra quelli che la ereditano, dà al
+ * sistema più ricchezza e qualità della vita del Civilian (indicazione dei piloti all'utente,
+ * confermata dai valori di Raven Colonial). Unica eccezione una **Coriolis** davanti a un Water
+ * world o a un Earth-like world. La posizione del porto primario la fissa il gioco (la bandierina
+ * nella mappa del sistema) e Spansh non la dà: l'eccezione vale solo se il porto è in orbita su
+ * uno di quei corpi, e il Commercial è giusto solo davanti a un corpo adatto.
  */
+export type OutpostKind = 'commercial' | 'industrial' | 'scientific';
+
+export const OUTPOST_LABELS: Readonly<Record<OutpostKind, string>> = {
+  commercial: 'Commercial Outpost (Plutus)',
+  industrial: 'Industrial Outpost (Vulcan)',
+  scientific: 'Scientific Outpost (Prometheus)',
+};
+
+/** Per il Commercial Outpost: i corpi davanti a cui eredita l'economia dello scopo. */
+const INHERITING_BODIES: Readonly<Partial<Record<Purpose, string>>> = {
+  refinery: 'un corpo roccioso o un Rocky ice world',
+  extraction: 'un High metal content, un Metal-rich o un corpo con anelli',
+  agriculture: 'un Water world, un Earth-like o un corpo con biologia',
+  tourism: 'un Water world, un Earth-like, un Ammonia world o una stella degenere',
+};
+
 export interface FirstPortAdvice {
-  port: 'outpost' | 'coriolis';
-  /** Water world ed Earth-like del sistema, dal più vicino alla stella d'arrivo; vuoto per l'Outpost. */
-  bodies: InterestingBody[];
+  /** L'Outpost per lo scopo del sistema; se c'è una Coriolis, è la scelta quando la bandierina è altrove. */
+  outpost: OutpostKind;
+  /** Water world ed Earth-like del sistema, dal più vicino alla stella d'arrivo: Coriolis se il porto è lì. */
+  coriolisBodies: InterestingBody[];
+  /** Perché quell'Outpost. */
+  why: string;
   /** Lo scopo più adatto per le costruzioni successive, se c'è. */
   next: { purpose: Purpose; label: string; bodies: string[] } | null;
 }
 
 const CORIOLIS_SUBTYPES = new Set(['Water world', 'Earth-like world']);
 
+export function outpostFor(purpose: Purpose | null): OutpostKind {
+  return purpose === 'industrial' ? 'industrial' : purpose === 'hightech' ? 'scientific' : 'commercial';
+}
+
+function outpostWhy(outpost: OutpostKind, purpose: Purpose | null): string {
+  if (outpost === 'industrial') return 'economia Industrial fissa, qualunque sia il corpo sotto il porto';
+  if (outpost === 'scientific') return 'economia High Tech fissa, qualunque sia il corpo sotto il porto';
+  const where = purpose ? INHERITING_BODIES[purpose] : undefined;
+  return 'eredita l\'economia del corpo sotto il porto'
+    + (where && purpose ? ` (${PURPOSE_LABELS[purpose]} se è ${where})` : '')
+    + ' e dà al sistema più ricchezza e qualità della vita del Civilian';
+}
+
 export function firstPortAdvice(target: ColonisationTarget): FirstPortAdvice {
-  const bodies = (target.bodies ?? [])
+  const coriolisBodies = (target.bodies ?? [])
     .filter(b => CORIOLIS_SUBTYPES.has(b.subtype))
     .sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity));
   const best = target.bestPurpose;
+  const outpost = outpostFor(best);
   return {
-    port: bodies.length ? 'coriolis' : 'outpost',
-    bodies,
+    outpost,
+    coriolisBodies,
+    why: outpostWhy(outpost, best),
     next: best ? { purpose: best, label: PURPOSE_LABELS[best], bodies: target.purposes[best]?.bodies ?? [] } : null,
   };
 }
