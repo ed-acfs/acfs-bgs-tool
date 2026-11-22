@@ -506,8 +506,17 @@
           }
         </dl>
 
-        <!-- Il consiglio subito sotto i dati, in un riquadro (richiesta dell'utente del 22 novembre 2026:
-             "se non sai che c'è non lo vedi"). -->
+        <h3>Ragioni di interesse</h3>
+        <p class="cp-tags">
+          @for (tag of tagsOf(t); track $index) {
+            <span [class]="'cp-tag cp-tag--' + tag.kind" [title]="tag.title">{{ tag.label }}</span>
+          } @empty {
+            <span class="cp-sub">—</span>
+          }
+        </p>
+
+        <!-- Il consiglio in un riquadro, dopo le ragioni di interesse (richieste dell'utente del 22 novembre
+             2026: "se non sai che c'è non lo vedi"; prima le ragioni, come informazione di base). -->
         @let port = firstPortAdvice(t);
         <section class="cp-port" aria-labelledby="cp-port-title">
           <h3 id="cp-port-title"><fa-icon [icon]="faPort" aria-hidden="true"></fa-icon> Primo porto consigliato</h3>
@@ -527,15 +536,6 @@
           }
           <p class="cp-sub">Un Outpost si costruisce in fretta e blocca presto il sistema per lo Squadrone. La posizione del porto primario la fissa il gioco (la bandierina nella mappa del sistema): si vede in gioco, e in Raven Colonial si prova l'effetto di ogni tipo sul sistema.</p>
         </section>
-
-        <h3>Ragioni di interesse</h3>
-        <p class="cp-tags">
-          @for (tag of tagsOf(t); track $index) {
-            <span [class]="'cp-tag cp-tag--' + tag.kind" [title]="tag.title">{{ tag.label }}</span>
-          } @empty {
-            <span class="cp-sub">—</span>
-          }
-        </p>
 
         <h3>Partenza</h3>
         @for (f of t.from; track f.name) {
