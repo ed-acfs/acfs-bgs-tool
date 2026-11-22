@@ -17,6 +17,7 @@ import {
   faGlobe,
   faLeaf,
   faListUl,
+  faFlag,
   faMoon,
   faRing,
   faRocket,
@@ -135,6 +136,7 @@ export class ColonyPlotterPageComponent implements OnInit, OnDestroy {
   protected readonly firstPortAdvice = firstPortAdvice;
   protected readonly portBodyLine = portBodyLine;
   protected readonly outpostLabels = OUTPOST_LABELS;
+  protected readonly faPort = faFlag;
   protected readonly faInara = faArrowUpRightFromSquare;
   protected readonly faRaven = faRocket;
   protected readonly faSignals = faSatelliteDish;

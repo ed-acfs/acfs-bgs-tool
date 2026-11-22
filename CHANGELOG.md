@@ -7,7 +7,10 @@ Tutte le modifiche rilevanti di questo progetto sono documentate in questo file.
 ### Colony Plotter
 
 - La scheda del sistema dà il **primo porto consigliato**, con la regola dell'utente: di base un **Outpost**, il più veloce da costruire, che blocca presto il sistema per lo Squadrone, **del tipo adatto allo scopo del sistema** (come consiglia la Colonization Mega Guide): **Industrial Outpost** (Vulcan) per l'industria e **Scientific Outpost** (Prometheus) per l'High Tech, con l'economia fissa; per raffineria, estrazione, agricoltura e turismo **Commercial Outpost** (Plutus), che eredita l'economia del corpo sotto il porto (la scheda dice quale corpo va bene) e dà al sistema più ricchezza e qualità della vita del Civilian (indicazione dei piloti, confermata dai valori di Raven Colonial). Unica eccezione una **Coriolis** se il porto primario è in orbita su un Water world o un Earth-like world (indicati per nome e distanza dalla stella d'arrivo). Il gioco fissa la posizione del porto primario e Spansh non la conosce: la scheda lo ricorda e rimanda a Raven Colonial per provare l'effetto di ogni tipo. Sotto, lo scopo più adatto per le costruzioni successive, con i corpi che lo danno.
+- Il consiglio sta in un **riquadro evidenziato** (bordo e fondo nel colore d'accento, icona della bandierina) subito sotto i dati del sistema, prima di tutto il resto: "se non sai che c'è non lo vedi" (l'utente).
+- **Sezioni della scheda più distinte**: ogni titolo (Ragioni di interesse, Partenza, Corpi interessanti, Anelli, Adatto a) è nel colore d'accento, in maiuscoletto, staccato dalla sezione precedente da una linea.
 - Guida del Colony Plotter: la regola del primo porto, nella sezione "Reclamare e costruire".
+- Build: il limite degli stili per componente passa da 16 a 20 kB (soglia d'errore ereditata dal progetto dei Canonn), perché il foglio del Colony Plotter l'aveva superata di mezzo kB; l'avviso resta a 12 kB.
 
 ## [1.9.0] - 2026-11-20 — Colony Plotter riordinato, Ponte, tema chiaro e scuro ardesia
 
